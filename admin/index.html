@@ -4,9 +4,19 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Ladi Sugar Admin</title>
-  <!-- Подключаем локальный файл вместо CDN -->
-  <script src="decap-cms.js"></script>
+  
+  <!-- Скрипт для решения конфликта с MetaMask (если есть) -->
+  <script>
+    if (typeof window.ethereum !== 'undefined') {
+        delete window.ethereum;
+    }
+  </script>
+
+  <!-- Подключаем Decap CMS -->
+  <script src="https://unpkg.com/decap-cms@^3.0.0/dist/decap-cms.js"></script>
 </head>
 <body>
+  <!-- ЭТОТ ЭЛЕМЕНТ ОБЯЗАТЕЛЕН! Сюда загрузится админка -->
+  <div id="nc-root"></div>
 </body>
 </html>
