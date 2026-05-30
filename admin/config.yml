@@ -1,59 +1,70 @@
 backend:
   name: github
-  branch: main # Если у вас ветка называется master, поменяйте на master
-  repo: viponetwo/ladi-sugar-site # ЗАМЕНИТЕ ЭТО НА СВОЙ РЕПОЗИТОРИЙ
+  branch: main # Если у вас ветка называется 'master', поменяйте здесь на 'master'
+  repo: viponetwo/ladi-sugar-site # ЗАМЕНИТЕ НА СВОИ ДАННЫЕ! Пример: ivan-ivanov/ladi-sugar-site
+  
+  # Если вы используете Netlify Identity для входа, раскомментируйте строку ниже:
+  # auth_endpoint: https://api.netlify.com/auth/done
+  
+  # Если вы настроили прямой GitHub OAuth App, раскомментируйте и вставьте Client ID:
+  app_id: Ov23lii6FgGXy4ZzsxC4
 
-media_folder: "images/uploads"
-public_folder: "/images/uploads"
+media_folder: "images/uploads" # Папка, куда будут загружаться новые картинки через админку
+public_folder: "/images/uploads" # Путь, который будет прописан в коде сайта
 
 collections:
   - name: "site_data"
-    label: "Данные сайта"
+    label: "Данные сайта Ladi Sugar"
     files:
       - file: "data.json"
-        label: "Главная страница"
+        label: "Главная страница и Контент"
         name: "home"
         fields:
+          # --- HERO SECTION ---
           - label: "Главный экран (Hero)"
             name: "hero"
             widget: "object"
             fields:
-              - { label: "Заголовок H1", name: "title", widget: "string" }
-              - { label: "Подзаголовок", name: "subtitle", widget: "text" }
-              - { label: "Текст кнопки", name: "btnText", widget: "string" }
-              - { label: "Ссылка на запись (Dikidi)", name: "dikidiUrl", widget: "string" }
+              - { label: "Заголовок H1", name: "title", widget: "string", required: true }
+              - { label: "Подзаголовок (можно с переносами строк)", name: "subtitle", widget: "text", required: true }
+              - { label: "Текст кнопки записи", name: "btnText", widget: "string", default: "Записаться онлайн" }
+              - { label: "Ссылка на Dikidi/WhatsApp", name: "dikidiUrl", widget: "string", hint: "Например: https://dikidi.net/2077677" }
           
+          # --- MASTER INFO ---
           - label: "О мастере"
             name: "master"
             widget: "object"
             fields:
-              - { label: "Имя мастера", name: "name", widget: "string" }
-              - { label: "Описание (каждая строка с новой линии)", name: "description", widget: "text" }
+              - { label: "Имя мастера", name: "name", widget: "string", required: true }
+              - { label: "Описание (биография)", name: "description", widget: "text", required: true, hint: "Каждый абзац с новой строки" }
 
+          # --- CONTACTS ---
           - label: "Контакты"
             name: "contacts"
             widget: "object"
             fields:
-              - { label: "Адрес", name: "address", widget: "string" }
+              - { label: "Адрес студии", name: "address", widget: "string" }
               - { label: "Телефон для отображения", name: "phone", widget: "string" }
-              - { label: "WhatsApp номер (без +)", name: "whatsapp", widget: "string" }
-              - { label: "Viber номер (без +)", name: "viber", widget: "string" }
-              - { label: "Ссылка Instagram", name: "instagram", widget: "string" }
-              - { label: "Ссылка Dikidi", name: "dikidi", widget: "string" }
+              - { label: "WhatsApp номер (только цифры, без +)", name: "whatsapp", widget: "string", hint: "Пример: 375291234567" }
+              - { label: "Viber номер (только цифры, без +)", name: "viber", widget: "string", hint: "Пример: 375291234567" }
+              - { label: "Ссылка на Instagram", name: "instagram", widget: "string" }
+              - { label: "Ссылка на Dikidi (дубликат)", name: "dikidi", widget: "string" }
 
+          # --- PRICES LIST ---
           - label: "Прайс-лист"
             name: "prices"
             widget: "list"
-            summary: "{{fields.name}} - {{fields.value}} BYN"
+            summary: "{{fields.name}} — {{fields.value}} BYN"
             fields:
               - { label: "Название услуги", name: "name", widget: "string" }
               - { label: "Цена (BYN)", name: "value", widget: "string" }
 
-          - label: "Отзывы"
+          # --- REVIEWS ---
+          - label: "Отзывы клиентов"
             name: "reviews"
             widget: "list"
             summary: "{{fields.name}} ({{fields.rating}} звезд)"
             fields:
               - { label: "Имя клиента", name: "name", widget: "string" }
               - { label: "Текст отзыва", name: "text", widget: "text" }
-              - { label: "Рейтинг (1-5)", name: "rating", widget: "number", value_type: "int", min: 1, max: 5 }
+              - { label: "Рейтинг (1-5)", name: "rating", widget: "number", value_type: "int", min: 1, max: 5, default: 5 }
