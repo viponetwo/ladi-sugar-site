@@ -1,7 +1,7 @@
 backend:
   name: github
   branch: main # Если у вас ветка называется master, поменяйте на master
-  repo: ВАШ_НИКНЕЙМ/ladi-sugar-site # ЗАМЕНИТЕ ЭТО НА СВОЙ РЕПОЗИТОРИЙ
+  repo: viponetwo/ladi-sugar-site # ЗАМЕНИТЕ ЭТО НА СВОЙ РЕПОЗИТОРИЙ
 
 media_folder: "images/uploads"
 public_folder: "/images/uploads"
