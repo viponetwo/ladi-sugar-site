@@ -12,11 +12,14 @@
     }
   </script>
 
-  <!-- Подключаем локальный файл decap-cms.js -->
-  <script src="decap-cms.js"></script>
+  <!-- Подключаем локальный файл decap-cms.js (который вы скачали) -->
+  <script src="decap-cms.js"></script> 
+  <!-- Если вы не скачивали файл, замените строку выше на: 
+       <script src="https://unpkg.com/decap-cms@^3.0.0/dist/decap-cms.js"></script> 
+  -->
 </head>
 <body>
-  <!-- ЭТОТ ЭЛЕМЕНТ ОБЯЗАТЕЛЕН! -->
+  <!-- ЭТОТ ЭЛЕМЕНТ ОБЯЗАТЕЛЕН! Сюда CMS загрузит интерфейс -->
   <div id="nc-root"></div>
 </body>
 </html>
