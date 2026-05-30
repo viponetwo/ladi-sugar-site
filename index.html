@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ladi Sugar | Шугаринг в Полоцке</title>
+    <meta name="description" content="Студия шугаринга Ladi Sugar в Полоцке.">
+    
+    <!-- Шрифты и иконки -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&family=Open+Sans:wght@400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Ваши стили -->
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+    <!-- Шапка -->
+    <header>
+        <div class="container nav-wrapper">
+            <a href="#" class="logo-link"><img src="images/logo.png" alt="Ladi Sugar Logo" class="logo-img"></a>
+            <nav class="nav-links">
+                <a href="#about">Преимущества</a>
+                <a href="#gallery">Работы</a>
+                <a href="#reviews">Отзывы</a>
+                <a href="#prices">Цены</a>
+                <a href="#contacts">Контакты</a>
+            </nav>
+            <a href="#" id="header-dikidi-btn" target="_blank" class="btn-header">Записаться</a>
+        </div>
+    </header>
+
+    <!-- Hero -->
+    <section class="hero">
+        <div class="container hero-content">
+            <h1 id="hero-title">Загрузка...</h1>
+            <p id="hero-subtitle"></p>
+            <a href="#" id="hero-btn" target="_blank" class="btn-hero">Записаться онлайн</a>
+        </div>
+    </section>
+
+    <!-- Преимущества (Статичные, можно оставить как есть или вынести в JSON) -->
+    <section id="about" class="bg-light">
+        <div class="container">
+            <h2 class="section-title">Почему выбирают меня</h2>
+            <div class="features-grid">
+                <div class="feature-card"><i class="fas fa-certificate feature-icon"></i><h3>Опыт</h3><p>Сертифицированный мастер.</p></div>
+                <div class="feature-card"><i class="fas fa-pump-medical feature-icon"></i><h3>Стерильность</h3><p>Одноразовые материалы.</p></div>
+                <div class="feature-card"><i class="fas fa-leaf feature-icon"></i><h3>Материалы</h3><p>Премиум паста.</p></div>
+                <div class="feature-card"><i class="fas fa-heart feature-icon"></i><h3>Комфорт</h3><p>Уютная атмосфера.</p></div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Галерея (Статичная для простоты, или можно добавить в JSON) -->
+    <section id="gallery" class="bg-white">
+        <div class="container">
+            <h2 class="section-title">Мои работы</h2>
+            <div class="gallery-grid">
+                <div class="gallery-item"><img src="https://images.unsplash.com/photo-1519494026892-80bbd2d6fd0d?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80" alt="Работа 1"><div class="gallery-label">Ноги</div></div>
+                <div class="gallery-item"><img src="https://images.unsplash.com/photo-1570172619644-dfd03ed5d881?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80" alt="Работа 2"><div class="gallery-label">Бикини</div></div>
+                <div class="gallery-item"><img src="https://images.unsplash.com/photo-1560750588-73207b1ef5b8?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80" alt="Работа 3"><div class="gallery-label">Подмышки</div></div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Отзывы (Динамические из JSON) -->
+    <section id="reviews" class="bg-light">
+        <div class="container">
+            <h2 class="section-title">Отзывы клиентов</h2>
+            <div class="reviews-grid" id="reviews-container">
+                <!-- Сюда JS вставит отзывы -->
+            </div>
+        </div>
+    </section>
+
+    <!-- О мастере (Динамическое имя и текст) -->
+    <section id="master" class="bg-white">
+        <div class="container master-wrapper">
+            <img src="images/master.jpg" alt="Мастер" class="master-photo">
+            <div class="master-text">
+                <h3 id="master-name">Привет!</h3>
+                <div id="master-desc-container">
+                    <!-- Сюда JS вставит описание -->
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Прайс (Динамический из JSON) -->
+    <section id="prices" class="bg-light">
+        <div class="container">
+            <h2 class="section-title" style="text-align:center;">Прайс-лист</h2>
+            <div class="price-list" id="price-list-container">
+                <!-- Сюда JS вставит цены -->
+            </div>
+        </div>
+    </section>
+
+    <!-- Контакты (Динамические из JSON) -->
+    <section id="contacts" class="bg-white">
+        <div class="container">
+            <h2 class="section-title" style="text-align:center;">Контакты</h2>
+            <div class="contacts-wrapper">
+                <div class="contact-info">
+                    <h3>Жду вас в студии!</h3>
+                    <div class="contact-item"><i class="fas fa-map-marker-alt"></i><span id="contact-address">...</span></div>
+                    <div class="contact-item"><i class="fas fa-phone-alt"></i><a id="contact-phone" href="#">...</a></div>
+                    <div class="contact-item"><i class="far fa-clock"></i><span>Ежедневно: 09:00 – 21:00</span></div>
+
+                    <div class="social-buttons">
+                        <a href="#" id="btn-dikidi-footer" target="_blank" class="btn-social btn-dikidi"><i class="far fa-calendar-check"></i> Записаться</a>
+                        <a href="#" id="btn-wa" target="_blank" class="btn-social btn-wa"><i class="fab fa-whatsapp"></i></a>
+                        <a href="#" id="btn-viber" target="_blank" class="btn-social btn-viber"><i class="fab fa-viber"></i></a>
+                        <a href="#" id="btn-insta" target="_blank" class="btn-social btn-insta"><i class="fab fa-instagram"></i></a>
+                    </div>
+                </div>
+                <div class="map-container">
+                    <iframe src="https://yandex.ru/map-widget/v1/?um=constructor%3Ab893ccbe0c115b6b91c8b5b6581a5e81d06ace6875cc4528a08ba8fecfff3da5&amp;source=constructor" width="100%" height="400" frameborder="0" allowfullscreen="true"></iframe>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2026 Ladi Sugar Polotsk. Все права защищены.</p>
+        </div>
+    </footer>
+
+    <!-- СКРИПТ ЗАГРУЗКИ ДАННЫХ ИЗ JSON -->
+    <script>
+        async function loadData() {
+            try {
+                const response = await fetch('data.json');
+                if (!response.ok) throw new Error('Не удалось загрузить data.json');
+                const data = await response.json();
+
+                // Hero
+                document.getElementById('hero-title').textContent = data.hero.title;
+                document.getElementById('hero-subtitle').innerHTML = data.hero.subtitle.replace(/\n/g, '<br>');
+                const heroBtn = document.getElementById('hero-btn');
+                heroBtn.textContent = data.hero.btnText;
+                heroBtn.href = data.hero.dikidiUrl;
+                document.getElementById('header-dikidi-btn').href = data.hero.dikidiUrl;
+
+                // Master
+                document.getElementById('master-name').textContent = `Привет! Я — ${data.master.name}`;
+                const descContainer = document.getElementById('master-desc-container');
+                descContainer.innerHTML = '';
+                data.master.description.split('\n').forEach(line => {
+                    if (line.trim()) {
+                        const p = document.createElement('p');
+                        p.textContent = line;
+                        descContainer.appendChild(p);
+                    }
+                });
+
+                // Contacts
+                document.getElementById('contact-address').textContent = data.contacts.address;
+                const phoneEl = document.getElementById('contact-phone');
+                phoneEl.textContent = data.contacts.phone;
+                phoneEl.href = `tel:+${data.contacts.whatsapp}`;
+
+                document.getElementById('btn-wa').href = `https://wa.me/${data.contacts.whatsapp}`;
+                document.getElementById('btn-viber').href = `viber://chat?number=%2B${data.contacts.viber}`;
+                document.getElementById('btn-insta').href = data.contacts.instagram;
+                document.getElementById('btn-dikidi-footer').href = data.contacts.dikidi;
+
+                // Prices
+                const priceContainer = document.getElementById('price-list-container');
+                priceContainer.innerHTML = data.prices.map(p => `
+                    <div class="price-item">
+                        <span class="zone-name">${p.name}</span>
+                        <span class="zone-price">${p.value} BYN</span>
+                    </div>
+                `).join('');
+
+                // Reviews
+                const reviewContainer = document.getElementById('reviews-container');
+                reviewContainer.innerHTML = data.reviews.map(r => `
+                    <div class="review-card">
+                        <div class="review-stars">${'<i class="fas fa-star"></i>'.repeat(r.rating)}</div>
+                        <p class="review-text">«${r.text}»</p>
+                        <div class="review-author"><i class="fas fa-user-circle"></i> ${r.name}</div>
+                    </div>
+                `).join('');
+
+            } catch (error) {
+                console.error('Ошибка загрузки данных:', error);
+                document.body.innerHTML = '<h1 style="text-align:center;margin-top:50px;">Ошибка загрузки данных сайта. Проверьте консоль.</h1>';
+            }
+        }
+        document.addEventListener('DOMContentLoaded', loadData);
+    </script>
+</body>
+</html>
