@@ -38,10 +38,23 @@
         </div>
     </section>
 
+    <!-- КАРУСЕЛЬ ГАЛЕРЕИ -->
     <section id="gallery" class="bg-white">
         <div class="container">
             <h2 class="section-title">Мои работы</h2>
-            <div class="gallery-grid" id="gallery-container"></div>
+            <div class="carousel-wrapper">
+                <div class="carousel" id="gallery-carousel">
+                    <div class="carousel-track" id="carousel-track"></div>
+                </div>
+                <button class="carousel-btn prev" onclick="carouselPrev()" aria-label="Предыдущее фото">
+                    <i class="fas fa-chevron-left"></i>
+                </button>
+                <button class="carousel-btn next" onclick="carouselNext()" aria-label="Следующее фото">
+                    <i class="fas fa-chevron-right"></i>
+                </button>
+                <div class="carousel-dots" id="carousel-dots"></div>
+            </div>
+            <div class="carousel-current" id="carousel-current"></div>
         </div>
     </section>
 
@@ -140,6 +153,11 @@
     </div>
 
     <script>
+        let galleryPhotos = [];
+        let currentSlide = 0;
+        let slidesPerView = 1;
+        let autoplayInterval = null;
+
         async function loadData() {
             try {
                 const response = await fetch('/data.json');
@@ -169,7 +187,6 @@
                 document.getElementById('btn-insta').href = data.contacts.instagram;
                 document.getElementById('btn-dikidi-footer').href = data.contacts.dikidi;
 
-                // ✨ ПРЕИМУЩЕСТВА
                 const featuresContainer = document.getElementById('features-container');
                 if(featuresContainer && data.features) {
                     featuresContainer.innerHTML = data.features.map(f => `
@@ -212,23 +229,179 @@
                     blogContainer.innerHTML = '<p style="text-align:center;color:#666; grid-column: 1/-1;">Статей пока нет.</p>';
                 }
 
-                const galleryContainer = document.getElementById('gallery-container');
-                if (galleryContainer) {
-                    const validPhotos = (data.gallery || []).filter(item => item.image && item.image.trim() !== '');
-                    if (validPhotos.length > 0) {
-                        galleryContainer.innerHTML = validPhotos.map(item => `
-                            <div class="gallery-item">
-                                <img src="${item.image}" alt="${item.label || 'Работа мастера'}" loading="lazy" onclick="openLightbox('${item.image.replace(/'/g, "\\'")}', '${item.label || 'Работа мастера'}')" style="cursor: pointer;">
-                                <div class="gallery-label">${item.label}</div>
-                                <button class="pin-btn" onclick="event.stopPropagation(); pinToPinterest('${item.image}', '${item.label || 'Работа мастера'}')"><i class="fab fa-pinterest-p"></i> Сохранить</button>
-                            </div>
-                        `).join('');
-                    } else {
-                        galleryContainer.innerHTML = '<p style="text-align:center;color:#888; grid-column: 1/-1; padding: 40px 0;">Фотографии скоро появятся</p>';
-                    }
+                // 🎠 КАРУСЕЛЬ ГАЛЕРЕИ
+                galleryPhotos = (data.gallery || []).filter(item => item.image && item.image.trim() !== '');
+                if (galleryPhotos.length > 0) {
+                    initCarousel();
+                } else {
+                    document.getElementById('gallery-carousel').innerHTML = '<p style="text-align:center;color:#888; padding: 60px 0;">Фотографии скоро появятся</p>';
+                    document.querySelector('.carousel-wrapper .carousel-btn').style.display = 'none';
+                    document.getElementById('carousel-dots').style.display = 'none';
+                    document.getElementById('carousel-current').style.display = 'none';
                 }
 
             } catch (error) { console.error('Ошибка загрузки данных:', error); }
+        }
+
+        // 🎠 КАРУСЕЛЬ ФУНКЦИИ
+        function getSlidesPerView() {
+            if (window.innerWidth >= 1024) return 3;
+            if (window.innerWidth >= 768) return 2;
+            return 1;
+        }
+
+        function initCarousel() {
+            slidesPerView = getSlidesPerView();
+            renderCarousel();
+            setupCarouselEvents();
+            startAutoplay();
+        }
+
+        function renderCarousel() {
+            const track = document.getElementById('carousel-track');
+            const dotsContainer = document.getElementById('carousel-dots');
+            const currentEl = document.getElementById('carousel-current');
+            
+            if (!track || galleryPhotos.length === 0) return;
+
+            // Рендер слайдов
+            track.innerHTML = galleryPhotos.map((photo, index) => `
+                <div class="carousel-slide" style="width: ${100/slidesPerView}%">
+                    <div class="carousel-item">
+                        <img src="${photo.image}" alt="${photo.label || 'Работа мастера'}" loading="lazy" onclick="openLightbox('${photo.image.replace(/'/g, "\\'")}', '${photo.label || 'Работа мастера'}')" style="cursor: pointer;">
+                        <div class="carousel-label">${photo.label}</div>
+                        <button class="carousel-pin-btn" onclick="event.stopPropagation(); pinToPinterest('${photo.image}', '${photo.label || 'Работа мастера'}')" title="Сохранить в Pinterest">
+                            <i class="fab fa-pinterest-p"></i>
+                        </button>
+                    </div>
+                </div>
+            `).join('');
+
+            // Рендер точек
+            const totalDots = Math.ceil(galleryPhotos.length / slidesPerView);
+            dotsContainer.innerHTML = Array.from({length: totalDots}, (_, i) => `
+                <button class="carousel-dot ${i === Math.floor(currentSlide/slidesPerView) ? 'active' : ''}" 
+                        onclick="goToSlide(${i * slidesPerView})" aria-label="Слайд ${i+1}"></button>
+            `).join('');
+
+            // Счётчик
+            if (currentEl) {
+                currentEl.textContent = `${Math.min(currentSlide + 1, galleryPhotos.length)} / ${galleryPhotos.length}`;
+            }
+
+            updateCarouselPosition();
+        }
+
+        function updateCarouselPosition() {
+            const track = document.getElementById('carousel-track');
+            if (!track) return;
+            const offset = -(currentSlide * (100 / slidesPerView));
+            track.style.transform = `translateX(${offset}%)`;
+            
+            // Обновляем активную точку
+            const dots = document.querySelectorAll('.carousel-dot');
+            const activeDotIndex = Math.floor(currentSlide / slidesPerView);
+            dots.forEach((dot, i) => {
+                dot.classList.toggle('active', i === activeDotIndex);
+            });
+
+            const currentEl = document.getElementById('carousel-current');
+            if (currentEl) {
+                currentEl.textContent = `${Math.min(currentSlide + 1, galleryPhotos.length)} / ${galleryPhotos.length}`;
+            }
+        }
+
+        function carouselNext() {
+            if (currentSlide < galleryPhotos.length - slidesPerView) {
+                currentSlide++;
+                updateCarouselPosition();
+                resetAutoplay();
+            } else {
+                currentSlide = 0;
+                updateCarouselPosition();
+                resetAutoplay();
+            }
+        }
+
+        function carouselPrev() {
+            if (currentSlide > 0) {
+                currentSlide--;
+                updateCarouselPosition();
+                resetAutoplay();
+            } else {
+                currentSlide = Math.max(0, galleryPhotos.length - slidesPerView);
+                updateCarouselPosition();
+                resetAutoplay();
+            }
+        }
+
+        function goToSlide(index) {
+            currentSlide = Math.min(index, galleryPhotos.length - slidesPerView);
+            updateCarouselPosition();
+            resetAutoplay();
+        }
+
+        function setupCarouselEvents() {
+            // Клавиатура
+            document.addEventListener('keydown', (e) => {
+                if (e.key === 'ArrowLeft') carouselPrev();
+                if (e.key === 'ArrowRight') carouselNext();
+            });
+
+            // Свайп на мобильных
+            let touchStartX = 0;
+            let touchEndX = 0;
+            const carousel = document.getElementById('gallery-carousel');
+            
+            if (carousel) {
+                carousel.addEventListener('touchstart', (e) => {
+                    touchStartX = e.changedTouches[0].screenX;
+                }, {passive: true});
+
+                carousel.addEventListener('touchend', (e) => {
+                    touchEndX = e.changedTouches[0].screenX;
+                    handleSwipe();
+                }, {passive: true});
+            }
+
+            function handleSwipe() {
+                const swipeThreshold = 50;
+                if (touchEndX < touchStartX - swipeThreshold) carouselNext();
+                if (touchEndX > touchStartX + swipeThreshold) carouselPrev();
+            }
+
+            // Остановка autoplay при наведении
+            const wrapper = document.querySelector('.carousel-wrapper');
+            if (wrapper) {
+                wrapper.addEventListener('mouseenter', stopAutoplay);
+                wrapper.addEventListener('mouseleave', startAutoplay);
+            }
+
+            // Ресайз окна
+            window.addEventListener('resize', () => {
+                const newSlidesPerView = getSlidesPerView();
+                if (newSlidesPerView !== slidesPerView) {
+                    slidesPerView = newSlidesPerView;
+                    currentSlide = 0;
+                    renderCarousel();
+                }
+            });
+        }
+
+        function startAutoplay() {
+            stopAutoplay();
+            autoplayInterval = setInterval(carouselNext, 5000);
+        }
+
+        function stopAutoplay() {
+            if (autoplayInterval) {
+                clearInterval(autoplayInterval);
+                autoplayInterval = null;
+            }
+        }
+
+        function resetAutoplay() {
+            startAutoplay();
         }
 
         function openLightbox(src, label) {
