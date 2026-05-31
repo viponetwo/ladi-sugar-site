@@ -2,8 +2,8 @@ module.exports = async function handler(req, res) {
   if (req.method !== 'POST') return res.status(405).json({ message: 'Method not allowed' });
 
   const GITHUB_TOKEN = process.env.GITHUB_TOKEN;
-  const USER = 'ВАШ_НИКНЕЙМ_GITHUB'; // ← ЗАМЕНИТЕ (как в save.js)
-  const REPO = 'НАЗВАНИЕ_РЕПОЗИТОРИЯ'; // ← ЗАМЕНИТЕ
+  const USER = 'viponetwo'; // ← ЗАМЕНИТЕ (как в save.js)
+  const REPO = 'ladi-sugar-site'; // ← ЗАМЕНИТЕ
   const BRANCH = 'main';
 
   try {
