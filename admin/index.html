@@ -5,21 +5,18 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Ladi Sugar | Панель управления</title>
     <style>
-        :root { --bg: #f8fafc; --sidebar: #1e293b; --primary: #3b82f6; --card: #fff; --border: #e2e8f0; --text: #0f172a; }
+        :root { --bg: #f8fafc; --sidebar: #1e293b; --primary: #3b82f6; --card: #fff; --border: #e2e8f0; --text: #0f172a; --error: #ef4444; --success: #22c55e; }
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: system-ui, -apple-system, sans-serif; }
         body { background: var(--bg); color: var(--text); height: 100vh; display: flex; }
         
-        /* Login Overlay */
         #login-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.6); display: flex; align-items: center; justify-content: center; z-index: 10000; backdrop-filter: blur(5px); }
         .login-box { background: white; padding: 30px; border-radius: 12px; width: 90%; max-width: 350px; box-shadow: 0 10px 25px rgba(0,0,0,0.2); text-align: center; }
         .login-box h2 { margin-bottom: 20px; }
         .login-box input { width: 100%; padding: 12px; border: 2px solid var(--border); border-radius: 8px; margin-bottom: 15px; font-size: 16px; }
-        .login-box button { width: 100%; padding: 12px; background: var(--primary); color: white; border: none; border-radius: 8px; font-weight: 600; cursor: pointer; transition: 0.2s; }
-        .login-box button:hover { background: #2563eb; }
-        .error-msg { color: #dc2626; font-size: 13px; margin-top: 10px; display: none; }
+        .login-box button { width: 100%; padding: 12px; background: var(--primary); color: white; border: none; border-radius: 8px; font-weight: 600; cursor: pointer; }
+        .error-msg { color: var(--error); font-size: 13px; margin-top: 10px; display: none; }
 
-        /* Admin UI */
-        #admin-ui { display: none; width: 100%; }
+        #admin-ui { display: none; width: 100%; flex-direction: row; }
         .sidebar { width: 240px; background: var(--sidebar); color: white; display: flex; flex-direction: column; padding: 20px 0; }
         .nav-item { padding: 12px 20px; cursor: pointer; transition: 0.2s; }
         .nav-item:hover, .nav-item.active { background: #334155; border-right: 3px solid var(--primary); }
@@ -29,17 +26,15 @@
         .form-group { margin-bottom: 15px; background: var(--card); padding: 15px; border-radius: 8px; border: 1px solid var(--border); }
         .form-group label { display: block; font-weight: 500; margin-bottom: 6px; color: #475569; }
         .form-group input, .form-group textarea { width: 100%; padding: 10px; border: 1px solid var(--border); border-radius: 6px; }
-        .btn-save { position: fixed; bottom: 20px; right: 20px; padding: 12px 24px; background: var(--primary); color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: 600; box-shadow: 0 4px 12px rgba(59,130,246,0.3); }
-        .btn-save:hover { background: #2563eb; }
+        .btn-save { position: fixed; bottom: 20px; right: 20px; padding: 12px 24px; background: var(--primary); color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: 600; box-shadow: 0 4px 12px rgba(59,130,246,0.3); z-index: 100; }
         .btn-save:disabled { opacity: 0.6; cursor: not-allowed; }
-        .toast { position: fixed; top: 20px; right: 20px; padding: 12px 20px; background: #22c55e; color: white; border-radius: 8px; opacity: 0; transition: 0.3s; transform: translateY(-20px); }
+        .toast { position: fixed; top: 20px; right: 20px; padding: 12px 20px; background: var(--success); color: white; border-radius: 8px; opacity: 0; transition: 0.3s; transform: translateY(-20px); }
         .toast.show { opacity: 1; transform: translateY(0); }
-        @media (max-width: 768px) { body { flex-direction: column; } .sidebar { width: 100%; flex-direction: row; overflow-x: auto; padding: 10px; } }
+        @media (max-width: 768px) { #admin-ui { flex-direction: column; } .sidebar { width: 100%; flex-direction: row; overflow-x: auto; padding: 10px; } }
     </style>
 </head>
 <body>
 
-    <!-- Экран входа -->
     <div id="login-overlay">
         <div class="login-box">
             <h2>🔒 Вход в админку</h2>
@@ -49,7 +44,6 @@
         </div>
     </div>
 
-    <!-- Интерфейс админки -->
     <div id="admin-ui">
         <aside class="sidebar">
             <div style="padding: 0 20px 20px; font-weight: bold; border-bottom: 1px solid #334155;">🔧 Ladi Sugar Admin</div>
@@ -71,15 +65,15 @@
                 <div class="form-group"><label>Описание</label><textarea rows="5" data-bind="master.description"></textarea></div>
             </section>
             <section id="prices" class="section">
-                <div class="form-group"><label>Прайс (JSON массив)</label><textarea rows="10" data-bind="prices"></textarea></div>
+                <div class="form-group"><label>Прайс (массив JSON)</label><textarea rows="8" data-bind="prices"></textarea></div>
             </section>
             <section id="reviews" class="section">
-                <div class="form-group"><label>Отзывы (JSON массив)</label><textarea rows="10" data-bind="reviews"></textarea></div>
+                <div class="form-group"><label>Отзывы (массив JSON)</label><textarea rows="8" data-bind="reviews"></textarea></div>
             </section>
             <section id="contacts" class="section">
                 <div class="form-group"><label>Адрес</label><input data-bind="contacts.address"></div>
                 <div class="form-group"><label>Телефон</label><input data-bind="contacts.phone"></div>
-                <div class="form-group"><label>WhatsApp</label><input data-bind="contacts.whatsapp"></div>
+                <div class="form-group"><label>WhatsApp (цифры)</label><input data-bind="contacts.whatsapp"></div>
             </section>
         </main>
         <button class="btn-save" id="saveBtn" onclick="saveData()">💾 Сохранить и Опубликовать</button>
@@ -91,69 +85,62 @@
         let currentData = {};
         let sessionToken = '';
 
-        // 1. Авторизация через сервер
+        // ✅ Исправленные функции для работы с вложенными объектами
+        function getNested(obj, path) {
+            return path.split('.').reduce((acc, part) => acc && acc[part], obj);
+        }
+        function setNested(obj, path, value) {
+            const keys = path.split('.');
+            let current = obj;
+            for (let i = 0; i < keys.length - 1; i++) current = current[keys[i]];
+            current[keys[keys.length - 1]] = value;
+        }
+
         async function login() {
             const pass = document.getElementById('pass-input').value;
             const btn = document.querySelector('.login-box button');
             const err = document.getElementById('error-msg');
-            
-            btn.textContent = 'Проверка...';
-            btn.disabled = true;
-            err.style.display = 'none';
+            btn.textContent = 'Проверка...'; btn.disabled = true; err.style.display = 'none';
 
             try {
-                const res = await fetch('/api/auth/login', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ password: pass })
-                });
+                const res = await fetch('/api/auth/login', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ password: pass }) });
                 const data = await res.json();
-
                 if (data.success) {
                     sessionToken = data.token;
                     document.getElementById('login-overlay').style.display = 'none';
                     document.getElementById('admin-ui').style.display = 'flex';
                     loadData();
-                } else {
-                    err.style.display = 'block';
-                }
-            } catch (e) {
-                err.textContent = 'Ошибка соединения';
-                err.style.display = 'block';
-            } finally {
-                btn.textContent = 'Войти';
-                btn.disabled = false;
-            }
+                } else { err.style.display = 'block'; }
+            } catch (e) { err.textContent = 'Ошибка соединения'; err.style.display = 'block'; }
+            finally { btn.textContent = 'Войти'; btn.disabled = false; }
         }
 
-        // 2. Загрузка данных
         async function loadData() {
             try {
                 const res = await fetch('/data.json');
                 currentData = await res.json();
                 document.querySelectorAll('[data-bind]').forEach(el => {
-                    const keys = el.dataset.bind.split('.');
-                    let val = currentData;
-                    keys.forEach(k => val = val?.[k]);
-                    el.value = typeof val === 'string' ? val : JSON.stringify(val, null, 2);
-                    el.addEventListener('input', e => {
-                        const k = e.target.dataset.bind.split('.');
-                        if (k.length === 1) currentData[k[0]] = e.target.value;
-                    });
+                    const path = el.dataset.bind;
+                    let val = getNested(currentData, path);
+                    el.value = Array.isArray(val) ? JSON.stringify(val, null, 2) : (val || '');
+                    el.addEventListener('input', e => setNested(currentData, path, e.target.value));
                 });
                 showToast('✅ Данные загружены');
-            } catch (e) { showToast('❌ Ошибка загрузки'); }
+            } catch (e) { showToast('❌ Ошибка загрузки data.json'); }
         }
 
-        // 3. Сохранение с токеном
         async function saveData() {
             const btn = document.getElementById('saveBtn');
-            btn.disabled = true;
-            btn.textContent = '⏳ Сохранение...';
+            btn.disabled = true; btn.textContent = '⏳ Сохранение...';
 
-            // Парсим JSON-поля обратно в объекты
-            currentData.prices = JSON.parse(document.querySelector('[data-bind="prices"]').value);
-            currentData.reviews = JSON.parse(document.querySelector('[data-bind="reviews"]').value);
+            // Парсим массивы обратно в объекты
+            try {
+                currentData.prices = JSON.parse(document.querySelector('[data-bind="prices"]').value);
+                currentData.reviews = JSON.parse(document.querySelector('[data-bind="reviews"]').value);
+            } catch(e) {
+                showToast('❌ Ошибка формата JSON в прайсе или отзывах');
+                btn.disabled = false; btn.textContent = '💾 Сохранить'; return;
+            }
 
             try {
                 const res = await fetch('/api/save', {
@@ -162,7 +149,13 @@
                     body: JSON.stringify({ content: currentData, token: sessionToken })
                 });
                 const result = await res.json();
-                showToast(res.ok ? '✅ Успешно! Сайт обновится через ~60 сек.' : '❌ ' + result.message);
+                if (res.ok) {
+                    showToast('✅ Успешно! Коммит создан. Vercel обновит сайт через ~60 сек.');
+                    console.log('✅ GitHub Response:', result);
+                } else {
+                    showToast('❌ Ошибка сервера: ' + (result.message || result.details));
+                    console.error('❌ Server Error:', result);
+                }
             } catch (e) { showToast('❌ Ошибка сети'); }
             finally { btn.disabled = false; btn.textContent = '💾 Сохранить и Опубликовать'; }
         }
@@ -176,9 +169,8 @@
 
         function showToast(msg) {
             const t = document.getElementById('toast');
-            t.textContent = msg;
-            t.classList.add('show');
-            setTimeout(() => t.classList.remove('show'), 3000);
+            t.textContent = msg; t.classList.add('show');
+            setTimeout(() => t.classList.remove('show'), 4000);
         }
     </script>
 </body>
