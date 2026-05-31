@@ -8,8 +8,8 @@ module.exports = async function handler(req, res) {
   if (rating < 1 || rating > 5) return res.status(400).json({ message: 'Рейтинг должен быть от 1 до 5' });
 
   const GITHUB_TOKEN = process.env.GITHUB_TOKEN;
-  const USER = 'ВАШ_НИКНЕЙМ_GITHUB'; // ← ЗАМЕНИТЕ
-  const REPO = 'НАЗВАНИЕ_РЕПОЗИТОРИЯ'; // ← ЗАМЕНИТЕ
+  const USER = 'viponetwo'; // ← ЗАМЕНИТЕ
+  const REPO = 'ladi-sugar-site'; // ← ЗАМЕНИТЕ
   const BRANCH = 'main';
   const PATH = 'data.json';
 
