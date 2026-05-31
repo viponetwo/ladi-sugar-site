@@ -37,6 +37,7 @@
         .list-card .delete-btn:hover { background: #fecaca; }
         .list-card .field-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 10px; }
         .list-card .field-row.full { grid-template-columns: 1fr; }
+        .list-card .img-preview { max-height: 90px; width: 100%; object-fit: cover; border-radius: 6px; border: 1px solid var(--border); margin-bottom: 10px; display: none; }
         
         .add-btn { width: 100%; padding: 12px; background: #f1f5f9; border: 2px dashed var(--border); border-radius: 8px; cursor: pointer; color: #64748b; font-weight: 500; transition: 0.2s; }
         .add-btn:hover { background: #e2e8f0; color: var(--text); border-color: #cbd5e1; }
@@ -175,7 +176,7 @@
                 const res = await fetch('/data.json');
                 currentData = await res.json();
                 
-                // Гарантируем существование массивов для списков
+                // Гарантируем инициализацию массивов, даже если их нет в data.json
                 if (!Array.isArray(currentData.gallery)) currentData.gallery = [];
                 if (!Array.isArray(currentData.prices)) currentData.prices = [];
                 if (!Array.isArray(currentData.reviews)) currentData.reviews = [];
@@ -202,6 +203,7 @@
             if (!container) return;
             container.innerHTML = '';
             const fields = LIST_CONFIG[type];
+            
             currentData[type].forEach((item, index) => {
                 const card = document.createElement('div');
                 card.className = 'list-card';
@@ -209,6 +211,17 @@
                 delBtn.className = 'delete-btn'; delBtn.innerHTML = '🗑 Удалить';
                 delBtn.onclick = () => removeItem(type, index);
                 card.appendChild(delBtn);
+
+                // Превью изображения для галереи
+                if (type === 'gallery') {
+                    const img = document.createElement('img');
+                    img.className = 'img-preview';
+                    img.src = item.image || '';
+                    img.onerror = () => img.style.display = 'none';
+                    img.onload = () => img.style.display = 'block';
+                    if (item.image) img.style.display = 'block';
+                    card.appendChild(img);
+                }
 
                 fields.forEach(f => {
                     const wrap = document.createElement('div');
@@ -218,7 +231,15 @@
                     if (f.type === 'textarea') input.rows = 3;
                     else { input.type = f.type; if (f.min !== undefined) input.min = f.min; if (f.max !== undefined) input.max = f.max; }
                     input.value = item[f.name] || '';
-                    input.oninput = (e) => { currentData[type][index][f.name] = e.target.value; };
+                    
+                    // Мгновенное обновление данных в памяти + обновление превью
+                    input.oninput = (e) => { 
+                        currentData[type][index][f.name] = e.target.value; 
+                        if (type === 'gallery' && f.name === 'image') {
+                            const imgEl = card.querySelector('.img-preview');
+                            if (imgEl) { imgEl.src = e.target.value; imgEl.style.display = 'block'; imgEl.onerror = () => imgEl.style.display = 'none'; }
+                        }
+                    };
                     wrap.appendChild(label); wrap.appendChild(input); card.appendChild(wrap);
                 });
                 container.appendChild(card);
