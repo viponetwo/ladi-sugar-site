@@ -1,11 +1,11 @@
-// api/save.js
 module.exports = async function handler(req, res) {
   if (req.method !== 'POST') return res.status(405).json({ message: 'Method not allowed' });
 
   const token = req.body.token || req.headers.authorization?.split(' ')[1];
-  const serverToken = Buffer.from(process.env.ADMIN_PASSWORD || '').toString('base64');
-  
-  if (!token || token !== serverToken) {
+  const expectedToken = Buffer.from(process.env.ADMIN_PASSWORD || '').toString('base64');
+
+  // ✅ Теперь проверка совпадает с генерацией в login.js
+  if (!token || token !== expectedToken) {
     return res.status(401).json({ message: 'Недействительная сессия' });
   }
 
@@ -33,7 +33,6 @@ module.exports = async function handler(req, res) {
       throw new Error(`GitHub GET failed: ${err.message}`);
     }
 
-    console.log('📦 Encoding content to Base64...');
     const base64Content = Buffer.from(JSON.stringify(content, null, 2)).toString('base64');
 
     console.log('🚀 Sending PUT request to GitHub...');
