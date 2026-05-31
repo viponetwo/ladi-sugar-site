@@ -82,6 +82,26 @@
         <div class="container">
             <h2 class="section-title">Отзывы клиентов</h2>
             <div class="reviews-grid" id="reviews-container"></div>
+            
+            <div class="review-form-wrapper">
+                <h3 style="text-align:center; margin-bottom:20px;">Оставить отзыв</h3>
+                <form id="reviewForm" class="review-form">
+                    <input type="text" id="rev-name" placeholder="Ваше имя" required>
+                    <div class="rating-input">
+                        <span>Оценка:</span>
+                        <select id="rev-rating">
+                            <option value="5">⭐⭐⭐⭐⭐ (5)</option>
+                            <option value="4">⭐⭐⭐⭐ (4)</option>
+                            <option value="3">⭐⭐⭐ (3)</option>
+                            <option value="2">⭐⭐ (2)</option>
+                            <option value="1">⭐ (1)</option>
+                        </select>
+                    </div>
+                    <textarea id="rev-text" placeholder="Расскажите о вашем опыте..." rows="4" required></textarea>
+                    <button type="submit" id="rev-submit-btn" class="btn-hero" style="padding:12px 30px; font-size:1rem; width:100%;">Отправить на модерацию</button>
+                    <div id="rev-status" style="text-align:center; margin-top:10px; font-size:0.9rem;"></div>
+                </form>
+            </div>
         </div>
     </section>
 
@@ -107,7 +127,6 @@
         </div>
     </section>
 
-    <!-- 🔗 КНОПКИ "ПОДЕЛИТЬСЯ" -->
     <section class="share-section">
         <h3>Поделиться с друзьями</h3>
         <div class="share-buttons">
@@ -122,7 +141,6 @@
         <div class="container"><p>&copy; 2026 Ladi Sugar Polotsk. Все права защищены.</p></div>
     </footer>
 
-    <!-- 📜 СКРИПТЫ -->
     <script>
         async function loadData() {
             try {
@@ -157,7 +175,16 @@
                 if(data.prices) priceContainer.innerHTML = data.prices.map(p => `<div class="price-item"><span class="zone-name">${p.name}</span><span class="zone-price">${p.value} BYN</span></div>`).join('');
 
                 const reviewContainer = document.getElementById('reviews-container');
-                if(data.reviews) reviewContainer.innerHTML = data.reviews.map(r => `<div class="review-card"><div class="review-stars">${'<i class="fas fa-star"></i>'.repeat(r.rating)}</div><p class="review-text">«${r.text}»</p><div class="review-author"><i class="fas fa-user-circle"></i> ${r.name}</div></div>`).join('');
+                if(data.reviews) {
+                    const visible = data.reviews.filter(r => r.status !== 'pending');
+                    reviewContainer.innerHTML = visible.map(r => `
+                        <div class="review-card">
+                            <div class="review-stars">${'<i class="fas fa-star"></i>'.repeat(r.rating)}</div>
+                            <p class="review-text">«${r.text}»</p>
+                            <div class="review-author"><i class="fas fa-user-circle"></i> ${r.name} <span style="color:#888; font-weight:400; font-size:0.8rem;">${r.date || ''}</span></div>
+                        </div>
+                    `).join('');
+                }
 
                 const blogContainer = document.getElementById('blog-container');
                 if(data.blog && data.blog.length > 0) {
@@ -175,52 +202,49 @@
                     blogContainer.innerHTML = '<p style="text-align:center;color:#666; grid-column: 1/-1;">Статей пока нет.</p>';
                 }
 
-            } catch (error) {
-                console.error('Ошибка загрузки данных:', error);
-            }
+            } catch (error) { console.error('Ошибка загрузки данных:', error); }
         }
 
-        // 🔗 Функции для кнопок "Поделиться"
         function initShareButtons() {
             const url = encodeURIComponent(window.location.href);
             const title = encodeURIComponent(document.title || 'Ladi Sugar Polotsk');
-            
             document.querySelector('.share-wa').href = `https://wa.me/?text=${title}%20${url}`;
             document.querySelector('.share-tg').href = `https://t.me/share/url?url=${url}&text=${title}`;
             document.querySelector('.share-vk').href = `https://vk.com/share.php?url=${url}&title=${title}`;
         }
 
         function copyShareLink() {
-            navigator.clipboard.writeText(window.location.href).then(() => {
-                showShareToast('✅ Ссылка скопирована в буфер обмена!');
-            }).catch(() => {
-                const input = document.createElement('input');
-                input.value = window.location.href;
-                document.body.appendChild(input);
-                input.select();
-                document.execCommand('copy');
-                document.body.removeChild(input);
+            navigator.clipboard.writeText(window.location.href).then(() => showShareToast('✅ Ссылка скопирована!'))
+            .catch(() => {
+                const input = document.createElement('input'); input.value = window.location.href;
+                document.body.appendChild(input); input.select(); document.execCommand('copy'); document.body.removeChild(input);
                 showShareToast('✅ Ссылка скопирована!');
             });
         }
-
         function showShareToast(msg) {
-            let toast = document.querySelector('.share-toast');
-            if (!toast) {
-                toast = document.createElement('div');
-                toast.className = 'share-toast';
-                document.body.appendChild(toast);
-            }
-            toast.textContent = msg;
-            toast.classList.add('show');
-            setTimeout(() => toast.classList.remove('show'), 2500);
+            let t = document.querySelector('.share-toast') || document.createElement('div');
+            t.className = 'share-toast'; t.textContent = msg; document.body.appendChild(t);
+            setTimeout(() => t.classList.add('show'), 10); setTimeout(() => t.classList.remove('show'), 2500);
         }
 
-        // 🚀 Запуск всего при загрузке страницы
-        document.addEventListener('DOMContentLoaded', () => {
-            loadData();
-            initShareButtons();
+        document.getElementById('reviewForm')?.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const btn = document.getElementById('rev-submit-btn');
+            const status = document.getElementById('rev-status');
+            btn.disabled = true; btn.textContent = '⏳ Отправка...'; status.textContent = '';
+            try {
+                const res = await fetch('/api/review/submit', {
+                    method: 'POST', headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ name: document.getElementById('rev-name').value, text: document.getElementById('rev-text').value, rating: document.getElementById('rev-rating').value })
+                });
+                const data = await res.json();
+                status.style.color = res.ok ? '#22c55e' : '#ef4444'; status.textContent = data.message;
+                if (res.ok) e.target.reset();
+            } catch (err) { status.style.color = '#ef4444'; status.textContent = '❌ Ошибка сети'; }
+            finally { btn.disabled = false; btn.textContent = 'Отправить на модерацию'; }
         });
+
+        document.addEventListener('DOMContentLoaded', () => { loadData(); initShareButtons(); });
     </script>
 </body>
 </html>
