@@ -15,7 +15,7 @@ export default async function handler(req, res) {
     return res.status(400).json({ message: 'No content provided' });
   }
 
-  const USER = 'ВАШ_НИКНЕЙМ'; // ← ЗАМЕНИТЕ
+  const USER = 'viponetwo'; // ← ЗАМЕНИТЕ
   const REPO = 'ladi-sugar-site'; // ← ЗАМЕНИТЕ
   const BRANCH = 'main'; // ← main или master
   const PATH = 'data.json';
