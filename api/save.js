@@ -13,7 +13,7 @@ export default async function handler(req, res) {
   }
 
   const GITHUB_TOKEN = process.env.GITHUB_TOKEN;
-  const GITHUB_USER = 'ВАШ_НИКНЕЙМ'; // ЗАМЕНИТЕ НА СВОЙ ЛОГИН
+  const GITHUB_USER = 'viponetwo'; // ЗАМЕНИТЕ НА СВОЙ ЛОГИН
   const GITHUB_REPO = 'ladi-sugar-site'; // ЗАМЕНИТЕ НА ИМЯ РЕПОЗИТОРИЯ
   const FILE_PATH = 'data.json';
   const BRANCH = 'main'; // Или master
