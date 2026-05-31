@@ -32,11 +32,14 @@ section { padding: 80px 0; }
 .feature-card:hover { transform: translateY(-5px); }
 .feature-icon { font-size: 2.5rem; color: var(--primary); margin-bottom: 20px; }
 
-.gallery-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; }
-.gallery-item { position: relative; border-radius: 15px; overflow: hidden; box-shadow: 0 5px 15px rgba(0,0,0,0.1); }
-.gallery-item img { width: 100%; height: 300px; object-fit: cover; transition: transform 0.5s ease; }
+/* --- ОБНОВЛЁННАЯ ГАЛЕРЕЯ --- */
+.gallery-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 25px; }
+.gallery-item { background: var(--bg-white); border-radius: 15px; overflow: hidden; box-shadow: 0 5px 15px rgba(0,0,0,0.08); transition: transform 0.3s; }
+.gallery-item:hover { transform: translateY(-5px); }
+.gallery-item img { width: 100%; height: 280px; object-fit: cover; display: block; transition: transform 0.5s ease; }
 .gallery-item:hover img { transform: scale(1.05); }
-.gallery-label { position: absolute; bottom: 10px; left: 10px; background: rgba(0,0,0,0.7); color: white; padding: 5px 15px; border-radius: 20px; font-size: 0.9rem; font-weight: 600; }
+.gallery-label { padding: 15px 10px; text-align: center; font-size: 0.95rem; font-weight: 600; color: var(--text-dark); }
+/* --------------------------- */
 
 .blog-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 25px; }
 .blog-card { background: white; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 15px rgba(0,0,0,0.05); transition: transform 0.3s; }
@@ -112,4 +115,5 @@ footer { background: var(--text-dark); color: white; text-align: center; padding
     .nav-wrapper { min-height: 90px; }
     .hero { margin-top: 100px; }
     .social-buttons { flex-direction: column; }
-    .btn-social { width: 100
+    .btn-social { width: 100%; }
+}
