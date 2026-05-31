@@ -19,7 +19,7 @@ module.exports = async function handler(req, res) {
     return res.status(400).json({ message: 'No content provided' });
   }
 
-  const USER = 'ВАШ_НИКНЕЙМ'; // ← ЗАМЕНИТЕ НА СВОЙ ЛОГИН GITHUB
+  const USER = 'viponetwo'; // ← ЗАМЕНИТЕ НА СВОЙ ЛОГИН GITHUB
   const REPO = 'ladi-sugar-site'; // ← ЗАМЕНИТЕ НА ИМЯ РЕПОЗИТОРИЯ
   const BRANCH = 'main'; // ← ПОМЕНЯЙТЕ НА 'master', ЕСЛИ У ВАС ОНА ТАК НАЗЫВАЕТСЯ
   const PATH = 'data.json';
