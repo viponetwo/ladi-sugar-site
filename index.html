@@ -43,14 +43,11 @@
         </div>
     </section>
 
+    <!-- ГАЛЕРЕЯ: полностью пустой контейнер, заполняется из data.json -->
     <section id="gallery" class="bg-white">
         <div class="container">
             <h2 class="section-title">Мои работы</h2>
-            <div class="gallery-grid">
-                <div class="gallery-item"><img src="https://images.unsplash.com/photo-1519494026892-80bbd2d6fd0d?w=600" alt="Работа 1"><div class="gallery-label">Ноги</div></div>
-                <div class="gallery-item"><img src="https://images.unsplash.com/photo-1570172619644-dfd03ed5d881?w=600" alt="Работа 2"><div class="gallery-label">Бикини</div></div>
-                <div class="gallery-item"><img src="https://images.unsplash.com/photo-1560750588-73207b1ef5b8?w=600" alt="Работа 3"><div class="gallery-label">Подмышки</div></div>
-            </div>
+            <div class="gallery-grid" id="gallery-container"></div>
         </div>
     </section>
 
@@ -171,11 +168,13 @@
                 document.getElementById('btn-insta').href = data.contacts.instagram;
                 document.getElementById('btn-dikidi-footer').href = data.contacts.dikidi;
 
+                // Прайс
                 const priceContainer = document.getElementById('price-list-container');
-                if(data.prices) priceContainer.innerHTML = data.prices.map(p => `<div class="price-item"><span class="zone-name">${p.name}</span><span class="zone-price">${p.value} BYN</span></div>`).join('');
+                if(priceContainer && data.prices) priceContainer.innerHTML = data.prices.map(p => `<div class="price-item"><span class="zone-name">${p.name}</span><span class="zone-price">${p.value} BYN</span></div>`).join('');
 
+                // Отзывы
                 const reviewContainer = document.getElementById('reviews-container');
-                if(data.reviews) {
+                if(reviewContainer && data.reviews) {
                     const visible = data.reviews.filter(r => r.status !== 'pending');
                     reviewContainer.innerHTML = visible.map(r => `
                         <div class="review-card">
@@ -186,11 +185,12 @@
                     `).join('');
                 }
 
+                // Блог
                 const blogContainer = document.getElementById('blog-container');
-                if(data.blog && data.blog.length > 0) {
+                if(blogContainer && data.blog && data.blog.length > 0) {
                     blogContainer.innerHTML = data.blog.map(post => `
                         <div class="blog-card">
-                            <img src="${post.image || 'https://images.unsplash.com/photo-1519494026892-80bbd2d6fd0d?w=600'}" alt="${post.title}" class="blog-img">
+                            <img src="${post.image || ''}" alt="${post.title}" class="blog-img">
                             <div class="blog-content">
                                 <span class="blog-date">${post.date}</span>
                                 <h3>${post.title}</h3>
@@ -200,6 +200,21 @@
                     `).join('');
                 } else if (blogContainer) {
                     blogContainer.innerHTML = '<p style="text-align:center;color:#666; grid-column: 1/-1;">Статей пока нет.</p>';
+                }
+
+                // ГАЛЕРЕЯ: рендер только из data.json, без предустановленных фото
+                const galleryContainer = document.getElementById('gallery-container');
+                if (galleryContainer) {
+                    if (data.gallery && data.gallery.length > 0) {
+                        galleryContainer.innerHTML = data.gallery.map(item => `
+                            <div class="gallery-item">
+                                <img src="${item.image}" alt="${item.label || 'Работа мастера'}" loading="lazy">
+                                <div class="gallery-label">${item.label}</div>
+                            </div>
+                        `).join('');
+                    } else {
+                        galleryContainer.innerHTML = '<p style="text-align:center;color:#888; grid-column: 1/-1; padding: 40px 0;">Фотографии скоро появятся</p>';
+                    }
                 }
 
             } catch (error) { console.error('Ошибка загрузки данных:', error); }
