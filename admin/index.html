@@ -1,25 +1,118 @@
 <!DOCTYPE html>
-<html>
+<html lang="ru">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Ladi Sugar Admin</title>
-  
-  <!-- Скрипт для решения конфликта с MetaMask -->
-  <script>
-    if (typeof window.ethereum !== 'undefined') {
-        delete window.ethereum;
-    }
-  </script>
-
-  <!-- Подключаем локальный файл decap-cms.js (который вы скачали) -->
-  <script src="decap-cms.js"></script> 
-  <!-- Если вы не скачивали файл, замените строку выше на: 
-       <script src="https://unpkg.com/decap-cms@^3.0.0/dist/decap-cms.js"></script> 
-  -->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Админка Ladi Sugar</title>
+    <style>
+        body { font-family: sans-serif; padding: 20px; max-width: 800px; margin: 0 auto; background: #f4f4f4; }
+        .card { background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); margin-bottom: 20px; }
+        h2 { margin-top: 0; color: #333; }
+        label { display: block; margin-top: 10px; font-weight: bold; }
+        input, textarea { width: 100%; padding: 8px; margin-top: 5px; border: 1px solid #ddd; border-radius: 4px; box-sizing: border-box; }
+        button { background: #28a745; color: white; border: none; padding: 10px 20px; border-radius: 4px; cursor: pointer; font-size: 16px; margin-top: 20px; }
+        button:hover { background: #218838; }
+        button:disabled { background: #ccc; }
+        #status { margin-top: 10px; font-weight: bold; }
+    </style>
 </head>
 <body>
-  <!-- ЭТОТ ЭЛЕМЕНТ ОБЯЗАТЕЛЕН! Сюда CMS загрузит интерфейс -->
-  <div id="nc-root"></div>
+
+    <div class="card">
+        <h2>Редактирование Главной</h2>
+        <label>Заголовок (H1):</label>
+        <input type="text" id="hero-title">
+        
+        <label>Подзаголовок:</label>
+        <textarea id="hero-subtitle" rows="3"></textarea>
+        
+        <label>Имя мастера:</label>
+        <input type="text" id="master-name">
+    </div>
+
+    <div class="card">
+        <h2>Контакты</h2>
+        <label>Телефон:</label>
+        <input type="text" id="contact-phone">
+        
+        <label>Адрес:</label>
+        <input type="text" id="contact-address">
+    </div>
+
+    <button id="saveBtn" onclick="saveData()">💾 Сохранить и Опубликовать</button>
+    <div id="status"></div>
+
+    <script>
+        // Загрузка текущих данных при открытии админки
+        async function loadData() {
+            try {
+                const res = await fetch('/data.json');
+                const data = await res.json();
+                
+                document.getElementById('hero-title').value = data.hero.title;
+                document.getElementById('hero-subtitle').value = data.hero.subtitle;
+                document.getElementById('master-name').value = data.master.name;
+                document.getElementById('contact-phone').value = data.contacts.phone;
+                document.getElementById('contact-address').value = data.contacts.address;
+            } catch (e) {
+                console.error('Ошибка загрузки данных', e);
+            }
+        }
+
+        // Сохранение данных через API
+        async function saveData() {
+            const btn = document.getElementById('saveBtn');
+            const status = document.getElementById('status');
+            
+            btn.disabled = true;
+            btn.innerText = 'Сохранение...';
+            status.innerText = '';
+
+            // Собираем объект данных (должен совпадать со структурой data.json)
+            // В реальном проекте здесь нужно собрать ВСЕ поля, а не только эти 5
+            // Лучше загрузить текущий data.json, изменить в нем нужные поля и отправить обратно
+            
+            let currentData = {};
+            try {
+                const res = await fetch('/data.json');
+                currentData = await res.json();
+            } catch(e) {}
+
+            // Обновляем поля
+            currentData.hero.title = document.getElementById('hero-title').value;
+            currentData.hero.subtitle = document.getElementById('hero-subtitle').value;
+            currentData.master.name = document.getElementById('master-name').value;
+            currentData.contacts.phone = document.getElementById('contact-phone').value;
+            currentData.contacts.address = document.getElementById('contact-address').value;
+
+            // Отправляем на наш API
+            try {
+                const res = await fetch('/api/save', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ content: currentData })
+                });
+
+                const result = await res.json();
+
+                if (res.ok) {
+                    status.style.color = 'green';
+                    status.innerText = '✅ Успешно! Сайт обновится через 1-2 минуты.';
+                } else {
+                    status.style.color = 'red';
+                    status.innerText = '❌ Ошибка: ' + result.message;
+                }
+            } catch (e) {
+                status.style.color = 'red';
+                status.innerText = '❌ Ошибка сети';
+            } finally {
+                btn.disabled = false;
+                btn.innerText = '💾 Сохранить и Опубликовать';
+            }
+        }
+
+        // Запускаем загрузку при старте
+        loadData();
+    </script>
 </body>
 </html>
