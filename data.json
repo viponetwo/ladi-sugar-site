@@ -63,6 +63,11 @@
       "rating": 5
     }
   ],
-  "gallery": [],
+  "gallery": [
+    {
+      "image": "MySecurePass2026!",
+      "label": "Новое фото"
+    }
+  ],
   "blog": []
 }
