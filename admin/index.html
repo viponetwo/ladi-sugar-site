@@ -38,6 +38,9 @@
         .list-card .field-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 10px; }
         .list-card .field-row.full { grid-template-columns: 1fr; }
         .list-card .img-preview { max-height: 90px; width: 100%; object-fit: cover; border-radius: 6px; border: 1px solid var(--border); margin-bottom: 10px; display: none; }
+        .upload-row { display: flex; gap: 8px; margin-top: 5px; align-items: center; }
+        .upload-row input[type="file"] { flex: 1; font-size: 12px; padding: 4px; border: 1px dashed var(--border); border-radius: 4px; background: #f8fafc; }
+        .upload-status { font-size: 11px; color: #64748b; white-space: nowrap; }
         
         .add-btn { width: 100%; padding: 12px; background: #f1f5f9; border: 2px dashed var(--border); border-radius: 8px; cursor: pointer; color: #64748b; font-weight: 500; transition: 0.2s; }
         .add-btn:hover { background: #e2e8f0; color: var(--text); border-color: #cbd5e1; }
@@ -94,7 +97,6 @@
                 <div class="section-header"><h2>✨ Преимущества</h2></div>
                 <div class="dynamic-list" id="features-list"></div>
                 <button class="add-btn" onclick="addItem('features')">+ Добавить преимущество</button>
-                <small>Иконки берутся из FontAwesome. Используйте классы вроде: fa-certificate, fa-pump-medical, fa-leaf, fa-heart, fa-star, fa-shield-alt и т.д.</small>
             </section>
             <section id="gallery" class="section">
                 <div class="section-header"><h2>🖼 Мои работы</h2></div>
@@ -139,15 +141,15 @@
 
         const LIST_CONFIG = {
             features: [ { name: 'icon', label: 'Иконка (класс FontAwesome)', type: 'text' }, { name: 'title', label: 'Заголовок', type: 'text' }, { name: 'desc', label: 'Описание', type: 'text' } ],
-            gallery: [ { name: 'image', label: 'Ссылка на фото (URL)', type: 'text' }, { name: 'label', label: 'Подпись (зона)', type: 'text' } ],
+            gallery: [ { name: 'image', label: 'Ссылка на фото или загрузка', type: 'text' }, { name: 'label', label: 'Подпись (зона)', type: 'text' } ],
             prices: [ { name: 'name', label: 'Название услуги', type: 'text' }, { name: 'value', label: 'Цена (BYN)', type: 'text' } ],
             reviews: [ { name: 'name', label: 'Имя клиента', type: 'text' }, { name: 'text', label: 'Текст отзыва', type: 'textarea' }, { name: 'rating', label: 'Рейтинг (1-5)', type: 'number', min: 1, max: 5 } ],
-            blog: [ { name: 'title', label: 'Заголовок', type: 'text' }, { name: 'date', label: 'Дата', type: 'text' }, { name: 'excerpt', label: 'Краткое описание', type: 'textarea' }, { name: 'content', label: 'Полный текст', type: 'textarea' }, { name: 'image', label: 'Обложка (URL)', type: 'text' } ]
+            blog: [ { name: 'title', label: 'Заголовок', type: 'text' }, { name: 'date', label: 'Дата', type: 'text' }, { name: 'excerpt', label: 'Краткое описание', type: 'textarea' }, { name: 'content', label: 'Полный текст', type: 'textarea' }, { name: 'image', label: 'Обложка (URL или загрузка)', type: 'text' } ]
         };
 
         const DEFAULTS = {
             features: { icon: 'fa-star', title: 'Новое преимущество', desc: 'Описание...' },
-            gallery: { image: 'https://via.placeholder.com/600x400', label: 'Новое фото' },
+            gallery: { image: '', label: 'Новое фото' },
             prices: { name: 'Услуга', value: '0' },
             reviews: { name: 'Имя', text: 'Отзыв...', rating: 5 },
             blog: { title: 'Статья', date: new Date().toISOString().split('T')[0], excerpt: 'Кратко...', content: 'Текст...', image: '' }
@@ -159,6 +161,16 @@
             let current = obj;
             for (let i = 0; i < keys.length - 1; i++) current = current[keys[i]];
             current[keys[keys.length - 1]] = value;
+        }
+
+        // 📤 Преобразование файла в Base64 (без data:image/...;base64,)
+        function fileToBase64(file) {
+            return new Promise((resolve, reject) => {
+                const reader = new FileReader();
+                reader.readAsDataURL(file);
+                reader.onload = () => resolve(reader.result.split(',')[1]);
+                reader.onerror = error => reject(error);
+            });
         }
 
         async function login() {
@@ -248,7 +260,71 @@
                             if (imgEl) { imgEl.src = e.target.value; imgEl.style.display = 'block'; imgEl.onerror = () => imgEl.style.display = 'none'; }
                         }
                     };
-                    wrap.appendChild(label); wrap.appendChild(input); card.appendChild(wrap);
+
+                    // 🖼 Кнопка загрузки локального файла для полей image
+                    if (f.name === 'image') {
+                        const uploadRow = document.createElement('div');
+                        uploadRow.className = 'upload-row';
+                        
+                        const fileInput = document.createElement('input');
+                        fileInput.type = 'file';
+                        fileInput.accept = 'image/*';
+                        
+                        const status = document.createElement('span');
+                        status.className = 'upload-status';
+                        
+                        fileInput.onchange = async (e) => {
+                            const file = e.target.files[0];
+                            if (!file) return;
+                            if (file.size > 5_000_000) {
+                                status.textContent = '❌ Файл > 5 МБ. Сожмите изображение.';
+                                status.style.color = '#ef4444';
+                                fileInput.value = '';
+                                return;
+                            }
+                            status.textContent = '⏳ Загрузка...';
+                            status.style.color = '#3b82f6';
+                            fileInput.disabled = true;
+
+                            try {
+                                const base64 = await fileToBase64(file);
+                                const res = await fetch('/api/upload', {
+                                    method: 'POST',
+                                    headers: { 'Content-Type': 'application/json' },
+                                    body: JSON.stringify({ fileName: file.name, contentBase64: base64 })
+                                });
+                                const data = await res.json();
+                                if (res.ok) {
+                                    input.value = data.url;
+                                    currentData[type][index][f.name] = data.url;
+                                    status.textContent = '✅ Загружено';
+                                    status.style.color = '#22c55e';
+                                    if (type === 'gallery') {
+                                        const imgEl = card.querySelector('.img-preview');
+                                        if (imgEl) { imgEl.src = data.url; imgEl.style.display = 'block'; }
+                                    }
+                                } else {
+                                    status.textContent = '❌ ' + (data.message || 'Ошибка');
+                                    status.style.color = '#ef4444';
+                                }
+                            } catch (err) {
+                                status.textContent = '❌ Ошибка сети';
+                                status.style.color = '#ef4444';
+                            } finally {
+                                fileInput.disabled = false;
+                            }
+                        };
+
+                        uploadRow.appendChild(fileInput);
+                        uploadRow.appendChild(status);
+                        wrap.appendChild(label);
+                        wrap.appendChild(input);
+                        wrap.appendChild(uploadRow);
+                    } else {
+                        wrap.appendChild(label);
+                        wrap.appendChild(input);
+                    }
+                    card.appendChild(wrap);
                 });
                 container.appendChild(card);
             });
