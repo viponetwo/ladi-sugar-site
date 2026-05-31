@@ -32,43 +32,40 @@ section { padding: 80px 0; }
 .feature-card:hover { transform: translateY(-5px); }
 .feature-icon { font-size: 2.5rem; color: var(--primary); margin-bottom: 20px; }
 
-/* 🎠 КАРУСЕЛЬ ГАЛЕРЕИ */
+/* 🖼 ГАЛЕРЕЯ: БЛОКИ С КАРУСЕЛЯМИ */
+.gallery-category-block { margin-bottom: 50px; }
+.gallery-category-title { font-size: 1.4rem; margin-bottom: 20px; text-align: center; color: var(--text-dark); position: relative; padding-bottom: 10px; }
+.gallery-category-title::after { content: ''; position: absolute; bottom: 0; left: 50%; transform: translateX(-50%); width: 50px; height: 3px; background: var(--primary); border-radius: 2px; }
+
 .carousel-wrapper { position: relative; max-width: 1000px; margin: 0 auto; padding: 20px 0; }
 .carousel { overflow: hidden; border-radius: 15px; }
 .carousel-track { display: flex; transition: transform 0.5s cubic-bezier(0.25, 1, 0.5, 1); }
 .carousel-slide { flex-shrink: 0; padding: 0 8px; }
 .carousel-item { position: relative; background: var(--bg-white); border-radius: 12px; overflow: hidden; box-shadow: 0 5px 20px rgba(0,0,0,0.1); transition: transform 0.3s; }
 .carousel-item:hover { transform: translateY(-5px); }
-.carousel-item img { width: 100%; height: 350px; object-fit: cover; display: block; }
-.carousel-label { padding: 15px; text-align: center; font-weight: 600; color: var(--text-dark); background: var(--bg-white); }
+.carousel-item img { width: 100%; height: 320px; object-fit: cover; display: block; }
 .carousel-pin-btn { position: absolute; top: 10px; right: 10px; background: #E60023; color: white; width: 36px; height: 36px; border-radius: 50%; border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: 0.2s; opacity: 0; }
 .carousel-item:hover .carousel-pin-btn { opacity: 1; }
 .carousel-pin-btn:hover { background: #bd001c; transform: scale(1.1); }
 
-.carousel-btn { position: absolute; top: 50%; transform: translateY(-50%); background: rgba(255,255,255,0.95); color: var(--primary); width: 50px; height: 50px; border-radius: 50%; border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; box-shadow: 0 4px 15px rgba(0,0,0,0.2); transition: 0.3s; z-index: 10; }
+.carousel-btn { position: absolute; top: 45%; transform: translateY(-50%); background: rgba(255,255,255,0.95); color: var(--primary); width: 45px; height: 45px; border-radius: 50%; border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 1.1rem; box-shadow: 0 4px 15px rgba(0,0,0,0.2); transition: 0.3s; z-index: 10; }
 .carousel-btn:hover { background: white; transform: translateY(-50%) scale(1.1); }
-.carousel-btn.prev { left: -25px; }
-.carousel-btn.next { right: -25px; }
 .carousel-btn:disabled { opacity: 0.3; cursor: not-allowed; }
+.carousel-btn.prev { left: -20px; }
+.carousel-btn.next { right: -20px; }
 
-.carousel-dots { display: flex; justify-content: center; gap: 8px; margin-top: 20px; }
-.carousel-dot { width: 10px; height: 10px; border-radius: 50%; background: #cbd5e1; border: none; cursor: pointer; transition: 0.3s; }
-.carousel-dot.active { background: var(--primary); width: 30px; border-radius: 5px; }
+.carousel-dots { display: flex; justify-content: center; gap: 8px; margin-top: 15px; }
+.carousel-dot { width: 8px; height: 8px; border-radius: 50%; background: #cbd5e1; border: none; cursor: pointer; transition: 0.3s; }
+.carousel-dot.active { background: var(--primary); width: 24px; border-radius: 4px; }
 .carousel-dot:hover { background: var(--primary); }
 
-.carousel-current { text-align: center; margin-top: 15px; color: var(--text-gray); font-size: 0.9rem; }
-
 @media (max-width: 768px) {
-    .carousel-btn { width: 40px; height: 40px; font-size: 1rem; }
+    .carousel-btn { width: 36px; height: 36px; font-size: 0.9rem; }
     .carousel-btn.prev { left: 5px; }
     .carousel-btn.next { right: 5px; }
-    .carousel-item img { height: 250px; }
-    .carousel-pin-btn { opacity: 1; width: 32px; height: 32px; }
-    .carousel-label { padding: 12px; font-size: 0.95rem; }
-}
-@media (max-width: 480px) {
-    .carousel-item img { height: 220px; }
-    .carousel-label { padding: 10px; font-size: 0.9rem; }
+    .carousel-item img { height: 240px; }
+    .carousel-pin-btn { opacity: 1; width: 30px; height: 30px; }
+    .gallery-category-title { font-size: 1.2rem; margin-bottom: 15px; }
 }
 /* --------------------------- */
 
