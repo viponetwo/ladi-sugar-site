@@ -35,7 +35,6 @@
     </style>
 </head>
 <body>
-
     <div id="login-overlay">
         <div class="login-box">
             <h2>🔒 Вход в админку</h2>
@@ -76,7 +75,7 @@
                 <div class="form-group">
                     <label>Статьи блога (массив JSON)</label>
                     <textarea rows="12" data-bind="blog" placeholder='[]'></textarea>
-                    <small>Формат: [{"title":"Заголовок", "date":"2024-10-01", "excerpt":"Кратко...", "content":"Полный текст...", "image":"ссылка.jpg"}]</small>
+                    <small>Формат: [{"title":"Заголовок", "date":"2024-10-01", "excerpt":"Кратко...", "content":"Текст...", "image":"url.jpg"}]</small>
                 </div>
             </section>
             <section id="contacts" class="section">
@@ -140,8 +139,8 @@
             btn.disabled = true; btn.textContent = '⏳ Сохранение...';
 
             try {
-                currentData.prices = JSON.parse(document.querySelector('[data-bind="prices"]').value);
-                currentData.reviews = JSON.parse(document.querySelector('[data-bind="reviews"]').value);
+                currentData.prices = JSON.parse(document.querySelector('[data-bind="prices"]').value || '[]');
+                currentData.reviews = JSON.parse(document.querySelector('[data-bind="reviews"]').value || '[]');
                 currentData.blog = JSON.parse(document.querySelector('[data-bind="blog"]').value || '[]');
             } catch(e) {
                 showToast('❌ Ошибка формата JSON');
@@ -155,11 +154,8 @@
                     body: JSON.stringify({ content: currentData, token: sessionToken })
                 });
                 const result = await res.json();
-                if (res.ok) {
-                    showToast('✅ Успешно! Vercel обновит сайт через ~60 сек.');
-                } else {
-                    showToast('❌ ' + (result.message || result.details));
-                }
+                if (res.ok) showToast('✅ Успешно! Vercel обновит сайт через ~60 сек.');
+                else showToast('❌ ' + (result.message || result.details));
             } catch (e) { showToast('❌ Ошибка сети'); }
             finally { btn.disabled = false; btn.textContent = '💾 Сохранить и Опубликовать'; }
         }
