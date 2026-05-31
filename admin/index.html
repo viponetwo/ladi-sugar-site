@@ -25,11 +25,12 @@
         .section.active { display: block; }
         .form-group { margin-bottom: 15px; background: var(--card); padding: 15px; border-radius: 8px; border: 1px solid var(--border); }
         .form-group label { display: block; font-weight: 500; margin-bottom: 6px; color: #475569; }
-        .form-group input, .form-group textarea { width: 100%; padding: 10px; border: 1px solid var(--border); border-radius: 6px; }
+        .form-group input, .form-group textarea { width: 100%; padding: 10px; border: 1px solid var(--border); border-radius: 6px; font-family: monospace; font-size: 13px; }
         .btn-save { position: fixed; bottom: 20px; right: 20px; padding: 12px 24px; background: var(--primary); color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: 600; box-shadow: 0 4px 12px rgba(59,130,246,0.3); z-index: 100; }
         .btn-save:disabled { opacity: 0.6; cursor: not-allowed; }
         .toast { position: fixed; top: 20px; right: 20px; padding: 12px 20px; background: var(--success); color: white; border-radius: 8px; opacity: 0; transition: 0.3s; transform: translateY(-20px); }
         .toast.show { opacity: 1; transform: translateY(0); }
+        small { color: #64748b; display: block; margin-top: 5px; }
         @media (max-width: 768px) { #admin-ui { flex-direction: column; } .sidebar { width: 100%; flex-direction: row; overflow-x: auto; padding: 10px; } }
     </style>
 </head>
@@ -51,6 +52,7 @@
             <div class="nav-item" onclick="show('master')">👤 О мастере</div>
             <div class="nav-item" onclick="show('prices')">💰 Прайс</div>
             <div class="nav-item" onclick="show('reviews')">💬 Отзывы</div>
+            <div class="nav-item" onclick="show('blog')">📝 Блог</div>
             <div class="nav-item" onclick="show('contacts')">📞 Контакты</div>
         </aside>
         <main class="main">
@@ -70,6 +72,13 @@
             <section id="reviews" class="section">
                 <div class="form-group"><label>Отзывы (массив JSON)</label><textarea rows="8" data-bind="reviews"></textarea></div>
             </section>
+            <section id="blog" class="section">
+                <div class="form-group">
+                    <label>Статьи блога (массив JSON)</label>
+                    <textarea rows="12" data-bind="blog" placeholder='[]'></textarea>
+                    <small>Формат: [{"title":"Заголовок", "date":"2024-10-01", "excerpt":"Кратко...", "content":"Полный текст...", "image":"ссылка.jpg"}]</small>
+                </div>
+            </section>
             <section id="contacts" class="section">
                 <div class="form-group"><label>Адрес</label><input data-bind="contacts.address"></div>
                 <div class="form-group"><label>Телефон</label><input data-bind="contacts.phone"></div>
@@ -85,10 +94,7 @@
         let currentData = {};
         let sessionToken = '';
 
-        // ✅ Исправленные функции для работы с вложенными объектами
-        function getNested(obj, path) {
-            return path.split('.').reduce((acc, part) => acc && acc[part], obj);
-        }
+        function getNested(obj, path) { return path.split('.').reduce((acc, part) => acc && acc[part], obj); }
         function setNested(obj, path, value) {
             const keys = path.split('.');
             let current = obj;
@@ -133,12 +139,12 @@
             const btn = document.getElementById('saveBtn');
             btn.disabled = true; btn.textContent = '⏳ Сохранение...';
 
-            // Парсим массивы обратно в объекты
             try {
                 currentData.prices = JSON.parse(document.querySelector('[data-bind="prices"]').value);
                 currentData.reviews = JSON.parse(document.querySelector('[data-bind="reviews"]').value);
+                currentData.blog = JSON.parse(document.querySelector('[data-bind="blog"]').value || '[]');
             } catch(e) {
-                showToast('❌ Ошибка формата JSON в прайсе или отзывах');
+                showToast('❌ Ошибка формата JSON');
                 btn.disabled = false; btn.textContent = '💾 Сохранить'; return;
             }
 
@@ -150,11 +156,9 @@
                 });
                 const result = await res.json();
                 if (res.ok) {
-                    showToast('✅ Успешно! Коммит создан. Vercel обновит сайт через ~60 сек.');
-                    console.log('✅ GitHub Response:', result);
+                    showToast('✅ Успешно! Vercel обновит сайт через ~60 сек.');
                 } else {
-                    showToast('❌ Ошибка сервера: ' + (result.message || result.details));
-                    console.error('❌ Server Error:', result);
+                    showToast('❌ ' + (result.message || result.details));
                 }
             } catch (e) { showToast('❌ Ошибка сети'); }
             finally { btn.disabled = false; btn.textContent = '💾 Сохранить и Опубликовать'; }
