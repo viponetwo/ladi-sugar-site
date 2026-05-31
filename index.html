@@ -43,7 +43,6 @@
         </div>
     </section>
 
-    <!-- ГАЛЕРЕЯ: полностью пустой контейнер, заполняется из data.json -->
     <section id="gallery" class="bg-white">
         <div class="container">
             <h2 class="section-title">Мои работы</h2>
@@ -130,6 +129,7 @@
             <a href="#" class="share-btn share-wa" target="_blank" title="WhatsApp"><i class="fab fa-whatsapp"></i></a>
             <a href="#" class="share-btn share-tg" target="_blank" title="Telegram"><i class="fab fa-telegram-plane"></i></a>
             <a href="#" class="share-btn share-vk" target="_blank" title="ВКонтакте"><i class="fab fa-vk"></i></a>
+            <a href="#" class="share-btn share-pin" target="_blank" title="Pinterest"><i class="fab fa-pinterest-p"></i></a>
             <button class="share-btn share-copy" onclick="copyShareLink()" title="Скопировать ссылку"><i class="fas fa-link"></i></button>
         </div>
     </section>
@@ -137,6 +137,13 @@
     <footer>
         <div class="container"><p>&copy; 2026 Ladi Sugar Polotsk. Все права защищены.</p></div>
     </footer>
+
+    <!-- ЛАЙТБОКС -->
+    <div id="lightbox" class="lightbox" onclick="closeLightbox(event)">
+        <a href="#" class="lightbox-pin" onclick="pinLightboxImage(); return false;" title="Сохранить в Pinterest"><i class="fab fa-pinterest-p"></i></a>
+        <span class="lightbox-close">&times;</span>
+        <img id="lightbox-img" src="" alt="Увеличенное фото">
+    </div>
 
     <script>
         async function loadData() {
@@ -168,11 +175,9 @@
                 document.getElementById('btn-insta').href = data.contacts.instagram;
                 document.getElementById('btn-dikidi-footer').href = data.contacts.dikidi;
 
-                // Прайс
                 const priceContainer = document.getElementById('price-list-container');
                 if(priceContainer && data.prices) priceContainer.innerHTML = data.prices.map(p => `<div class="price-item"><span class="zone-name">${p.name}</span><span class="zone-price">${p.value} BYN</span></div>`).join('');
 
-                // Отзывы
                 const reviewContainer = document.getElementById('reviews-container');
                 if(reviewContainer && data.reviews) {
                     const visible = data.reviews.filter(r => r.status !== 'pending');
@@ -185,7 +190,6 @@
                     `).join('');
                 }
 
-                // Блог
                 const blogContainer = document.getElementById('blog-container');
                 if(blogContainer && data.blog && data.blog.length > 0) {
                     blogContainer.innerHTML = data.blog.map(post => `
@@ -202,14 +206,15 @@
                     blogContainer.innerHTML = '<p style="text-align:center;color:#666; grid-column: 1/-1;">Статей пока нет.</p>';
                 }
 
-                // ГАЛЕРЕЯ: рендер только из data.json, без предустановленных фото
                 const galleryContainer = document.getElementById('gallery-container');
                 if (galleryContainer) {
-                    if (data.gallery && data.gallery.length > 0) {
-                        galleryContainer.innerHTML = data.gallery.map(item => `
+                    const validPhotos = (data.gallery || []).filter(item => item.image && item.image.trim() !== '');
+                    if (validPhotos.length > 0) {
+                        galleryContainer.innerHTML = validPhotos.map(item => `
                             <div class="gallery-item">
-                                <img src="${item.image}" alt="${item.label || 'Работа мастера'}" loading="lazy">
+                                <img src="${item.image}" alt="${item.label || 'Работа мастера'}" loading="lazy" onclick="openLightbox('${item.image.replace(/'/g, "\\'")}', '${item.label || 'Работа мастера'}')" style="cursor: pointer;">
                                 <div class="gallery-label">${item.label}</div>
+                                <button class="pin-btn" onclick="event.stopPropagation(); pinToPinterest('${item.image}', '${item.label || 'Работа мастера'}')"><i class="fab fa-pinterest-p"></i> Сохранить</button>
                             </div>
                         `).join('');
                     } else {
@@ -220,12 +225,45 @@
             } catch (error) { console.error('Ошибка загрузки данных:', error); }
         }
 
+        // 🔍 ЛАЙТБОКС
+        function openLightbox(src, label) {
+            const lb = document.getElementById('lightbox');
+            const lbImg = document.getElementById('lightbox-img');
+            lbImg.src = src;
+            lbImg.alt = label;
+            lb.dataset.label = label || 'Ladi Sugar';
+            lb.classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+        function closeLightbox(e) {
+            if (e && e.target.closest('.lightbox-pin')) return;
+            const lb = document.getElementById('lightbox');
+            lb.classList.remove('active');
+            document.body.style.overflow = '';
+            setTimeout(() => { document.getElementById('lightbox-img').src = ''; }, 250);
+        }
+
+        // 📌 PINTEREST
+        function pinToPinterest(imageUrl, description) {
+            const pageUrl = encodeURIComponent(window.location.href);
+            const media = encodeURIComponent(imageUrl);
+            const desc = encodeURIComponent(description || 'Ladi Sugar Polotsk');
+            window.open(`https://www.pinterest.com/pin/create/button/?url=${pageUrl}&media=${media}&description=${desc}`, '_blank', 'width=750,height=350');
+        }
+        function pinLightboxImage() {
+            const lbImg = document.getElementById('lightbox-img');
+            const lb = document.getElementById('lightbox');
+            pinToPinterest(lbImg.src, lb.dataset.label);
+        }
+
+        // 🌐 SHARE
         function initShareButtons() {
             const url = encodeURIComponent(window.location.href);
             const title = encodeURIComponent(document.title || 'Ladi Sugar Polotsk');
             document.querySelector('.share-wa').href = `https://wa.me/?text=${title}%20${url}`;
             document.querySelector('.share-tg').href = `https://t.me/share/url?url=${url}&text=${title}`;
             document.querySelector('.share-vk').href = `https://vk.com/share.php?url=${url}&title=${title}`;
+            document.querySelector('.share-pin').href = `https://www.pinterest.com/pin/create/button/?url=${url}&description=${title}`;
         }
 
         function copyShareLink() {
