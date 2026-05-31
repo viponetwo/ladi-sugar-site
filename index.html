@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Ladi Sugar | Шугаринг в Полоцке</title>
+    <meta name="description" content="Профессиональный шугаринг в Полоцке. Стерильно, безопасно, комфортно.">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="css/style.css">
 </head>
@@ -106,10 +107,22 @@
         </div>
     </section>
 
+    <!-- 🔗 КНОПКИ "ПОДЕЛИТЬСЯ" -->
+    <section class="share-section">
+        <h3>Поделиться с друзьями</h3>
+        <div class="share-buttons">
+            <a href="#" class="share-btn share-wa" target="_blank" title="WhatsApp"><i class="fab fa-whatsapp"></i></a>
+            <a href="#" class="share-btn share-tg" target="_blank" title="Telegram"><i class="fab fa-telegram-plane"></i></a>
+            <a href="#" class="share-btn share-vk" target="_blank" title="ВКонтакте"><i class="fab fa-vk"></i></a>
+            <button class="share-btn share-copy" onclick="copyShareLink()" title="Скопировать ссылку"><i class="fas fa-link"></i></button>
+        </div>
+    </section>
+
     <footer>
         <div class="container"><p>&copy; 2026 Ladi Sugar Polotsk. Все права защищены.</p></div>
     </footer>
 
+    <!-- 📜 СКРИПТЫ -->
     <script>
         async function loadData() {
             try {
@@ -159,14 +172,55 @@
                         </div>
                     `).join('');
                 } else if (blogContainer) {
-                    blogContainer.innerHTML = '<p style="text-align:center;color:#666;">Статей пока нет.</p>';
+                    blogContainer.innerHTML = '<p style="text-align:center;color:#666; grid-column: 1/-1;">Статей пока нет.</p>';
                 }
 
             } catch (error) {
                 console.error('Ошибка загрузки данных:', error);
             }
         }
-        document.addEventListener('DOMContentLoaded', loadData);
+
+        // 🔗 Функции для кнопок "Поделиться"
+        function initShareButtons() {
+            const url = encodeURIComponent(window.location.href);
+            const title = encodeURIComponent(document.title || 'Ladi Sugar Polotsk');
+            
+            document.querySelector('.share-wa').href = `https://wa.me/?text=${title}%20${url}`;
+            document.querySelector('.share-tg').href = `https://t.me/share/url?url=${url}&text=${title}`;
+            document.querySelector('.share-vk').href = `https://vk.com/share.php?url=${url}&title=${title}`;
+        }
+
+        function copyShareLink() {
+            navigator.clipboard.writeText(window.location.href).then(() => {
+                showShareToast('✅ Ссылка скопирована в буфер обмена!');
+            }).catch(() => {
+                const input = document.createElement('input');
+                input.value = window.location.href;
+                document.body.appendChild(input);
+                input.select();
+                document.execCommand('copy');
+                document.body.removeChild(input);
+                showShareToast('✅ Ссылка скопирована!');
+            });
+        }
+
+        function showShareToast(msg) {
+            let toast = document.querySelector('.share-toast');
+            if (!toast) {
+                toast = document.createElement('div');
+                toast.className = 'share-toast';
+                document.body.appendChild(toast);
+            }
+            toast.textContent = msg;
+            toast.classList.add('show');
+            setTimeout(() => toast.classList.remove('show'), 2500);
+        }
+
+        // 🚀 Запуск всего при загрузке страницы
+        document.addEventListener('DOMContentLoaded', () => {
+            loadData();
+            initShareButtons();
+        });
     </script>
 </body>
 </html>
