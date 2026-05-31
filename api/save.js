@@ -13,7 +13,7 @@ module.exports = async function handler(req, res) {
   if (!content) return res.status(400).json({ message: 'Нет данных для сохранения' });
 
   const GITHUB_TOKEN = process.env.GITHUB_TOKEN;
-  const USER = 'ВАШ_НИКНЕЙМ'; // ← ЗАМЕНИТЕ
+  const USER = 'viponetwo'; // ← ЗАМЕНИТЕ
   const REPO = 'ladi-sugar-site'; // ← ЗАМЕНИТЕ
   const BRANCH = 'main'; // ← main или master
   const PATH = 'data.json';
