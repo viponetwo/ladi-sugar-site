@@ -29,7 +29,6 @@
         .form-group input, .form-group textarea { width: 100%; padding: 10px; border: 1px solid var(--border); border-radius: 6px; font-size: 14px; }
         .form-group textarea { resize: vertical; min-height: 80px; }
 
-        /* Стили для динамических списков */
         .dynamic-list { display: flex; flex-direction: column; gap: 15px; margin-bottom: 15px; }
         .list-card { background: var(--card); padding: 15px; border-radius: 10px; border: 1px solid var(--border); position: relative; }
         .list-card .delete-btn { position: absolute; top: 10px; right: 10px; background: #fee2e2; color: var(--danger); border: none; padding: 6px 12px; border-radius: 6px; cursor: pointer; font-weight: 500; font-size: 13px; }
@@ -71,6 +70,7 @@
             <div class="nav-item" onclick="show('master')">👤 О мастере</div>
             <div class="nav-item" onclick="show('prices')">💰 Прайс</div>
             <div class="nav-item" onclick="show('reviews')">💬 Отзывы</div>
+            <div class="nav-item" onclick="show('moderation')">🕒 Модерация</div>
             <div class="nav-item" onclick="show('blog')">📝 Блог</div>
             <div class="nav-item" onclick="show('contacts')">📞 Контакты</div>
         </aside>
@@ -91,7 +91,12 @@
             </section>
             <section id="reviews" class="section">
                 <div class="dynamic-list" id="reviews-list"></div>
-                <button class="add-btn" onclick="addItem('reviews')">+ Добавить отзыв</button>
+                <button class="add-btn" onclick="addItem('reviews')">+ Добавить отзыв вручную</button>
+            </section>
+            <section id="moderation" class="section">
+                <div class="section-header"><h2>🕒 Отзывы на проверке</h2></div>
+                <div id="pending-list" class="dynamic-list"></div>
+                <p id="no-pending" style="color:#64748b; text-align:center; padding:20px;">Новых отзывов нет ✅</p>
             </section>
             <section id="blog" class="section">
                 <div class="dynamic-list" id="blog-list"></div>
@@ -112,31 +117,16 @@
         let currentData = {};
         let sessionToken = '';
 
-        // Конфигурация полей для динамических списков
         const LIST_CONFIG = {
-            prices: [
-                { name: 'name', label: 'Название услуги', type: 'text' },
-                { name: 'value', label: 'Цена (BYN)', type: 'text' }
-            ],
-            reviews: [
-                { name: 'name', label: 'Имя клиента', type: 'text' },
-                { name: 'text', label: 'Текст отзыва', type: 'textarea' },
-                { name: 'rating', label: 'Рейтинг (1-5)', type: 'number', min: 1, max: 5 }
-            ],
-            blog: [
-                { name: 'title', label: 'Заголовок статьи', type: 'text' },
-                { name: 'date', label: 'Дата (например: 2024-11-05)', type: 'text' },
-                { name: 'excerpt', label: 'Краткое описание (для превью)', type: 'textarea' },
-                { name: 'content', label: 'Полный текст статьи', type: 'textarea' },
-                { name: 'image', label: 'Ссылка на обложку (URL)', type: 'text' }
-            ]
+            prices: [ { name: 'name', label: 'Название услуги', type: 'text' }, { name: 'value', label: 'Цена (BYN)', type: 'text' } ],
+            reviews: [ { name: 'name', label: 'Имя клиента', type: 'text' }, { name: 'text', label: 'Текст отзыва', type: 'textarea' }, { name: 'rating', label: 'Рейтинг (1-5)', type: 'number', min: 1, max: 5 } ],
+            blog: [ { name: 'title', label: 'Заголовок статьи', type: 'text' }, { name: 'date', label: 'Дата', type: 'text' }, { name: 'excerpt', label: 'Краткое описание', type: 'textarea' }, { name: 'content', label: 'Полный текст', type: 'textarea' }, { name: 'image', label: 'Ссылка на обложку', type: 'text' } ]
         };
 
-        // Шаблоны для новых элементов
         const DEFAULTS = {
             prices: { name: 'Новая услуга', value: '0' },
             reviews: { name: 'Имя', text: 'Отличный мастер!', rating: 5 },
-            blog: { title: 'Новая статья', date: new Date().toISOString().split('T')[0], excerpt: 'Кратко о главном...', content: 'Здесь будет полный текст...', image: '' }
+            blog: { title: 'Новая статья', date: new Date().toISOString().split('T')[0], excerpt: 'Кратко...', content: 'Текст...', image: '' }
         };
 
         function getNested(obj, path) { return path.split('.').reduce((acc, part) => acc && acc[part], obj); }
@@ -171,70 +161,77 @@
                 const res = await fetch('/data.json');
                 currentData = await res.json();
                 
-                // Заполняем статические поля
                 document.querySelectorAll('[data-bind]').forEach(el => {
                     const path = el.dataset.bind;
                     el.value = getNested(currentData, path) || '';
                     el.addEventListener('input', e => setNested(currentData, path, e.target.value));
                 });
 
-                // Рендерим динамические списки
                 renderList('prices');
                 renderList('reviews');
+                renderPending();
                 renderList('blog');
 
                 showToast('✅ Данные загружены');
-            } catch (e) { 
-                showToast('❌ Ошибка загрузки data.json'); 
-                console.error(e);
-            }
+            } catch (e) { showToast('❌ Ошибка загрузки data.json', true); }
         }
 
         function renderList(type) {
             const container = document.getElementById(`${type}-list`);
             container.innerHTML = '';
             const fields = LIST_CONFIG[type];
-            
             (currentData[type] || []).forEach((item, index) => {
                 const card = document.createElement('div');
                 card.className = 'list-card';
-                
-                // Кнопка удаления
                 const delBtn = document.createElement('button');
-                delBtn.className = 'delete-btn';
-                delBtn.innerHTML = '🗑 Удалить';
+                delBtn.className = 'delete-btn'; delBtn.innerHTML = '🗑 Удалить';
                 delBtn.onclick = () => removeItem(type, index);
                 card.appendChild(delBtn);
 
-                // Поля
                 fields.forEach(f => {
                     const wrap = document.createElement('div');
                     wrap.className = `field-row ${f.type === 'textarea' ? 'full' : ''}`;
-                    
-                    const label = document.createElement('label');
-                    label.textContent = f.label;
-                    
-                    let input;
-                    if (f.type === 'textarea') {
-                        input = document.createElement('textarea');
-                        input.rows = 3;
-                    } else {
-                        input = document.createElement('input');
-                        input.type = f.type;
-                        if (f.min !== undefined) input.min = f.min;
-                        if (f.max !== undefined) input.max = f.max;
-                    }
-                    
+                    const label = document.createElement('label'); label.textContent = f.label;
+                    let input = f.type === 'textarea' ? document.createElement('textarea') : document.createElement('input');
+                    if (f.type === 'textarea') input.rows = 3;
+                    else { input.type = f.type; if (f.min !== undefined) input.min = f.min; if (f.max !== undefined) input.max = f.max; }
                     input.value = item[f.name] || '';
                     input.oninput = (e) => { currentData[type][index][f.name] = e.target.value; };
-                    
-                    wrap.appendChild(label);
-                    wrap.appendChild(input);
-                    card.appendChild(wrap);
+                    wrap.appendChild(label); wrap.appendChild(input); card.appendChild(wrap);
                 });
-                
                 container.appendChild(card);
             });
+        }
+
+        function renderPending() {
+            const container = document.getElementById('pending-list');
+            const noMsg = document.getElementById('no-pending');
+            container.innerHTML = '';
+            const pending = (currentData.reviews || []).filter(r => r.status === 'pending');
+            noMsg.style.display = pending.length ? 'none' : 'block';
+
+            pending.forEach((item) => {
+                const realIdx = currentData.reviews.indexOf(item);
+                const card = document.createElement('div');
+                card.className = 'list-card';
+                card.innerHTML = `
+                    <div class="field-row full">
+                        <label><b>${item.name}</b> (${item.rating}⭐) — ${item.date}</label>
+                        <p style="margin:8px 0; background:#f1f5f9; padding:10px; border-radius:6px; white-space: pre-wrap;">${item.text}</p>
+                    </div>
+                    <div style="display:flex; gap:10px; margin-top:10px;">
+                        <button class="delete-btn" style="position:static; background:#dcfce7; color:#166534;" onclick="moderateReview(${realIdx}, 'approved')">✅ Принять</button>
+                        <button class="delete-btn" style="position:static; background:#fee2e2; color:#991b1b;" onclick="moderateReview(${realIdx}, 'rejected')">❌ Удалить</button>
+                    </div>
+                `;
+                container.appendChild(card);
+            });
+        }
+
+        function moderateReview(index, status) {
+            if (status === 'approved') delete currentData.reviews[index].status;
+            else currentData.reviews.splice(index, 1);
+            renderPending(); renderList('reviews'); saveData();
         }
 
         function addItem(type) {
@@ -276,8 +273,7 @@
 
         function showToast(msg, isError = false) {
             const t = document.getElementById('toast');
-            t.textContent = msg; 
-            t.className = `toast ${isError ? 'error' : ''} show`;
+            t.textContent = msg; t.className = `toast ${isError ? 'error' : ''} show`;
             setTimeout(() => t.classList.remove('show'), 4000);
         }
     </script>
