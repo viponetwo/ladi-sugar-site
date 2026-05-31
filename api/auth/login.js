@@ -1,4 +1,3 @@
-// api/auth/login.js
 module.exports = async function handler(req, res) {
   if (req.method !== 'POST') return res.status(405).json({ message: 'Method not allowed' });
 
@@ -6,12 +5,12 @@ module.exports = async function handler(req, res) {
   const correctPass = process.env.ADMIN_PASSWORD;
 
   if (!correctPass) {
-    return res.status(500).json({ message: 'Ошибка сервера: ADMIN_PASSWORD не настроен' });
+    return res.status(500).json({ message: 'Ошибка сервера: ADMIN_PASSWORD не настроен в Vercel' });
   }
 
   if (password === correctPass) {
-    // Генерируем простой токен (в реальном проекте лучше использовать JWT)
-    const token = Buffer.from(`${Date.now()}-${correctPass}`).toString('base64');
+    // Генерируем токен ТОЛЬКО на основе пароля (base64)
+    const token = Buffer.from(correctPass).toString('base64');
     return res.status(200).json({ success: true, token });
   }
 
