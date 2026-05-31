@@ -34,12 +34,7 @@
     <section id="about" class="bg-light">
         <div class="container">
             <h2 class="section-title">Почему выбирают меня</h2>
-            <div class="features-grid">
-                <div class="feature-card"><i class="fas fa-certificate feature-icon"></i><h3>Опыт</h3><p>Сертифицированный мастер.</p></div>
-                <div class="feature-card"><i class="fas fa-pump-medical feature-icon"></i><h3>Стерильность</h3><p>Одноразовые материалы.</p></div>
-                <div class="feature-card"><i class="fas fa-leaf feature-icon"></i><h3>Материалы</h3><p>Премиум паста.</p></div>
-                <div class="feature-card"><i class="fas fa-heart feature-icon"></i><h3>Комфорт</h3><p>Уютная атмосфера.</p></div>
-            </div>
+            <div class="features-grid" id="features-container"></div>
         </div>
     </section>
 
@@ -138,7 +133,6 @@
         <div class="container"><p>&copy; 2026 Ladi Sugar Polotsk. Все права защищены.</p></div>
     </footer>
 
-    <!-- ЛАЙТБОКС -->
     <div id="lightbox" class="lightbox" onclick="closeLightbox(event)">
         <a href="#" class="lightbox-pin" onclick="pinLightboxImage(); return false;" title="Сохранить в Pinterest"><i class="fab fa-pinterest-p"></i></a>
         <span class="lightbox-close">&times;</span>
@@ -174,6 +168,18 @@
                 document.getElementById('btn-viber').href = `viber://chat?number=%2B${data.contacts.viber}`;
                 document.getElementById('btn-insta').href = data.contacts.instagram;
                 document.getElementById('btn-dikidi-footer').href = data.contacts.dikidi;
+
+                // ✨ ПРЕИМУЩЕСТВА
+                const featuresContainer = document.getElementById('features-container');
+                if(featuresContainer && data.features) {
+                    featuresContainer.innerHTML = data.features.map(f => `
+                        <div class="feature-card">
+                            <i class="fas ${f.icon} feature-icon"></i>
+                            <h3>${f.title}</h3>
+                            <p>${f.desc}</p>
+                        </div>
+                    `).join('');
+                }
 
                 const priceContainer = document.getElementById('price-list-container');
                 if(priceContainer && data.prices) priceContainer.innerHTML = data.prices.map(p => `<div class="price-item"><span class="zone-name">${p.name}</span><span class="zone-price">${p.value} BYN</span></div>`).join('');
@@ -225,7 +231,6 @@
             } catch (error) { console.error('Ошибка загрузки данных:', error); }
         }
 
-        // 🔍 ЛАЙТБОКС
         function openLightbox(src, label) {
             const lb = document.getElementById('lightbox');
             const lbImg = document.getElementById('lightbox-img');
@@ -243,7 +248,6 @@
             setTimeout(() => { document.getElementById('lightbox-img').src = ''; }, 250);
         }
 
-        // 📌 PINTEREST
         function pinToPinterest(imageUrl, description) {
             const pageUrl = encodeURIComponent(window.location.href);
             const media = encodeURIComponent(imageUrl);
@@ -256,7 +260,6 @@
             pinToPinterest(lbImg.src, lb.dataset.label);
         }
 
-        // 🌐 SHARE
         function initShareButtons() {
             const url = encodeURIComponent(window.location.href);
             const title = encodeURIComponent(document.title || 'Ladi Sugar Polotsk');
