@@ -1,30 +1,75 @@
-// api/save.js (ВРЕМЕННЫЙ ДИАГНОСТИЧЕСКИЙ КОД)
-export default async function handler(req, res) {
-  if (req.method !== 'POST') return res.status(405).json({ message: 'Method not allowed' });
+// api/save.js (CommonJS - стабильно работает на Vercel без настроек)
+module.exports = async function handler(req, res) {
+  if (req.method !== 'POST') {
+    return res.status(405).json({ message: 'Method not allowed' });
+  }
 
-  // Проверяем наличие токена
-  const hasToken = !!process.env.GITHUB_TOKEN;
-  const tokenLen = hasToken ? process.env.GITHUB_TOKEN.length : 0;
-  
-  // Выводим безопасный отладочный лог (без значений секретов)
-  console.log('🔍 ENV DEBUG:');
-  console.log('   GITHUB_TOKEN существует:', hasToken);
-  console.log('   Длина токена:', tokenLen, '(ожидается ~40 символов для ghp_)');
-  console.log('   Всего переменных в окружении:', Object.keys(process.env).length);
+  const token = process.env.GITHUB_TOKEN;
+  console.log('🔍 ENV CHECK: GITHUB_TOKEN exists?', !!token);
 
-  if (!hasToken) {
-    return res.status(500).json({ 
-      message: 'Missing GITHUB_TOKEN',
-      debug: { exists: false, length: 0 }
+  if (!token) {
+    return res.status(500).json({
+      message: 'Server configuration error: Missing GITHUB_TOKEN',
+      hint: 'Проверьте Settings > Environment Variables в Vercel и сделайте новый коммит.'
     });
   }
 
-  // Если дошли сюда — токен найден!
-  return res.status(200).json({ 
-    message: '✅ Токен успешно подхвачен сервером!', 
-    debug: { exists: true, length: tokenLen }
-  });
-}
+  const { content } = req.body;
+  if (!content) {
+    return res.status(400).json({ message: 'No content provided' });
+  }
+
+  const USER = 'ВАШ_НИКНЕЙМ'; // ← ЗАМЕНИТЕ НА СВОЙ ЛОГИН GITHUB
+  const REPO = 'ladi-sugar-site'; // ← ЗАМЕНИТЕ НА ИМЯ РЕПОЗИТОРИЯ
+  const BRANCH = 'main'; // ← ПОМЕНЯЙТЕ НА 'master', ЕСЛИ У ВАС ОНА ТАК НАЗЫВАЕТСЯ
+  const PATH = 'data.json';
+
+  try {
+    // 1. Получаем SHA файла (нужен для обновления)
+    const getRes = await fetch(
+      `https://api.github.com/repos/${USER}/${REPO}/contents/${PATH}?ref=${BRANCH}`,
+      { headers: { Authorization: `token ${token}`, Accept: 'application/vnd.github+json' } }
+    );
+
+    let sha = null;
+    if (getRes.ok) {
+      const data = await getRes.json();
+      sha = data.sha;
+    } else if (getRes.status !== 404) {
+      const err = await getRes.json();
+      throw new Error(`GitHub GET error: ${err.message}`);
+    }
+
+    // 2. Кодируем JSON в Base64
+    const base64Content = Buffer.from(JSON.stringify(content, null, 2)).toString('base64');
+
+    // 3. Отправляем файл на GitHub
+    const putRes = await fetch(
+      `https://api.github.com/repos/${USER}/${REPO}/contents/${PATH}`,
+      {
+        method: 'PUT',
+        headers: {
+          Authorization: `token ${token}`,
+          Accept: 'application/vnd.github+json',
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          message: '🤖 Update data.json via Admin',
+          content: base64Content,
+          branch: BRANCH,
+          sha: sha || undefined
+        })
+      }
+    );
+
+    if (putRes.ok) {
+      return res.status(200).json({ message: '✅ Успешно! Сайт обновится через ~60 сек.' });
+    } else {
+      const err = await putRes.json();
+      throw new Error(err.message || 'GitHub API error');
+    }
+  } catch (error) {
+    console.error('❌ Server Error:', error.message);
     return res.status(500).json({ message: 'Internal Server Error', details: error.message });
   }
 }
