@@ -84,13 +84,13 @@
     "hero_text_color": "#ecdada",
     "font_title": "'Lobster', cursive",
     "font_subtitle": "'Dancing Script', cursive",
-    "title_size": 100,
-    "subtitle_size": 55
+    "title_size": 56,
+    "subtitle_size": 21
   },
   "seo": {
-    "title": "Lady Sugar | Шугаринг Полоцк",
-    "description": "Профессиональный шугаринг в Полоцке.",
+    "title": "Шугаринг Полоцк | Студия Lady Sugar | Эпиляция сахаром и воском",
+    "description": "Профессиональный шугаринг в Полоцке. Глубокое бикини, ноги, подмышки, лицо. Без боли, стерильно, одноразовые материалы. Скидка новым клиентам. Запись онлайн! ",
     "keywords": "шугаринг, полоцк, эпиляция",
-    "ogImage": "/images/uploads/1780339080031-687539927_18154560502415089_15403291629382068_n__1_.jpg"
+    "ogImage": "/images/uploads/1780337266509-671220715_18154636906415089_7085073094643845964_n.jpg"
   }
 }
