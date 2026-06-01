@@ -107,14 +107,6 @@
         </div>
     </section>
 
-    <!-- ДОПОЛНИТЕЛЬНЫЕ ПОЛЯ -->
-    <section id="custom-fields" class="custom-fields-section">
-        <div class="container">
-            <h2 class="section-title">Дополнительная информация</h2>
-            <div class="custom-field-grid" id="custom-fields-container"></div>
-        </div>
-    </section>
-
     <section class="share-section">
         <h3>Поделиться с друзьями</h3>
         <div class="share-buttons">
@@ -140,7 +132,7 @@
                 const response = await fetch('/data.json');
                 if (!response.ok) throw new Error('Не удалось загрузить data.json');
                 const data = await response.json();
-                window.siteData = data; // Доступно в консоли и скриптах
+                window.siteData = data;
 
                 document.getElementById('hero-title').textContent = data.hero.title;
                 document.getElementById('hero-subtitle').innerHTML = data.hero.subtitle.replace(/\n/g, '<br>');
@@ -196,18 +188,18 @@
                     });
                 } else if (categoriesContainer) { emptyMsg.style.display = 'block'; }
 
-                // ⚙️ Рендер дополнительных полей
-                const customContainer = document.getElementById('custom-fields-container');
-                if (customContainer && data.customFields?.length) {
-                    customContainer.innerHTML = data.customFields.map(f => `
-                        <div class="custom-field-item">
-                            <h4>${f.key.replace(/_/g, ' ').replace(/\b\w/g, c => c.toUpperCase())}</h4>
-                            <p>${f.value}</p>
-                        </div>
-                    `).join('');
-                    document.getElementById('custom-fields').style.display = 'block';
-                } else if (document.getElementById('custom-fields')) {
-                    document.getElementById('custom-fields').style.display = 'none';
+                // 🔗 Рендер дополнительных кнопок связи
+                const socialContainer = document.querySelector('.social-buttons');
+                if (socialContainer && data.contacts?.extraButtons?.length) {
+                    document.querySelectorAll('.social-btn-extra').forEach(el => el.remove());
+                    data.contacts.extraButtons.forEach(btn => {
+                        const a = document.createElement('a');
+                        a.href = btn.url; a.target = '_blank'; a.rel = 'noopener noreferrer';
+                        a.className = 'btn-social social-btn-extra';
+                        a.style.background = btn.color || '#333333';
+                        a.innerHTML = `<i class="fas ${btn.icon}"></i> ${btn.label}`;
+                        socialContainer.appendChild(a);
+                    });
                 }
 
             } catch (error) { console.error('Ошибка загрузки данных:', error); }
