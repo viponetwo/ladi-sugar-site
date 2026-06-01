@@ -127,8 +127,9 @@
             </section>
             <section id="care" class="section">
                 <div class="section-header"><h2>📋 Инструкции по уходу</h2></div>
-                <div class="form-group"><label>🟢 ДО процедуры (каждая строка = новый пункт)</label><textarea rows="6" data-bind="careInstructions.before"></textarea></div>
-                <div class="form-group"><label>🔴 ПОСЛЕ процедуры (каждая строка = новый пункт)</label><textarea rows="6" data-bind="careInstructions.after"></textarea></div>
+                <div class="dynamic-list" id="care-list"></div>
+                <button class="add-btn" onclick="addItem('careInstructions')">+ Добавить раздел</button>
+                <small>Каждый раздел будет отображаться как отдельная карточка на сайте.</small>
             </section>
             <section id="moderation" class="section">
                 <div class="section-header"><h2>🕒 Отзывы на проверке</h2></div>
@@ -168,6 +169,7 @@
         const LIST_CONFIG = {
             features: [ { name: 'icon', label: 'Иконка (класс FontAwesome)', type: 'text' }, { name: 'title', label: 'Заголовок', type: 'text' }, { name: 'desc', label: 'Описание', type: 'text' } ],
             beforeAfter: [ { name: 'before', label: 'Фото ДО (URL)', type: 'text' }, { name: 'after', label: 'Фото ПОСЛЕ (URL)', type: 'text' }, { name: 'label', label: 'Зона', type: 'text' } ],
+            careInstructions: [ { name: 'title', label: 'Заголовок раздела', type: 'text' }, { name: 'content', label: 'Текст (каждая строка = новый пункт)', type: 'textarea' } ],
             prices: [ { name: 'name', label: 'Название услуги', type: 'text' }, { name: 'value', label: 'Цена (BYN)', type: 'text' } ],
             reviews: [ { name: 'name', label: 'Имя клиента', type: 'text' }, { name: 'text', label: 'Текст отзыва', type: 'textarea' }, { name: 'rating', label: 'Рейтинг (1-5)', type: 'number', min: 1, max: 5 } ],
             faq: [ { name: 'question', label: 'Вопрос', type: 'text' }, { name: 'answer', label: 'Ответ', type: 'textarea' } ],
@@ -177,6 +179,7 @@
         const DEFAULTS = {
             features: { icon: 'fa-star', title: 'Новое преимущество', desc: 'Описание...' },
             beforeAfter: { before: '', after: '', label: 'Зона' },
+            careInstructions: { title: 'Новый раздел', content: 'Пункт 1\nПункт 2' },
             prices: { name: 'Услуга', value: '0' },
             reviews: { name: 'Имя', text: 'Отзыв...', rating: 5 },
             faq: { question: 'Вопрос?', answer: 'Ответ...' },
@@ -212,14 +215,24 @@
                 if (!Array.isArray(currentData.reviews)) currentData.reviews = [];
                 if (!Array.isArray(currentData.faq)) currentData.faq = [];
                 if (!Array.isArray(currentData.blog)) currentData.blog = [];
+                if (!Array.isArray(currentData.careInstructions)) {
+                    // 🔄 Миграция старого формата {before, after} в новый массив
+                    if (currentData.careInstructions && typeof currentData.careInstructions === 'object' && !Array.isArray(currentData.careInstructions)) {
+                        currentData.careInstructions = [
+                            { title: '🟢 До процедуры', content: currentData.careInstructions.before || '' },
+                            { title: '🔴 После процедуры', content: currentData.careInstructions.after || '' }
+                        ];
+                    } else {
+                        currentData.careInstructions = [];
+                    }
+                }
                 if (!currentData.contacts) currentData.contacts = {};
                 if (!Array.isArray(currentData.contacts.extraButtons)) currentData.contacts.extraButtons = [];
-                if (!currentData.careInstructions) currentData.careInstructions = { before: '', after: '' };
 
                 document.querySelectorAll('[data-bind]').forEach(el => { const path = el.dataset.bind; el.value = getNested(currentData, path) || ''; el.addEventListener('input', e => setNested(currentData, path, e.target.value)); });
                 if (currentData.masterPhoto) { const preview = document.getElementById('master-photo-preview'); preview.src = currentData.masterPhoto; preview.style.display = 'block'; }
                 
-                renderList('features'); renderList('beforeAfter'); renderList('prices'); renderList('reviews'); renderList('faq'); renderList('blog'); 
+                renderList('features'); renderList('beforeAfter'); renderList('prices'); renderList('reviews'); renderList('faq'); renderList('blog'); renderList('careInstructions');
                 renderExtraButtons(); renderPending();
                 showToast('✅ Данные загружены');
             } catch (e) { showToast('❌ Ошибка загрузки data.json', true); }
@@ -239,7 +252,6 @@
                     input.value = item[f.name] || ''; input.oninput = e => currentData[type][index][f.name] = e.target.value;
                     wrap.appendChild(label); wrap.appendChild(input); card.appendChild(wrap);
 
-                    // 📸 Загрузчик локальных фото для До/После
                     if (type === 'beforeAfter' && (f.name === 'before' || f.name === 'after')) {
                         const uploadRow = document.createElement('div'); uploadRow.className = 'upload-row';
                         const fileInput = document.createElement('input'); fileInput.type = 'file'; fileInput.accept = 'image/*';
@@ -252,15 +264,12 @@
                                 const base64 = await fileToBase64(file);
                                 const res = await fetch('/api/upload', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ fileName: file.name, contentBase64: base64 }) });
                                 const data = await res.json();
-                                if (res.ok) {
-                                    input.value = data.url; currentData[type][index][f.name] = data.url;
-                                    status.textContent = '✅ Загружено'; status.style.color = '#22c55e';
-                                } else { status.textContent = '❌ ' + (data.message || 'Ошибка'); status.style.color = '#ef4444'; }
+                                if (res.ok) { input.value = data.url; currentData[type][index][f.name] = data.url; status.textContent = '✅ Загружено'; status.style.color = '#22c55e'; } 
+                                else { status.textContent = '❌ ' + (data.message || 'Ошибка'); status.style.color = '#ef4444'; }
                             } catch (err) { status.textContent = '❌ Ошибка сети'; status.style.color = '#ef4444'; }
                             finally { fileInput.disabled = false; }
                         };
-                        uploadRow.appendChild(fileInput); uploadRow.appendChild(status);
-                        card.appendChild(uploadRow);
+                        uploadRow.appendChild(fileInput); uploadRow.appendChild(status); card.appendChild(uploadRow);
                     }
                 }); container.appendChild(card);
             });
