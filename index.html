@@ -195,8 +195,10 @@
                     const fontTitle = data.theme.font_title || "'Montserrat', sans-serif";
                     const fontSubtitle = data.theme.font_subtitle || "'Open Sans', sans-serif";
                     const heroColor = data.theme.hero_text_color || '#FFFFFF';
-                    const titleSize = data.theme.title_size || 56;
-                    const subtitleSize = data.theme.subtitle_size || 21;
+                    
+                    // ✅ ИСПРАВЛЕНИЕ: Гарантированная установка размеров с дефолтными значениями
+                    const titleSize = (data.theme.title_size && !isNaN(data.theme.title_size)) ? data.theme.title_size : 56;
+                    const subtitleSize = (data.theme.subtitle_size && !isNaN(data.theme.subtitle_size)) ? data.theme.subtitle_size : 21;
                     
                     document.documentElement.style.setProperty('--hero-title-font', fontTitle);
                     document.documentElement.style.setProperty('--hero-subtitle-font', fontSubtitle);
