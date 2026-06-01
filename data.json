@@ -79,6 +79,9 @@
     "color_bg_light": "#FDEEF4",
     "color_bg_white": "#FFFFFF",
     "color_primary": "#B08D74",
-    "color_text": "#333333"
+    "color_text": "#333333",
+    "hero_text_color": "#ed1d1d",
+    "font_title": "'Open Sans', sans-serif",
+    "font_subtitle": "'Open Sans', sans-serif"
   }
 }
