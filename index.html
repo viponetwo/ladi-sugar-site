@@ -27,9 +27,9 @@
 
     <section class="hero">
         <div class="container hero-content">
-            <h1 id="hero-title">Загрузка...</h1>
+            <h1 id="hero-title">Загрузка</h1>
             <p id="hero-subtitle"></p>
-            <!-- Кнопка удалена по запросу -->
+            <!-- Кнопка и точки удалены -->
         </div>
     </section>
 
@@ -149,7 +149,6 @@
                 const data = await response.json();
                 window.siteData = data;
 
-                // 🎨 Применяем цвета и баннер
                 if (data.theme) {
                     document.documentElement.style.setProperty('--bg-light', data.theme.color_bg_light);
                     document.documentElement.style.setProperty('--bg-white', data.theme.color_bg_white);
@@ -167,7 +166,6 @@
                 const bookingUrl = data.contacts.dikidi || '#';
                 
                 document.getElementById('header-dikidi-btn').textContent = bookingText; document.getElementById('header-dikidi-btn').href = bookingUrl;
-                // Кнопка в баннере удалена, код обновлен только для шапки и подвала
                 document.getElementById('btn-dikidi-footer').innerHTML = `<i class="far fa-calendar-check"></i> ${bookingText}`; document.getElementById('btn-dikidi-footer').href = bookingUrl;
                 
                 document.getElementById('btn-wa').href = data.contacts.whatsapp ? `https://wa.me/${data.contacts.whatsapp}` : '#';
@@ -177,7 +175,6 @@
                 document.getElementById('contact-phone').href = data.contacts.phone ? `tel:${data.contacts.phone}` : '#';
                 document.getElementById('contact-address').textContent = data.contacts.address || '';
 
-                // 👤 Мастера
                 const mastersContainer = document.getElementById('masters-container');
                 if(mastersContainer && Array.isArray(data.masters) && data.masters.length > 0) {
                     mastersContainer.innerHTML = data.masters.map(m => `
