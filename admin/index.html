@@ -28,7 +28,7 @@
         
         .form-group { margin-bottom: 15px; background: var(--card); padding: 15px; border-radius: 8px; border: 1px solid var(--border); }
         .form-group label { display: block; font-weight: 500; margin-bottom: 6px; color: #475569; }
-        .form-group input, .form-group textarea { width: 100%; padding: 10px; border: 1px solid var(--border); border-radius: 6px; font-size: 14px; }
+        .form-group input, .form-group textarea, .form-group select { width: 100%; padding: 10px; border: 1px solid var(--border); border-radius: 6px; font-size: 14px; }
         .form-group textarea { resize: vertical; min-height: 80px; }
 
         .dynamic-list { display: flex; flex-direction: column; gap: 15px; margin-bottom: 15px; }
@@ -54,7 +54,6 @@
         .color-row { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
         .color-row input[type="color"] { width: 50px; height: 40px; padding: 0; border: none; background: none; cursor: pointer; }
 
-        /* Кнопка выхода */
         .nav-logout { margin-top: auto; padding: 12px 20px; background: #334155; border-top: 1px solid #475569; cursor: pointer; transition: 0.2s; display: flex; align-items: center; gap: 10px; }
         .nav-logout:hover { background: #ef4444; color: white; }
 
@@ -90,7 +89,6 @@
             <div class="nav-item" onclick="show('moderation')">🕒 Модерация</div>
             <div class="nav-item" onclick="show('blog')">📝 Блог</div>
             <div class="nav-item" onclick="show('contacts')">📞 Контакты и кнопки</div>
-            <!-- 🚪 Кнопка выхода -->
             <div class="nav-logout" onclick="logout()">🚪 Выход из админки</div>
         </aside>
         <main class="main">
@@ -108,6 +106,36 @@
                     <div class="upload-row"><input type="file" id="banner-input" accept="image/*"><span class="upload-status" id="banner-status"></span></div>
                     <small>Рекомендуемый размер: 1920x1080 px. Фото затемняется автоматически.</small>
                     <img id="banner-preview" class="img-preview" style="margin-top:10px; width:100%; max-height:200px; object-fit:cover; display:none;">
+                </div>
+                <div class="form-group">
+                    <label>📝 Шрифты и цвет текста на баннере</label>
+                    <div class="field-row full" style="margin-bottom:10px;">
+                        <label>Шрифт заголовка</label>
+                        <select id="font-title">
+                            <option value="'Montserrat', sans-serif">Montserrat</option>
+                            <option value="'Open Sans', sans-serif">Open Sans</option>
+                            <option value="'Roboto', sans-serif">Roboto</option>
+                            <option value="'Playfair Display', serif">Playfair Display</option>
+                            <option value="'Oswald', sans-serif">Oswald</option>
+                            <option value="'Lato', sans-serif">Lato</option>
+                            <option value="'Raleway', sans-serif">Raleway</option>
+                        </select>
+                    </div>
+                    <div class="field-row full" style="margin-bottom:10px;">
+                        <label>Шрифт подзаголовка</label>
+                        <select id="font-subtitle">
+                            <option value="'Open Sans', sans-serif">Open Sans</option>
+                            <option value="'Montserrat', sans-serif">Montserrat</option>
+                            <option value="'Roboto', sans-serif">Roboto</option>
+                            <option value="'Playfair Display', serif">Playfair Display</option>
+                            <option value="'Lato', sans-serif">Lato</option>
+                            <option value="'Raleway', sans-serif">Raleway</option>
+                        </select>
+                    </div>
+                    <div class="color-row">
+                        <input type="color" id="color-hero-text">
+                        <span>Цвет текста на баннере</span>
+                    </div>
                 </div>
                 <div class="form-group">
                     <label>Основные цвета сайта</label>
@@ -217,18 +245,12 @@
         function setNested(obj, path, value) { const keys = path.split('.'); let current = obj; for (let i = 0; i < keys.length - 1; i++) current = current[keys[i]]; current[keys[keys.length - 1]] = value; }
         function fileToBase64(file) { return new Promise((resolve, reject) => { const reader = new FileReader(); reader.readAsDataURL(file); reader.onload = () => resolve(reader.result.split(',')[1]); reader.onerror = error => reject(error); }); }
 
-        // 🔐 Проверка сессии при загрузке
         async function checkSession() {
             const savedToken = localStorage.getItem('ls_admin_token');
             if (savedToken) {
                 sessionToken = savedToken;
-                // Проверяем валидность токена на сервере (опционально, но надежнее)
                 try {
-                    const res = await fetch('/api/auth/login', { 
-                        method: 'POST', 
-                        headers: { 'Content-Type': 'application/json' }, 
-                        body: JSON.stringify({ password: atob(sessionToken) }) 
-                    });
+                    const res = await fetch('/api/auth/login', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ password: atob(sessionToken) }) });
                     if (res.ok) {
                         document.getElementById('login-overlay').style.display = 'none';
                         document.getElementById('admin-ui').style.display = 'flex';
@@ -251,7 +273,7 @@
                 const data = await res.json();
                 if (data.success) { 
                     sessionToken = data.token;
-                    localStorage.setItem('ls_admin_token', sessionToken); // 📝 Сохраняем сессию
+                    localStorage.setItem('ls_admin_token', sessionToken);
                     document.getElementById('login-overlay').style.display = 'none'; 
                     document.getElementById('admin-ui').style.display = 'flex'; 
                     loadData(); 
@@ -260,7 +282,6 @@
             finally { btn.textContent = 'Войти'; btn.disabled = false; }
         }
 
-        // 🚪 Выход из админки
         function logout() {
             if (confirm('Вы уверены, что хотите выйти из админки?')) {
                 localStorage.removeItem('ls_admin_token');
@@ -273,6 +294,7 @@
         async function loadData() {
             try {
                 const res = await fetch('/data.json'); currentData = await res.json();
+                
                 if (!Array.isArray(currentData.masters)) { if (currentData.master) { currentData.masters = [{ role: 'Мастер', name: currentData.master.name || '', desc: currentData.master.description || '', photo: currentData.masterPhoto || '' }]; delete currentData.master; delete currentData.masterPhoto; } else currentData.masters = []; }
                 if (!Array.isArray(currentData.features)) currentData.features = [];
                 if (!Array.isArray(currentData.beforeAfter)) currentData.beforeAfter = [];
@@ -283,21 +305,39 @@
                 if (!Array.isArray(currentData.careInstructions)) currentData.careInstructions = [];
                 if (!currentData.contacts) currentData.contacts = {};
                 if (!Array.isArray(currentData.contacts.extraButtons)) currentData.contacts.extraButtons = [];
-                if (!currentData.theme) currentData.theme = { heroImage: '', color_bg_light: '#FDEEF4', color_bg_white: '#FFFFFF', color_primary: '#B08D74', color_text: '#333333' };
-                else { currentData.theme.color_bg_light = currentData.theme.color_bg_light || '#FDEEF4'; currentData.theme.color_bg_white = currentData.theme.color_bg_white || '#FFFFFF'; currentData.theme.color_primary = currentData.theme.color_primary || '#B08D74'; currentData.theme.color_text = currentData.theme.color_text || '#333333'; }
+                
+                // 🎨 Инициализация темы и шрифтов
+                if (!currentData.theme) currentData.theme = { heroImage: '', color_bg_light: '#FDEEF4', color_bg_white: '#FFFFFF', color_primary: '#B08D74', color_text: '#333333', hero_text_color: '#FFFFFF', font_title: "'Montserrat', sans-serif", font_subtitle: "'Open Sans', sans-serif" };
+                else { 
+                    currentData.theme.color_bg_light = currentData.theme.color_bg_light || '#FDEEF4'; 
+                    currentData.theme.color_bg_white = currentData.theme.color_bg_white || '#FFFFFF'; 
+                    currentData.theme.color_primary = currentData.theme.color_primary || '#B08D74'; 
+                    currentData.theme.color_text = currentData.theme.color_text || '#333333';
+                    currentData.theme.hero_text_color = currentData.theme.hero_text_color || '#FFFFFF';
+                    currentData.theme.font_title = currentData.theme.font_title || "'Montserrat', sans-serif";
+                    currentData.theme.font_subtitle = currentData.theme.font_subtitle || "'Open Sans', sans-serif";
+                }
 
                 document.querySelectorAll('[data-bind]').forEach(el => { const path = el.dataset.bind; el.value = getNested(currentData, path) || ''; el.addEventListener('input', e => setNested(currentData, path, e.target.value)); });
                 
+                // 🎨 Привязка цветов, баннера и шрифтов
                 document.getElementById('color-bg-light').value = currentData.theme.color_bg_light;
                 document.getElementById('color-bg-white').value = currentData.theme.color_bg_white;
                 document.getElementById('color-primary').value = currentData.theme.color_primary;
                 document.getElementById('color-text').value = currentData.theme.color_text;
+                document.getElementById('color-hero-text').value = currentData.theme.hero_text_color;
+                document.getElementById('font-title').value = currentData.theme.font_title;
+                document.getElementById('font-subtitle').value = currentData.theme.font_subtitle;
+                
                 if (currentData.theme.heroImage) { const p = document.getElementById('banner-preview'); p.src = currentData.theme.heroImage; p.style.display = 'block'; }
                 
                 document.getElementById('color-bg-light').oninput = e => currentData.theme.color_bg_light = e.target.value;
                 document.getElementById('color-bg-white').oninput = e => currentData.theme.color_bg_white = e.target.value;
                 document.getElementById('color-primary').oninput = e => currentData.theme.color_primary = e.target.value;
                 document.getElementById('color-text').oninput = e => currentData.theme.color_text = e.target.value;
+                document.getElementById('color-hero-text').oninput = e => currentData.theme.hero_text_color = e.target.value;
+                document.getElementById('font-title').oninput = e => currentData.theme.font_title = e.target.value;
+                document.getElementById('font-subtitle').oninput = e => currentData.theme.font_subtitle = e.target.value;
 
                 renderList('masters'); renderList('features'); renderList('beforeAfter'); renderList('prices'); renderList('reviews'); renderList('faq'); renderList('blog'); 
                 renderList('careInstructions'); renderExtraButtons(); renderPending();
@@ -325,7 +365,8 @@
                         const file = e.target.files[0]; if (!file) return;
                         if (file.size > 5_000_000) { status.textContent = '❌ > 5МБ'; return; }
                         status.textContent = '⏳...'; fileInput.disabled = true;
-                        try { const base64 = await fileToBase64(file); const res = await fetch('/api/upload', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ fileName: file.name, contentBase64: base64 }) }); const data = await res.json(); if (res.ok) { input.value = data.url; currentData[type][index][f.name] = data.url; status.textContent = '✅'; } else status.textContent = '❌'; } catch { status.textContent = '❌'; } finally { fileInput.disabled = false; }
+                        try { const base64 = await fileToBase64(file); const res = await fetch('/api/upload', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ fileName: file.name, contentBase64: base64 }) }); const data = await res.json(); if (res.ok) { input.value = data.url; currentData[type][index][f.name] = data.url; status.textContent = '✅'; } else status.textContent = '❌'; } catch { status.textContent = '❌'; }
+                        finally { fileInput.disabled = false; }
                     }; uploadRow.appendChild(fileInput); uploadRow.appendChild(status); card.appendChild(uploadRow);
                 }); container.appendChild(card);
             });
@@ -342,7 +383,6 @@
 
         document.getElementById('banner-input').onchange = async (e) => { const f = e.target.files[0]; if (!f) return; if (f.size > 5_000_000) { document.getElementById('banner-status').textContent = '❌ > 5 МБ'; return; } document.getElementById('banner-status').textContent = '⏳...'; e.target.disabled = true; try { const base64 = await fileToBase64(f); const res = await fetch('/api/upload', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ fileName: f.name, contentBase64: base64 }) }); const d = await res.json(); if (res.ok) { currentData.theme.heroImage = d.url; document.getElementById('banner-preview').src = d.url; document.getElementById('banner-preview').style.display = 'block'; document.getElementById('banner-status').textContent = '✅'; } else document.getElementById('banner-status').textContent = '❌'; } catch { document.getElementById('banner-status').textContent = '❌'; } finally { e.target.disabled = false; } };
         
-        // 🚀 Проверяем сессию при старте
         document.addEventListener('DOMContentLoaded', checkSession);
     </script>
 </body>
