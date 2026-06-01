@@ -1,168 +1,314 @@
-:root { 
-    --primary: #B08D74; 
-    --bg-light: #FDEEF4; 
-    --bg-white: #FFFFFF; 
-    --text-dark: #333333; 
-    --text-gray: #666666; 
-    --dikidi-blue: #009ee3; 
-    --border: #e2e8f0;
-    /* 🅰️ Шрифты и цвет баннера */
-    --hero-title-font: 'Montserrat', sans-serif;
-    --hero-subtitle-font: 'Open Sans', sans-serif;
-    --hero-text-color: #FFFFFF;
-}
-* { margin: 0; padding: 0; box-sizing: border-box; }
-body { font-family: 'Open Sans', sans-serif; color: var(--text-dark); line-height: 1.6; background-color: var(--bg-white); }
-h1, h2, h3 { font-family: 'Montserrat', sans-serif; font-weight: 700; }
-a { text-decoration: none; color: inherit; transition: 0.3s; }
-ul { list-style: none; }
-img { max-width: 100%; display: block; }
-.container { max-width: 1100px; margin: 0 auto; padding: 0 20px; }
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ladi Sugar | Шугаринг в Полоцке</title>
+    <meta name="description" content="Профессиональный шугаринг в Полоцке. Стерильно, безопасно, комфортно.">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <header>
+        <div class="container nav-wrapper">
+            <a href="#" class="logo-link"><img src="images/logo.png" alt="Logo" class="logo-img"></a>
+            <nav class="nav-links">
+                <a href="#about">Преимущества</a>
+                <a href="#masters">Мастера</a>
+                <a href="#before-after">До/После</a>
+                <a href="#blog">Блог</a>
+                <a href="#faq">FAQ</a>
+                <a href="#prices">Цены</a>
+                <a href="#contacts">Контакты</a>
+            </nav>
+            <a href="#" id="header-dikidi-btn" target="_blank" class="btn-header">Записаться</a>
+        </div>
+    </header>
 
-header { background: rgba(255, 255, 255, 0.98); position: fixed; width: 100%; top: 0; z-index: 1000; box-shadow: 0 2px 10px rgba(0,0,0,0.05); padding: 10px 0; }
-.nav-wrapper { display: flex; justify-content: space-between; align-items: center; min-height: 120px; }
-.logo-img { height: 120px; width: auto; }
-.nav-links { display: flex; gap: 20px; }
-.nav-links a { font-size: 1rem; font-weight: 600; color: var(--text-dark); }
-.nav-links a:hover { color: var(--primary); }
-.btn-header { background: var(--primary); color: white; padding: 12px 25px; border-radius: 25px; font-weight: 600; font-size: 0.9rem; }
-.btn-header:hover { transform: scale(1.05); background: #96765e; }
+    <section class="hero">
+        <div class="container hero-content">
+            <h1 id="hero-title">Загрузка</h1>
+            <p id="hero-subtitle"></p>
+        </div>
+    </section>
 
-/* 🖼 БАННЕР С ДИНАМИЧЕСКИМИ ШРИФТАМИ */
-.hero { 
-    background: linear-gradient(rgba(45, 52, 54, 0.6), rgba(45, 52, 54, 0.6)), url('https://images.unsplash.com/photo-1560750588-73207b1ef5b8?w=1920'); 
-    background-size: cover; background-position: center; background-repeat: no-repeat;
-    height: 90vh; display: flex; align-items: center; text-align: center; color: var(--hero-text-color); margin-top: 140px; 
-}
-.hero::before, .hero::after { content: none !important; }
-.hero-content h1 { 
-    font-family: var(--hero-title-font);
-    font-size: 3.5rem; margin-bottom: 20px; text-shadow: 0 4px 10px rgba(0,0,0,0.5); letter-spacing: 1px; 
-    color: var(--hero-text-color);
-}
-.hero-content p { 
-    font-family: var(--hero-subtitle-font);
-    font-size: 1.3rem; margin-bottom: 30px; max-width: 700px; margin: 0 auto; font-weight: 400;
-    color: var(--hero-text-color);
-}
-.btn-hero { background: var(--primary); color: white; padding: 18px 45px; border-radius: 30px; font-size: 1.2rem; font-weight: 700; display: inline-block; box-shadow: 0 4px 15px rgba(176, 141, 116, 0.4); border: none; cursor: pointer; }
-.btn-hero:hover { background: #96765e; transform: translateY(-3px); }
+    <section id="about" class="bg-light">
+        <div class="container">
+            <h2 class="section-title">Почему выбирают меня</h2>
+            <div class="features-grid" id="features-container"></div>
+        </div>
+    </section>
 
-section { padding: 80px 0; }
-.section-title { font-size: 2rem; margin-bottom: 50px; color: var(--text-dark); text-align: center; }
-.bg-light { background: var(--bg-light); }
-.bg-white { background: var(--bg-white); }
+    <section id="before-after" class="bg-white">
+        <div class="container">
+            <h2 class="section-title">Результат работ</h2>
+            <div class="ba-grid" id="ba-container"></div>
+        </div>
+    </section>
 
-.features-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 30px; }
-.feature-card { background: white; padding: 30px; border-radius: 15px; box-shadow: 0 5px 15px rgba(0,0,0,0.05); transition: transform 0.3s; text-align: center; }
-.feature-card:hover { transform: translateY(-5px); }
-.feature-icon { font-size: 2.5rem; color: var(--primary); margin-bottom: 20px; }
+    <section id="blog" class="bg-light">
+        <div class="container">
+            <h2 class="section-title">Полезные статьи</h2>
+            <div class="blog-grid" id="blog-container"></div>
+        </div>
+    </section>
 
-/* 🔄 DO / POSLE */
-.ba-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)); gap: 30px; }
-.ba-slider { position: relative; width: 100%; height: 400px; border-radius: 15px; overflow: hidden; cursor: ew-resize; box-shadow: 0 5px 20px rgba(0,0,0,0.1); }
-.ba-img-before, .ba-img-after { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background-size: cover; background-position: center; }
-.ba-divider { position: absolute; top: 0; bottom: 0; width: 4px; background: white; z-index: 2; box-shadow: 0 0 10px rgba(0,0,0,0.3); }
-.ba-handle { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 36px; height: 36px; background: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; box-shadow: 0 2px 8px rgba(0,0,0,0.2); }
-.ba-handle::before, .ba-handle::after { content: ''; width: 10px; height: 2px; background: var(--primary); position: absolute; }
-.ba-handle::before { transform: rotate(30deg); left: 8px; }
-.ba-handle::after { transform: rotate(-30deg); right: 8px; }
-.ba-label { position: absolute; bottom: 15px; left: 15px; background: rgba(0,0,0,0.6); color: white; padding: 6px 12px; border-radius: 20px; font-size: 0.85rem; z-index: 3; pointer-events: none; }
+    <section id="masters" class="bg-white">
+        <div class="container">
+            <h2 class="section-title">Наша команда</h2>
+            <div class="masters-grid" id="masters-container"></div>
+        </div>
+    </section>
 
-.ba-pin-btn { position: absolute; top: 15px; right: 15px; background: #E60023; color: white; width: 40px; height: 40px; border-radius: 50%; border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 1.1rem; transition: all 0.2s; z-index: 4; opacity: 0; box-shadow: 0 2px 10px rgba(0,0,0,0.2); }
-.ba-slider:hover .ba-pin-btn { opacity: 1; }
-.ba-pin-btn:hover { background: #bd001c; transform: scale(1.1); }
+    <section id="prices" class="bg-light">
+        <div class="container">
+            <h2 class="section-title" style="text-align:center;">Прайс-лист</h2>
+            <div class="price-list" id="price-list-container"></div>
+        </div>
+    </section>
 
-/* ❓ FAQ */
-.faq-container { max-width: 800px; margin: 0 auto; }
-.faq-item { background: white; border-radius: 12px; margin-bottom: 15px; overflow: hidden; box-shadow: 0 2px 10px rgba(0,0,0,0.05); }
-.faq-question { padding: 20px; font-weight: 600; cursor: pointer; display: flex; justify-content: space-between; align-items: center; transition: background 0.2s; }
-.faq-question:hover { background: #f9fafb; }
-.faq-question i { transition: transform 0.3s; color: var(--primary); }
-.faq-answer { max-height: 0; overflow: hidden; transition: max-height 0.3s ease, padding 0.3s ease; background: #fafafa; color: var(--text-gray); line-height: 1.6; padding: 0 20px; }
+    <section id="faq" class="bg-white">
+        <div class="container">
+            <h2 class="section-title">Частые вопросы</h2>
+            <div class="faq-container" id="faq-container"></div>
+        </div>
+    </section>
 
-/* 📋 CARE */
-.care-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 30px; max-width: 1100px; margin: 0 auto; }
-.care-col { background: white; padding: 30px; border-radius: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); }
-.care-col h3 { margin-bottom: 20px; display: flex; align-items: center; gap: 10px; color: var(--primary); }
-.care-col ul { padding-left: 20px; }
-.care-col li { margin-bottom: 12px; list-style-type: disc; color: var(--text-gray); }
+    <section id="care" class="bg-light">
+        <div class="container">
+            <h2 class="section-title">Памятка клиенту</h2>
+            <div class="care-grid" id="care-container"></div>
+        </div>
+    </section>
 
-/* 👤 МАСТЕРА */
-.masters-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 40px; max-width: 1000px; margin: 0 auto; }
-.master-card { text-align: center; background: white; padding: 30px 20px; border-radius: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); transition: transform 0.3s; }
-.master-card:hover { transform: translateY(-5px); }
-.master-photo { width: 150px; height: 150px; border-radius: 50%; object-fit: cover; border: 4px solid var(--bg-light); margin: 0 auto 20px; display: none; }
-.master-role { display: inline-block; font-size: 0.85rem; font-weight: 600; color: var(--primary); background: var(--bg-light); padding: 4px 12px; border-radius: 20px; margin-bottom: 10px; }
-.master-text h3 { font-size: 1.4rem; margin-bottom: 10px; color: var(--text-dark); }
-.master-desc { color: var(--text-gray); line-height: 1.6; font-size: 0.95rem; white-space: pre-wrap; }
+    <section id="reviews" class="bg-white">
+        <div class="container">
+            <h2 class="section-title">Отзывы клиентов</h2>
+            <div class="reviews-grid" id="reviews-container"></div>
+            <div class="review-form-wrapper">
+                <h3 style="text-align:center; margin-bottom:20px;">Оставить отзыв</h3>
+                <form id="reviewForm" class="review-form">
+                    <input type="text" id="rev-name" placeholder="Ваше имя" required>
+                    <div class="rating-input">
+                        <span>Оценка:</span>
+                        <select id="rev-rating"><option value="5">⭐⭐⭐⭐⭐ (5)</option><option value="4">⭐⭐⭐⭐ (4)</option><option value="3">⭐⭐⭐ (3)</option><option value="2">⭐⭐ (2)</option><option value="1">⭐ (1)</option></select>
+                    </div>
+                    <textarea id="rev-text" placeholder="Расскажите о вашем опыте..." rows="4" required></textarea>
+                    <button type="submit" id="rev-submit-btn" class="btn-hero" style="padding:12px 30px; font-size:1rem; width:100%;">Отправить на модерацию</button>
+                    <div id="rev-status" style="text-align:center; margin-top:10px; font-size:0.9rem;"></div>
+                </form>
+            </div>
+        </div>
+    </section>
 
-.blog-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 25px; }
-.blog-card { background: white; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 15px rgba(0,0,0,0.05); transition: transform 0.3s; }
-.blog-card:hover { transform: translateY(-5px); }
-.blog-img { width: 100%; height: 180px; object-fit: cover; }
-.blog-content { padding: 20px; }
-.blog-date { font-size: 0.8rem; color: #888; margin-bottom: 8px; display: block; }
-.blog-content h3 { font-size: 1.2rem; margin-bottom: 10px; color: var(--text-dark); }
-.blog-content p { font-size: 0.95rem; color: var(--text-gray); line-height: 1.5; }
+    <section id="contacts" class="bg-light">
+        <div class="container">
+            <h2 class="section-title" style="text-align:center;">Контакты</h2>
+            <div class="contacts-wrapper">
+                <div class="contact-info">
+                    <h3>Жду вас в студии!</h3>
+                    <div class="contact-item"><i class="fas fa-map-marker-alt"></i><span id="contact-address">...</span></div>
+                    <div class="contact-item"><i class="fas fa-phone-alt"></i><a id="contact-phone" href="#">...</a></div>
+                    <div class="social-buttons" id="social-buttons">
+                        <a href="#" id="btn-dikidi-footer" target="_blank" class="btn-social btn-dikidi"><i class="far fa-calendar-check"></i> Записаться</a>
+                        <a href="#" id="btn-wa" target="_blank" class="btn-social btn-wa"><i class="fab fa-whatsapp"></i></a>
+                        <a href="#" id="btn-viber" target="_blank" class="btn-social btn-viber"><i class="fab fa-viber"></i></a>
+                        <a href="#" id="btn-insta" target="_blank" class="btn-social btn-insta"><i class="fab fa-instagram"></i></a>
+                    </div>
+                </div>
+                <div class="map-container"><iframe src="https://yandex.ru/map-widget/v1/?um=constructor%3Ab893ccbe0c115b6b91c8b5b6581a5e81d06ace6875cc4528a08ba8fecfff3da5&amp;source=constructor" width="100%" height="400" frameborder="0"></iframe></div>
+            </div>
+        </div>
+    </section>
 
-.reviews-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 30px; margin-bottom: 40px; }
-.review-card { background: white; padding: 30px; border-radius: 15px; box-shadow: 0 5px 15px rgba(0,0,0,0.05); border-left: 5px solid var(--primary); }
-.review-stars { color: #FFD700; margin-bottom: 15px; }
-.review-text { font-style: italic; color: var(--text-gray); margin-bottom: 20px; }
-.review-author { font-weight: 700; color: var(--text-dark); display: flex; align-items: center; gap: 10px; }
-.review-form-wrapper { max-width: 600px; margin: 0 auto; padding: 25px; background: #f9fafb; border-radius: 12px; border: 1px solid var(--border); }
-.review-form input, .review-form textarea, .review-form select { width: 100%; padding: 12px; margin-bottom: 12px; border: 1px solid #cbd5e1; border-radius: 8px; font-size: 14px; }
-.rating-input { display: flex; align-items: center; gap: 10px; margin-bottom: 12px; } .rating-input span { font-weight: 500; }
+    <section class="share-section">
+        <h3>Поделиться с друзьями</h3>
+        <div class="share-buttons">
+            <a href="#" class="share-btn share-wa" target="_blank" title="WhatsApp"><i class="fab fa-whatsapp"></i></a>
+            <a href="#" class="share-btn share-tg" target="_blank" title="Telegram"><i class="fab fa-telegram-plane"></i></a>
+            <a href="#" class="share-btn share-vk" target="_blank" title="ВКонтакте"><i class="fab fa-vk"></i></a>
+            <a href="#" class="share-btn share-pin" target="_blank" title="Pinterest"><i class="fab fa-pinterest-p"></i></a>
+            <button class="share-btn share-copy" onclick="copyShareLink()" title="Скопировать ссылку"><i class="fas fa-link"></i></button>
+        </div>
+    </section>
 
-.price-list { max-width: 800px; margin: 0 auto; background: white; border-radius: 15px; overflow: hidden; box-shadow: 0 0 20px rgba(0,0,0,0.05); }
-.price-item { display: flex; justify-content: space-between; padding: 20px 30px; border-bottom: 1px solid #eee; align-items: center; }
-.price-item:last-child { border-bottom: none; } .price-item:hover { background-color: #fafafa; }
-.zone-name { font-weight: 600; font-size: 1.1rem; } .zone-price { font-weight: 700; color: var(--primary); font-size: 1.2rem; }
+    <footer><div class="container"><p>&copy; 2026 Ladi Sugar Polotsk. Все права защищены.</p></div></footer>
 
-.contacts-wrapper { display: grid; grid-template-columns: 1fr 1fr; gap: 40px; align-items: start; }
-.contact-info h3 { margin-bottom: 25px; font-size: 1.8rem; }
-.contact-item { margin-bottom: 20px; display: flex; align-items: center; gap: 15px; font-size: 1.1rem; }
-.contact-item i { color: var(--primary); width: 25px; font-size: 1.2rem; }
-.social-buttons { margin-top: 30px; display: flex; gap: 10px; flex-wrap: wrap; }
-.btn-social { flex: 1; min-width: 120px; text-align: center; padding: 12px; border-radius: 10px; color: white; font-weight: 600; display: flex; align-items: center; justify-content: center; gap: 8px; transition: all 0.3s ease; }
-.btn-social:hover { opacity: 0.9; transform: translateY(-2px); }
-.btn-dikidi { background: var(--dikidi-blue); flex: 2; font-size: 1.1rem; }
-.btn-wa { background: #25D366; } .btn-viber { background: #7360f2; } .btn-insta { background: #E1306C; }
+    <div id="lightbox" class="lightbox" onclick="closeLightbox(event)">
+        <a href="#" class="lightbox-pin" onclick="pinLightboxImage(); return false;" title="Сохранить в Pinterest"><i class="fab fa-pinterest-p"></i></a>
+        <span class="lightbox-close">&times;</span>
+        <img id="lightbox-img" src="" alt="Увеличенное фото">
+    </div>
 
-.map-container { width: 100%; height: 400px; border-radius: 15px; overflow: hidden; box-shadow: 0 5px 15px rgba(0,0,0,0.1); border: 5px solid var(--bg-light); }
-iframe { width: 100%; height: 100%; border: 0; }
+    <script>
+        function loadGoogleFonts(fontTitle, fontSubtitle) {
+            const fonts = new Set();
+            fonts.add(fontTitle.split(',')[0].replace(/'/g, '').trim());
+            fonts.add(fontSubtitle.split(',')[0].replace(/'/g, '').trim());
+            
+            const link = document.createElement('link');
+            link.href = `https://fonts.googleapis.com/css2?family=${Array.from(fonts).join('&family=')}&display=swap`;
+            link.rel = 'stylesheet';
+            document.head.appendChild(link);
+        }
 
-.share-section { text-align: center; padding: 40px 20px; background: var(--bg-white); border-top: 1px solid var(--border); }
-.share-section h3 { font-size: 1.2rem; margin-bottom: 20px; color: var(--text-gray); }
-.share-buttons { display: flex; justify-content: center; gap: 12px; flex-wrap: wrap; }
-.share-btn { width: 48px; height: 48px; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-size: 1.2rem; transition: all 0.2s ease; border: none; cursor: pointer; text-decoration: none; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
-.share-btn:hover { transform: translateY(-4px); box-shadow: 0 6px 15px rgba(0,0,0,0.15); }
-.share-wa { background: #25D366; } .share-tg { background: #0088cc; } .share-vk { background: #0077FF; } .share-pin { background: #E60023; } .share-copy { background: #6c757d; }
-.share-toast { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%) translateY(20px); background: #333; color: white; padding: 10px 20px; border-radius: 8px; opacity: 0; transition: 0.3s; z-index: 9999; font-size: 0.9rem; pointer-events: none; }
-.share-toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+        async function loadData() {
+            try {
+                const response = await fetch('/data.json');
+                if (!response.ok) throw new Error('Не удалось загрузить data.json');
+                const data = await response.json();
+                window.siteData = data;
 
-.lightbox { position: fixed; inset: 0; background: rgba(0,0,0,0.92); z-index: 9999; display: flex; align-items: center; justify-content: center; opacity: 0; pointer-events: none; transition: opacity 0.25s ease; }
-.lightbox.active { opacity: 1; pointer-events: all; }
-.lightbox img { max-width: 92vw; max-height: 92vh; border-radius: 8px; box-shadow: 0 10px 40px rgba(0,0,0,0.6); transform: scale(0.95); transition: transform 0.25s ease; cursor: zoom-out; }
-.lightbox.active img { transform: scale(1); }
-.lightbox-close { position: absolute; top: 15px; right: 20px; color: white; font-size: 2.5rem; cursor: pointer; line-height: 1; transition: transform 0.2s; }
-.lightbox-close:hover { transform: scale(1.1); }
-.lightbox-pin { position: absolute; top: 15px; right: 60px; background: #E60023; color: white; width: 36px; height: 36px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.1rem; text-decoration: none; transition: 0.2s; }
-.lightbox-pin:hover { background: #bd001c; transform: scale(1.1); }
+                if (data.theme) {
+                    document.documentElement.style.setProperty('--bg-light', data.theme.color_bg_light);
+                    document.documentElement.style.setProperty('--bg-white', data.theme.color_bg_white);
+                    document.documentElement.style.setProperty('--primary', data.theme.color_primary);
+                    document.documentElement.style.setProperty('--text-dark', data.theme.color_text);
+                    
+                    const fontTitle = data.theme.font_title || "'Montserrat', sans-serif";
+                    const fontSubtitle = data.theme.font_subtitle || "'Open Sans', sans-serif";
+                    const heroColor = data.theme.hero_text_color || '#FFFFFF';
+                    
+                    document.documentElement.style.setProperty('--hero-title-font', fontTitle);
+                    document.documentElement.style.setProperty('--hero-subtitle-font', fontSubtitle);
+                    document.documentElement.style.setProperty('--hero-text-color', heroColor);
+                    
+                    loadGoogleFonts(fontTitle, fontSubtitle);
+                }
+                if (data.theme?.heroImage) {
+                    document.querySelector('.hero').style.backgroundImage = `url('${data.theme.heroImage}')`;
+                }
 
-footer { background: var(--text-dark); color: white; text-align: center; padding: 30px 0; }
+                // 📍 ПРИМЕНЕНИЕ РАСПОЛОЖЕНИЯ ТЕКСТА
+                const heroSection = document.querySelector('.hero');
+                const alignment = data.hero.alignment || 'center';
+                heroSection.className = 'hero'; // Сброс классов
+                heroSection.classList.add(`hero-align-${alignment}`);
 
-@media (max-width: 768px) {
-    .hero-content h1 { font-size: 2.2rem; }
-    .nav-links, .btn-header { display: none; }
-    .contacts-wrapper { grid-template-columns: 1fr; }
-    .map-container { height: 300px; }
-    .logo-img { height: 80px; } .nav-wrapper { min-height: 90px; }
-    .hero { margin-top: 100px; }
-    .social-buttons { flex-direction: column; } .btn-social { width: 100%; }
-    .lightbox-pin { right: 55px; top: 18px; width: 32px; height: 32px; font-size: 0.9rem; }
-    .ba-slider { height: 300px; }
-    .ba-pin-btn { opacity: 1; width: 36px; height: 36px; font-size: 1rem; }
-    .masters-grid { grid-template-columns: 1fr; }
-}
+                document.getElementById('hero-title').textContent = data.hero.title;
+                document.getElementById('hero-subtitle').innerHTML = data.hero.subtitle.replace(/\n/g, '<br>');
+                
+                const bookingText = data.contacts.bookingText || 'Записаться онлайн';
+                const bookingUrl = data.contacts.dikidi || '#';
+                
+                document.getElementById('header-dikidi-btn').textContent = bookingText; document.getElementById('header-dikidi-btn').href = bookingUrl;
+                document.getElementById('btn-dikidi-footer').innerHTML = `<i class="far fa-calendar-check"></i> ${bookingText}`; document.getElementById('btn-dikidi-footer').href = bookingUrl;
+                
+                document.getElementById('btn-wa').href = data.contacts.whatsapp ? `https://wa.me/${data.contacts.whatsapp}` : '#';
+                document.getElementById('btn-viber').href = data.contacts.viber ? `viber://chat?number=%2B${data.contacts.viber}` : '#';
+                document.getElementById('btn-insta').href = data.contacts.instagram || '#';
+                document.getElementById('contact-phone').textContent = data.contacts.phone || ''; 
+                document.getElementById('contact-phone').href = data.contacts.phone ? `tel:${data.contacts.phone}` : '#';
+                document.getElementById('contact-address').textContent = data.contacts.address || '';
+
+                const mastersContainer = document.getElementById('masters-container');
+                if(mastersContainer && Array.isArray(data.masters) && data.masters.length > 0) {
+                    mastersContainer.innerHTML = data.masters.map(m => `
+                        <div class="master-card">
+                            <img src="${m.photo || ''}" alt="${m.name}" class="master-photo" style="display:${m.photo ? 'block' : 'none'}">
+                            <div class="master-text">
+                                <span class="master-role">${m.role || ''}</span>
+                                <h3>${m.name || 'Мастер'}</h3>
+                                <div class="master-desc">${(m.desc || '').replace(/\n/g, '<br>')}</div>
+                            </div>
+                        </div>
+                    `).join('');
+                }
+
+                const featuresContainer = document.getElementById('features-container');
+                if(featuresContainer && data.features) featuresContainer.innerHTML = data.features.map(f => `<div class="feature-card"><i class="fas ${f.icon} feature-icon"></i><h3>${f.title}</h3><p>${f.desc}</p></div>`).join('');
+
+                const priceContainer = document.getElementById('price-list-container');
+                if(priceContainer && data.prices) priceContainer.innerHTML = data.prices.map(p => `<div class="price-item"><span class="zone-name">${p.name}</span><span class="zone-price">${p.value} BYN</span></div>`).join('');
+
+                const reviewContainer = document.getElementById('reviews-container');
+                if(reviewContainer && data.reviews) { 
+                    const visible = data.reviews.filter(r => r.status !== 'pending'); 
+                    reviewContainer.innerHTML = visible.map(r => `<div class="review-card"><div class="review-stars">${'<i class="fas fa-star"></i>'.repeat(r.rating)}</div><p class="review-text">«${r.text}»</p><div class="review-author"><i class="fas fa-user-circle"></i> ${r.name} <span style="color:#888; font-weight:400; font-size:0.8rem;">${r.date || ''}</span></div></div>`).join(''); 
+                }
+
+                const blogContainer = document.getElementById('blog-container');
+                if(blogContainer && data.blog && data.blog.length > 0) blogContainer.innerHTML = data.blog.map(post => `<div class="blog-card"><img src="${post.image || ''}" alt="${post.title}" class="blog-img"><div class="blog-content"><span class="blog-date">${post.date}</span><h3>${post.title}</h3><p>${post.excerpt}</p></div></div>`).join(''); 
+                else if (blogContainer) blogContainer.innerHTML = '<p style="text-align:center;color:#666; grid-column: 1/-1;">Статей пока нет.</p>';
+
+                const baContainer = document.getElementById('ba-container');
+                if(baContainer && data.beforeAfter?.length) {
+                    baContainer.innerHTML = data.beforeAfter.map((item, i) => `
+                        <div class="ba-slider" id="ba-${i}">
+                            <div class="ba-img-before" style="background-image:url('${item.before}')"></div>
+                            <div class="ba-img-after" style="background-image:url('${item.after}'); width:50%;"></div>
+                            <div class="ba-divider" style="left:50%;"><div class="ba-handle"></div></div>
+                            <div class="ba-label">${item.label}</div>
+                            <button class="ba-pin-btn" onclick="window.pinBASlide('${item.after.replace(/'/g, "\\'")}', '${item.label.replace(/'/g, "\\'")}')" title="Сохранить в Pinterest"><i class="fab fa-pinterest-p"></i></button>
+                        </div>
+                    `).join('');
+                    initBASliders();
+                }
+
+                const faqContainer = document.getElementById('faq-container');
+                if(faqContainer && data.faq?.length) {
+                    faqContainer.innerHTML = data.faq.map((item, i) => `
+                        <div class="faq-item"><div class="faq-question" onclick="window.toggleFaq(${i})">${item.question}<i class="fas fa-chevron-down"></i></div><div class="faq-answer" id="faq-ans-${i}">${item.answer}</div></div>
+                    `).join('');
+                }
+
+                const careContainer = document.getElementById('care-container');
+                if(careContainer && Array.isArray(data.careInstructions) && data.careInstructions.length > 0) {
+                    careContainer.innerHTML = data.careInstructions.map(item => {
+                        const listItems = item.content.split('\n').filter(l => l.trim()).map(l => `<li>${l.trim()}</li>`).join('');
+                        return `<div class="care-col"><h3><i class="fas fa-info-circle"></i> ${item.title}</h3><ul>${listItems}</ul></div>`;
+                    }).join('');
+                }
+
+                const socialButtons = document.getElementById('social-buttons');
+                if (socialButtons && data.contacts?.extraButtons?.length) {
+                    document.querySelectorAll('.social-btn-extra').forEach(el => el.remove());
+                    data.contacts.extraButtons.forEach(btn => {
+                        const a = document.createElement('a'); a.href = btn.url; a.target = '_blank'; a.rel = 'noopener noreferrer'; 
+                        a.className = 'btn-social social-btn-extra'; a.style.background = btn.color || '#333333'; 
+                        a.innerHTML = `<i class="fas ${btn.icon}"></i> ${btn.label}`; 
+                        socialButtons.appendChild(a);
+                    });
+                }
+
+            } catch (error) { console.error('Ошибка загрузки данных:', error); }
+        }
+
+        function initBASliders() {
+            document.querySelectorAll('.ba-slider').forEach(slider => {
+                const afterImg = slider.querySelector('.ba-img-after'); const divider = slider.querySelector('.ba-divider');
+                let isDragging = false;
+                const update = (x) => {
+                    const rect = slider.getBoundingClientRect(); let pos = ((x - rect.left) / rect.width) * 100;
+                    pos = Math.max(0, Math.min(100, pos)); afterImg.style.width = `${pos}%`; divider.style.left = `${pos}%`;
+                };
+                slider.addEventListener('mousedown', () => isDragging = true);
+                window.addEventListener('mouseup', () => isDragging = false);
+                window.addEventListener('mousemove', (e) => isDragging && update(e.clientX));
+                slider.addEventListener('touchstart', () => isDragging = true);
+                window.addEventListener('touchend', () => isDragging = false);
+                window.addEventListener('touchmove', (e) => isDragging && update(e.touches[0].clientX));
+            });
+        }
+
+        window.toggleFaq = function(idx) {
+            const ans = document.getElementById(`faq-ans-${idx}`); const icon = ans.previousElementSibling.querySelector('i');
+            if (ans.style.maxHeight) { ans.style.maxHeight = null; ans.style.padding = '0 20px'; icon.style.transform = 'rotate(0deg)'; }
+            else { ans.style.maxHeight = ans.scrollHeight + 'px'; ans.style.padding = '20px'; icon.style.transform = 'rotate(180deg)'; }
+        };
+
+        function openLightbox(src, label) { const lb = document.getElementById('lightbox'); const lbImg = document.getElementById('lightbox-img'); lbImg.src = src; lbImg.alt = label; lb.dataset.label = label || 'Ladi Sugar'; lb.classList.add('active'); document.body.style.overflow = 'hidden'; }
+        function closeLightbox(e) { if (e && e.target.closest('.lightbox-pin')) return; document.getElementById('lightbox').classList.remove('active'); document.body.style.overflow = ''; setTimeout(() => { document.getElementById('lightbox-img').src = ''; }, 250); }
+        function pinToPinterest(imageUrl, description) { const pageUrl = encodeURIComponent(window.location.href); const media = encodeURIComponent(imageUrl); const desc = encodeURIComponent(description || 'Ladi Sugar Polotsk'); window.open(`https://www.pinterest.com/pin/create/button/?url=${pageUrl}&media=${media}&description=${desc}`, '_blank', 'width=750,height=350'); }
+        function pinLightboxImage() { pinToPinterest(document.getElementById('lightbox-img').src, document.getElementById('lightbox').dataset.label); }
+        window.pinBASlide = function(imageUrl, label) { pinToPinterest(imageUrl, `Ladi Sugar - ${label || 'Результат'}`); };
+
+        function initShareButtons() { const url = encodeURIComponent(window.location.href); const title = encodeURIComponent(document.title || 'Ladi Sugar Polotsk'); document.querySelector('.share-wa').href = `https://wa.me/?text=${title}%20${url}`; document.querySelector('.share-tg').href = `https://t.me/share/url?url=${url}&text=${title}`; document.querySelector('.share-vk').href = `https://vk.com/share.php?url=${url}&title=${title}`; document.querySelector('.share-pin').href = `https://www.pinterest.com/pin/create/button/?url=${url}&description=${title}`; }
+        function copyShareLink() { navigator.clipboard.writeText(window.location.href).then(() => showShareToast('✅ Ссылка скопирована!')).catch(() => { const input = document.createElement('input'); input.value = window.location.href; document.body.appendChild(input); input.select(); document.execCommand('copy'); document.body.removeChild(input); showShareToast('✅ Ссылка скопирована!'); }); }
+        function showShareToast(msg) { let t = document.querySelector('.share-toast') || document.createElement('div'); t.className = 'share-toast'; t.textContent = msg; document.body.appendChild(t); setTimeout(() => t.classList.add('show'), 10); setTimeout(() => t.classList.remove('show'), 2500); }
+
+        document.getElementById('reviewForm')?.addEventListener('submit', async (e) => { e.preventDefault(); const btn = document.getElementById('rev-submit-btn'); const status = document.getElementById('rev-status'); btn.disabled = true; btn.textContent = '⏳ Отправка...'; status.textContent = ''; try { const res = await fetch('/api/review/submit', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ name: document.getElementById('rev-name').value, text: document.getElementById('rev-text').value, rating: document.getElementById('rev-rating').value }) }); const data = await res.json(); status.style.color = res.ok ? '#22c55e' : '#ef4444'; status.textContent = data.message; if (res.ok) e.target.reset(); } catch (err) { status.style.color = '#ef4444'; status.textContent = '❌ Ошибка сети'; } finally { btn.disabled = false; btn.textContent = 'Отправить на модерацию'; } });
+        document.addEventListener('DOMContentLoaded', () => { loadData(); initShareButtons(); });
+    </script>
+</body>
+</html>
