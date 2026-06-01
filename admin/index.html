@@ -54,6 +54,10 @@
         .color-row { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
         .color-row input[type="color"] { width: 50px; height: 40px; padding: 0; border: none; background: none; cursor: pointer; }
 
+        /* Кнопка выхода */
+        .nav-logout { margin-top: auto; padding: 12px 20px; background: #334155; border-top: 1px solid #475569; cursor: pointer; transition: 0.2s; display: flex; align-items: center; gap: 10px; }
+        .nav-logout:hover { background: #ef4444; color: white; }
+
         @media (max-width: 768px) { 
             #admin-ui { flex-direction: column; } 
             .sidebar { width: 100%; flex-direction: row; overflow-x: auto; padding: 10px; } 
@@ -86,6 +90,8 @@
             <div class="nav-item" onclick="show('moderation')">🕒 Модерация</div>
             <div class="nav-item" onclick="show('blog')">📝 Блог</div>
             <div class="nav-item" onclick="show('contacts')">📞 Контакты и кнопки</div>
+            <!-- 🚪 Кнопка выхода -->
+            <div class="nav-logout" onclick="logout()">🚪 Выход из админки</div>
         </aside>
         <main class="main">
             <section id="hero" class="section active">
@@ -95,7 +101,6 @@
                 <div class="form-group"><label>Ссылка Dikidi</label><input type="url" data-bind="hero.dikidiUrl"></div>
             </section>
             
-            <!-- 🎨 ОФОРМЛЕНИЕ -->
             <section id="theme" class="section">
                 <div class="section-header"><h2>🎨 Дизайн сайта</h2></div>
                 <div class="form-group">
@@ -212,6 +217,31 @@
         function setNested(obj, path, value) { const keys = path.split('.'); let current = obj; for (let i = 0; i < keys.length - 1; i++) current = current[keys[i]]; current[keys[keys.length - 1]] = value; }
         function fileToBase64(file) { return new Promise((resolve, reject) => { const reader = new FileReader(); reader.readAsDataURL(file); reader.onload = () => resolve(reader.result.split(',')[1]); reader.onerror = error => reject(error); }); }
 
+        // 🔐 Проверка сессии при загрузке
+        async function checkSession() {
+            const savedToken = localStorage.getItem('ls_admin_token');
+            if (savedToken) {
+                sessionToken = savedToken;
+                // Проверяем валидность токена на сервере (опционально, но надежнее)
+                try {
+                    const res = await fetch('/api/auth/login', { 
+                        method: 'POST', 
+                        headers: { 'Content-Type': 'application/json' }, 
+                        body: JSON.stringify({ password: atob(sessionToken) }) 
+                    });
+                    if (res.ok) {
+                        document.getElementById('login-overlay').style.display = 'none';
+                        document.getElementById('admin-ui').style.display = 'flex';
+                        loadData();
+                        return;
+                    }
+                } catch {}
+                localStorage.removeItem('ls_admin_token');
+            }
+            document.getElementById('login-overlay').style.display = 'flex';
+            document.getElementById('admin-ui').style.display = 'none';
+        }
+
         async function login() {
             const pass = document.getElementById('pass-input').value;
             const btn = document.querySelector('.login-box button'); const err = document.getElementById('error-msg');
@@ -219,22 +249,31 @@
             try {
                 const res = await fetch('/api/auth/login', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ password: pass }) });
                 const data = await res.json();
-                if (data.success) { sessionToken = data.token; document.getElementById('login-overlay').style.display = 'none'; document.getElementById('admin-ui').style.display = 'flex'; loadData(); } 
-                else { err.style.display = 'block'; }
-            } catch (e) { err.textContent = 'Ошибка'; err.style.display = 'block'; }
+                if (data.success) { 
+                    sessionToken = data.token;
+                    localStorage.setItem('ls_admin_token', sessionToken); // 📝 Сохраняем сессию
+                    document.getElementById('login-overlay').style.display = 'none'; 
+                    document.getElementById('admin-ui').style.display = 'flex'; 
+                    loadData(); 
+                } else { err.style.display = 'block'; }
+            } catch (e) { err.textContent = 'Ошибка сети'; err.style.display = 'block'; }
             finally { btn.textContent = 'Войти'; btn.disabled = false; }
+        }
+
+        // 🚪 Выход из админки
+        function logout() {
+            if (confirm('Вы уверены, что хотите выйти из админки?')) {
+                localStorage.removeItem('ls_admin_token');
+                sessionToken = '';
+                currentData = {};
+                window.location.reload();
+            }
         }
 
         async function loadData() {
             try {
                 const res = await fetch('/data.json'); currentData = await res.json();
-                
-                if (!Array.isArray(currentData.masters)) {
-                    if (currentData.master) {
-                        currentData.masters = [{ role: 'Мастер', name: currentData.master.name || '', desc: currentData.master.description || '', photo: currentData.masterPhoto || '' }];
-                        delete currentData.master; delete currentData.masterPhoto;
-                    } else currentData.masters = [];
-                }
+                if (!Array.isArray(currentData.masters)) { if (currentData.master) { currentData.masters = [{ role: 'Мастер', name: currentData.master.name || '', desc: currentData.master.description || '', photo: currentData.masterPhoto || '' }]; delete currentData.master; delete currentData.masterPhoto; } else currentData.masters = []; }
                 if (!Array.isArray(currentData.features)) currentData.features = [];
                 if (!Array.isArray(currentData.beforeAfter)) currentData.beforeAfter = [];
                 if (!Array.isArray(currentData.prices)) currentData.prices = [];
@@ -244,20 +283,11 @@
                 if (!Array.isArray(currentData.careInstructions)) currentData.careInstructions = [];
                 if (!currentData.contacts) currentData.contacts = {};
                 if (!Array.isArray(currentData.contacts.extraButtons)) currentData.contacts.extraButtons = [];
-                
-                // 🎨 Инициализация темы
                 if (!currentData.theme) currentData.theme = { heroImage: '', color_bg_light: '#FDEEF4', color_bg_white: '#FFFFFF', color_primary: '#B08D74', color_text: '#333333' };
-                else {
-                    currentData.theme.color_bg_light = currentData.theme.color_bg_light || '#FDEEF4';
-                    currentData.theme.color_bg_white = currentData.theme.color_bg_white || '#FFFFFF';
-                    currentData.theme.color_primary = currentData.theme.color_primary || '#B08D74';
-                    currentData.theme.color_text = currentData.theme.color_text || '#333333';
-                }
+                else { currentData.theme.color_bg_light = currentData.theme.color_bg_light || '#FDEEF4'; currentData.theme.color_bg_white = currentData.theme.color_bg_white || '#FFFFFF'; currentData.theme.color_primary = currentData.theme.color_primary || '#B08D74'; currentData.theme.color_text = currentData.theme.color_text || '#333333'; }
 
-                // Привязка текстовых полей
                 document.querySelectorAll('[data-bind]').forEach(el => { const path = el.dataset.bind; el.value = getNested(currentData, path) || ''; el.addEventListener('input', e => setNested(currentData, path, e.target.value)); });
                 
-                // 🎨 Привязка цветов и баннера
                 document.getElementById('color-bg-light').value = currentData.theme.color_bg_light;
                 document.getElementById('color-bg-white').value = currentData.theme.color_bg_white;
                 document.getElementById('color-primary').value = currentData.theme.color_primary;
@@ -295,16 +325,8 @@
                         const file = e.target.files[0]; if (!file) return;
                         if (file.size > 5_000_000) { status.textContent = '❌ > 5МБ'; return; }
                         status.textContent = '⏳...'; fileInput.disabled = true;
-                        try {
-                            const base64 = await fileToBase64(file);
-                            const res = await fetch('/api/upload', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ fileName: file.name, contentBase64: base64 }) });
-                            const data = await res.json();
-                            if (res.ok) { input.value = data.url; currentData[type][index][f.name] = data.url; status.textContent = '✅'; } 
-                            else status.textContent = '❌';
-                        } catch { status.textContent = '❌'; }
-                        finally { fileInput.disabled = false; }
-                    };
-                    uploadRow.appendChild(fileInput); uploadRow.appendChild(status); card.appendChild(uploadRow);
+                        try { const base64 = await fileToBase64(file); const res = await fetch('/api/upload', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ fileName: file.name, contentBase64: base64 }) }); const data = await res.json(); if (res.ok) { input.value = data.url; currentData[type][index][f.name] = data.url; status.textContent = '✅'; } else status.textContent = '❌'; } catch { status.textContent = '❌'; } finally { fileInput.disabled = false; }
+                    }; uploadRow.appendChild(fileInput); uploadRow.appendChild(status); card.appendChild(uploadRow);
                 }); container.appendChild(card);
             });
         }
@@ -318,8 +340,10 @@
         function show(id) { document.querySelectorAll('.section').forEach(s => s.classList.remove('active')); document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active')); document.getElementById(id).classList.add('active'); event.target.classList.add('active'); }
         function showToast(msg, err = false) { const t = document.getElementById('toast'); t.textContent = msg; t.className = `toast ${err ? 'error' : ''} show`; setTimeout(() => t.classList.remove('show'), 4000); }
 
-        // 🎸 Загрузка баннера
         document.getElementById('banner-input').onchange = async (e) => { const f = e.target.files[0]; if (!f) return; if (f.size > 5_000_000) { document.getElementById('banner-status').textContent = '❌ > 5 МБ'; return; } document.getElementById('banner-status').textContent = '⏳...'; e.target.disabled = true; try { const base64 = await fileToBase64(f); const res = await fetch('/api/upload', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ fileName: f.name, contentBase64: base64 }) }); const d = await res.json(); if (res.ok) { currentData.theme.heroImage = d.url; document.getElementById('banner-preview').src = d.url; document.getElementById('banner-preview').style.display = 'block'; document.getElementById('banner-status').textContent = '✅'; } else document.getElementById('banner-status').textContent = '❌'; } catch { document.getElementById('banner-status').textContent = '❌'; } finally { e.target.disabled = false; } };
+        
+        // 🚀 Проверяем сессию при старте
+        document.addEventListener('DOMContentLoaded', checkSession);
     </script>
 </body>
 </html>
