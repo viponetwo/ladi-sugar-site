@@ -74,21 +74,11 @@
         <div class="container">
             <h2 class="section-title">Отзывы клиентов</h2>
             <div class="reviews-grid" id="reviews-container"></div>
-            
             <div class="review-form-wrapper">
                 <h3 style="text-align:center; margin-bottom:20px;">Оставить отзыв</h3>
                 <form id="reviewForm" class="review-form">
                     <input type="text" id="rev-name" placeholder="Ваше имя" required>
-                    <div class="rating-input">
-                        <span>Оценка:</span>
-                        <select id="rev-rating">
-                            <option value="5">⭐⭐⭐⭐⭐ (5)</option>
-                            <option value="4">⭐⭐⭐⭐ (4)</option>
-                            <option value="3">⭐⭐⭐ (3)</option>
-                            <option value="2">⭐⭐ (2)</option>
-                            <option value="1">⭐ (1)</option>
-                        </select>
-                    </div>
+                    <div class="rating-input"><span>Оценка:</span><select id="rev-rating"><option value="5">⭐⭐⭐⭐⭐ (5)</option><option value="4">⭐⭐⭐⭐ (4)</option><option value="3">⭐⭐⭐ (3)</option><option value="2">⭐⭐ (2)</option><option value="1">⭐ (1)</option></select></div>
                     <textarea id="rev-text" placeholder="Расскажите о вашем опыте..." rows="4" required></textarea>
                     <button type="submit" id="rev-submit-btn" class="btn-hero" style="padding:12px 30px; font-size:1rem; width:100%;">Отправить на модерацию</button>
                     <div id="rev-status" style="text-align:center; margin-top:10px; font-size:0.9rem;"></div>
@@ -112,9 +102,7 @@
                         <a href="#" id="btn-insta" target="_blank" class="btn-social btn-insta"><i class="fab fa-instagram"></i></a>
                     </div>
                 </div>
-                <div class="map-container">
-                    <iframe src="https://yandex.ru/map-widget/v1/?um=constructor%3Ab893ccbe0c115b6b91c8b5b6581a5e81d06ace6875cc4528a08ba8fecfff3da5&amp;source=constructor" width="100%" height="400" frameborder="0"></iframe>
-                </div>
+                <div class="map-container"><iframe src="https://yandex.ru/map-widget/v1/?um=constructor%3Ab893ccbe0c115b6b91c8b5b6581a5e81d06ace6875cc4528a08ba8fecfff3da5&amp;source=constructor" width="100%" height="400" frameborder="0"></iframe></div>
             </div>
         </div>
     </section>
@@ -130,9 +118,7 @@
         </div>
     </section>
 
-    <footer>
-        <div class="container"><p>&copy; 2026 Ladi Sugar Polotsk. Все права защищены.</p></div>
-    </footer>
+    <footer><div class="container"><p>&copy; 2026 Ladi Sugar Polotsk. Все права защищены.</p></div></footer>
 
     <div id="lightbox" class="lightbox" onclick="closeLightbox(event)">
         <a href="#" class="lightbox-pin" onclick="pinLightboxImage(); return false;" title="Сохранить в Pinterest"><i class="fab fa-pinterest-p"></i></a>
@@ -151,89 +137,56 @@
 
                 document.getElementById('hero-title').textContent = data.hero.title;
                 document.getElementById('hero-subtitle').innerHTML = data.hero.subtitle.replace(/\n/g, '<br>');
-                const heroBtn = document.getElementById('hero-btn');
-                heroBtn.textContent = data.hero.btnText;
-                heroBtn.href = data.hero.dikidiUrl;
-                document.getElementById('header-dikidi-btn').href = data.hero.dikidiUrl;
+                
+                // 🔗 Динамическое обновление кнопок записи и связи
+                const bookingText = data.contacts.bookingText || 'Записаться онлайн';
+                const bookingUrl = data.contacts.dikidi || '#';
+                const waNum = data.contacts.whatsapp || '';
+                const vibNum = data.contacts.viber || '';
+                const instaUrl = data.contacts.instagram || '#';
+                const phoneNum = data.contacts.phone || '';
+
+                document.getElementById('header-dikidi-btn').textContent = bookingText;
+                document.getElementById('header-dikidi-btn').href = bookingUrl;
+                document.getElementById('hero-btn').textContent = bookingText;
+                document.getElementById('hero-btn').href = bookingUrl;
+                document.getElementById('btn-dikidi-footer').innerHTML = `<i class="far fa-calendar-check"></i> ${bookingText}`;
+                document.getElementById('btn-dikidi-footer').href = bookingUrl;
+                document.getElementById('btn-wa').href = waNum ? `https://wa.me/${waNum}` : '#';
+                document.getElementById('btn-viber').href = vibNum ? `viber://chat?number=%2B${vibNum}` : '#';
+                document.getElementById('btn-insta').href = instaUrl;
+                document.getElementById('contact-phone').textContent = phoneNum;
+                document.getElementById('contact-phone').href = phoneNum ? `tel:${phoneNum}` : '#';
+                document.getElementById('contact-address').textContent = data.contacts.address || '';
 
                 document.getElementById('master-name').textContent = `Привет! Я — ${data.master.name}`;
                 const descContainer = document.getElementById('master-desc-container');
                 descContainer.innerHTML = '';
-                data.master.description.split('\n').forEach(line => {
-                    if (line.trim()) { const p = document.createElement('p'); p.textContent = line; descContainer.appendChild(p); }
-                });
-
-                // 📸 Динамическая подстановка фото мастера
+                data.master.description.split('\n').forEach(line => { if (line.trim()) { const p = document.createElement('p'); p.textContent = line; descContainer.appendChild(p); } });
                 if (data.masterPhoto) document.getElementById('master-photo').src = data.masterPhoto;
 
-                document.getElementById('contact-address').textContent = data.contacts.address;
-                const phoneEl = document.getElementById('contact-phone');
-                phoneEl.textContent = data.contacts.phone;
-                phoneEl.href = `tel:+${data.contacts.whatsapp}`;
-                document.getElementById('btn-wa').href = `https://wa.me/${data.contacts.whatsapp}`;
-                document.getElementById('btn-viber').href = `viber://chat?number=%2B${data.contacts.viber}`;
-                document.getElementById('btn-insta').href = data.contacts.instagram;
-                document.getElementById('btn-dikidi-footer').href = data.contacts.dikidi;
-
                 const featuresContainer = document.getElementById('features-container');
-                if(featuresContainer && data.features) {
-                    featuresContainer.innerHTML = data.features.map(f => `
-                        <div class="feature-card">
-                            <i class="fas ${f.icon} feature-icon"></i>
-                            <h3>${f.title}</h3>
-                            <p>${f.desc}</p>
-                        </div>
-                    `).join('');
-                }
+                if(featuresContainer && data.features) { featuresContainer.innerHTML = data.features.map(f => `<div class="feature-card"><i class="fas ${f.icon} feature-icon"></i><h3>${f.title}</h3><p>${f.desc}</p></div>`).join(''); }
 
                 const priceContainer = document.getElementById('price-list-container');
                 if(priceContainer && data.prices) priceContainer.innerHTML = data.prices.map(p => `<div class="price-item"><span class="zone-name">${p.name}</span><span class="zone-price">${p.value} BYN</span></div>`).join('');
 
                 const reviewContainer = document.getElementById('reviews-container');
-                if(reviewContainer && data.reviews) {
-                    const visible = data.reviews.filter(r => r.status !== 'pending');
-                    reviewContainer.innerHTML = visible.map(r => `
-                        <div class="review-card">
-                            <div class="review-stars">${'<i class="fas fa-star"></i>'.repeat(r.rating)}</div>
-                            <p class="review-text">«${r.text}»</p>
-                            <div class="review-author"><i class="fas fa-user-circle"></i> ${r.name} <span style="color:#888; font-weight:400; font-size:0.8rem;">${r.date || ''}</span></div>
-                        </div>
-                    `).join('');
-                }
+                if(reviewContainer && data.reviews) { const visible = data.reviews.filter(r => r.status !== 'pending'); reviewContainer.innerHTML = visible.map(r => `<div class="review-card"><div class="review-stars">${'<i class="fas fa-star"></i>'.repeat(r.rating)}</div><p class="review-text">«${r.text}»</p><div class="review-author"><i class="fas fa-user-circle"></i> ${r.name} <span style="color:#888; font-weight:400; font-size:0.8rem;">${r.date || ''}</span></div></div>`).join(''); }
 
                 const blogContainer = document.getElementById('blog-container');
-                if(blogContainer && data.blog && data.blog.length > 0) {
-                    blogContainer.innerHTML = data.blog.map(post => `
-                        <div class="blog-card">
-                            <img src="${post.image || ''}" alt="${post.title}" class="blog-img">
-                            <div class="blog-content">
-                                <span class="blog-date">${post.date}</span>
-                                <h3>${post.title}</h3>
-                                <p>${post.excerpt}</p>
-                            </div>
-                        </div>
-                    `).join('');
-                } else if (blogContainer) {
-                    blogContainer.innerHTML = '<p style="text-align:center;color:#666; grid-column: 1/-1;">Статей пока нет.</p>';
-                }
+                if(blogContainer && data.blog && data.blog.length > 0) { blogContainer.innerHTML = data.blog.map(post => `<div class="blog-card"><img src="${post.image || ''}" alt="${post.title}" class="blog-img"><div class="blog-content"><span class="blog-date">${post.date}</span><h3>${post.title}</h3><p>${post.excerpt}</p></div></div>`).join(''); } 
+                else if (blogContainer) { blogContainer.innerHTML = '<p style="text-align:center;color:#666; grid-column: 1/-1;">Статей пока нет.</p>'; }
 
                 const galleryPhotos = (data.gallery || []).filter(item => item.image && item.image.trim() !== '');
                 const categoriesContainer = document.getElementById('gallery-categories');
                 const emptyMsg = document.getElementById('gallery-empty');
-
                 if (galleryPhotos.length > 0 && categoriesContainer) {
-                    emptyMsg.style.display = 'none';
-                    categoriesContainer.innerHTML = '';
-                    const grouped = {};
-                    galleryPhotos.forEach(photo => {
-                        const cat = photo.label || 'Без категории';
-                        if (!grouped[cat]) grouped[cat] = [];
-                        grouped[cat].push(photo);
-                    });
+                    emptyMsg.style.display = 'none'; categoriesContainer.innerHTML = '';
+                    const grouped = {}; galleryPhotos.forEach(photo => { const cat = photo.label || 'Без категории'; if (!grouped[cat]) grouped[cat] = []; grouped[cat].push(photo); });
                     Object.keys(grouped).forEach((cat, index) => {
                         const blockId = `carousel-block-${index}`;
-                        const wrapper = document.createElement('div');
-                        wrapper.className = 'gallery-category-block';
+                        const wrapper = document.createElement('div'); wrapper.className = 'gallery-category-block';
                         wrapper.innerHTML = `<h3 class="gallery-category-title">${cat}</h3><div class="carousel-wrapper"><div class="carousel" id="${blockId}"><div class="carousel-track"></div></div><button class="carousel-btn prev" data-target="${blockId}" aria-label="Предыдущее"><i class="fas fa-chevron-left"></i></button><button class="carousel-btn next" data-target="${blockId}" aria-label="Следующее"><i class="fas fa-chevron-right"></i></button><div class="carousel-dots" data-target="${blockId}"></div></div>`;
                         categoriesContainer.appendChild(wrapper);
                         const track = wrapper.querySelector('.carousel-track');
@@ -247,14 +200,8 @@
 
         function initCarouselForBlock(blockId, totalSlides) {
             const wrapper = document.querySelector(`#${blockId}`).closest('.carousel-wrapper');
-            const track = wrapper.querySelector('.carousel-track');
-            const dotsContainer = wrapper.querySelector('.carousel-dots');
-            const prevBtn = wrapper.querySelector('.prev');
-            const nextBtn = wrapper.querySelector('.next');
-            let current = 0;
-            let slidesPerView = window.innerWidth >= 1024 ? 3 : window.innerWidth >= 768 ? 2 : 1;
-            let maxIndex = Math.max(0, totalSlides - slidesPerView);
-            let autoplay = null;
+            const track = wrapper.querySelector('.carousel-track'); const dotsContainer = wrapper.querySelector('.carousel-dots'); const prevBtn = wrapper.querySelector('.prev'); const nextBtn = wrapper.querySelector('.next');
+            let current = 0; let slidesPerView = window.innerWidth >= 1024 ? 3 : window.innerWidth >= 768 ? 2 : 1; let maxIndex = Math.max(0, totalSlides - slidesPerView); let autoplay = null;
             function renderDots() { dotsContainer.innerHTML = Array.from({length: Math.ceil(totalSlides / slidesPerView)}, (_, i) => `<button class="carousel-dot ${i === Math.floor(current/slidesPerView) ? 'active' : ''}" data-idx="${i * slidesPerView}"></button>`).join(''); }
             function update() { track.style.transform = `translateX(-${current * (100/slidesPerView)}%)`; renderDots(); prevBtn.disabled = current === 0; nextBtn.disabled = current >= maxIndex; }
             function next() { current = current >= maxIndex ? 0 : current + 1; update(); resetAutoplay(); }
@@ -263,11 +210,9 @@
             function startAutoplay() { stopAutoplay(); autoplay = setInterval(next, 5000); }
             function stopAutoplay() { clearInterval(autoplay); }
             function resetAutoplay() { stopAutoplay(); startAutoplay(); }
-            prevBtn.onclick = prev; nextBtn.onclick = next;
-            dotsContainer.onclick = (e) => { if (e.target.classList.contains('carousel-dot')) goTo(parseInt(e.target.dataset.idx)); };
+            prevBtn.onclick = prev; nextBtn.onclick = next; dotsContainer.onclick = (e) => { if (e.target.classList.contains('carousel-dot')) goTo(parseInt(e.target.dataset.idx)); };
             wrapper.onmouseenter = stopAutoplay; wrapper.onmouseleave = startAutoplay;
-            let startX = 0, endX = 0;
-            const carousel = wrapper.querySelector('.carousel');
+            let startX = 0, endX = 0; const carousel = wrapper.querySelector('.carousel');
             carousel.ontouchstart = (e) => startX = e.changedTouches[0].screenX;
             carousel.ontouchend = (e) => { endX = e.changedTouches[0].screenX; if (startX - endX > 50) next(); if (endX - startX > 50) prev(); };
             window.addEventListener('resize', () => { const newView = window.innerWidth >= 1024 ? 3 : window.innerWidth >= 768 ? 2 : 1; if (newView !== slidesPerView) { slidesPerView = newView; maxIndex = Math.max(0, totalSlides - slidesPerView); current = Math.min(current, maxIndex); update(); } });
