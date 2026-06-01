@@ -40,7 +40,6 @@
         </div>
     </section>
 
-    <!-- 🔄 ДО / ПОСЛЕ -->
     <section id="before-after" class="bg-white">
         <div class="container">
             <h2 class="section-title">Результат работ</h2>
@@ -55,7 +54,6 @@
         </div>
     </section>
 
-    <!-- 👤 МАСТЕРА -->
     <section id="masters" class="bg-white">
         <div class="container">
             <h2 class="section-title">Наша команда</h2>
@@ -70,7 +68,6 @@
         </div>
     </section>
 
-    <!-- ❓ FAQ -->
     <section id="faq" class="bg-white">
         <div class="container">
             <h2 class="section-title">Частые вопросы</h2>
@@ -78,7 +75,6 @@
         </div>
     </section>
 
-    <!-- 📋 ИНСТРУКЦИИ -->
     <section id="care" class="bg-light">
         <div class="container">
             <h2 class="section-title">Памятка клиенту</h2>
@@ -96,13 +92,7 @@
                     <input type="text" id="rev-name" placeholder="Ваше имя" required>
                     <div class="rating-input">
                         <span>Оценка:</span>
-                        <select id="rev-rating">
-                            <option value="5">⭐⭐⭐⭐⭐ (5)</option>
-                            <option value="4">⭐⭐⭐⭐ (4)</option>
-                            <option value="3">⭐⭐⭐ (3)</option>
-                            <option value="2">⭐⭐ (2)</option>
-                            <option value="1">⭐ (1)</option>
-                        </select>
+                        <select id="rev-rating"><option value="5">⭐⭐⭐⭐⭐ (5)</option><option value="4">⭐⭐⭐⭐ (4)</option><option value="3">⭐⭐⭐ (3)</option><option value="2">⭐⭐ (2)</option><option value="1">⭐ (1)</option></select>
                     </div>
                     <textarea id="rev-text" placeholder="Расскажите о вашем опыте..." rows="4" required></textarea>
                     <button type="submit" id="rev-submit-btn" class="btn-hero" style="padding:12px 30px; font-size:1rem; width:100%;">Отправить на модерацию</button>
@@ -159,6 +149,17 @@
                 const data = await response.json();
                 window.siteData = data;
 
+                // 🎨 Применяем цвета и баннер
+                if (data.theme) {
+                    document.documentElement.style.setProperty('--bg-light', data.theme.color_bg_light);
+                    document.documentElement.style.setProperty('--bg-white', data.theme.color_bg_white);
+                    document.documentElement.style.setProperty('--primary', data.theme.color_primary);
+                    document.documentElement.style.setProperty('--text-dark', data.theme.color_text);
+                }
+                if (data.theme?.heroImage) {
+                    document.querySelector('.hero').style.backgroundImage = `url('${data.theme.heroImage}')`;
+                }
+
                 document.getElementById('hero-title').textContent = data.hero.title;
                 document.getElementById('hero-subtitle').innerHTML = data.hero.subtitle.replace(/\n/g, '<br>');
                 
@@ -176,7 +177,7 @@
                 document.getElementById('contact-phone').href = data.contacts.phone ? `tel:${data.contacts.phone}` : '#';
                 document.getElementById('contact-address').textContent = data.contacts.address || '';
 
-                // 👤 Рендер мастеров
+                // 👤 Мастера
                 const mastersContainer = document.getElementById('masters-container');
                 if(mastersContainer && Array.isArray(data.masters) && data.masters.length > 0) {
                     mastersContainer.innerHTML = data.masters.map(m => `
@@ -189,8 +190,6 @@
                             </div>
                         </div>
                     `).join('');
-                } else if (mastersContainer) {
-                    mastersContainer.innerHTML = '<p style="text-align:center;color:#666; grid-column:1/-1;">Информация скоро появится</p>';
                 }
 
                 const featuresContainer = document.getElementById('features-container');
@@ -217,9 +216,7 @@
                             <div class="ba-img-after" style="background-image:url('${item.after}'); width:50%;"></div>
                             <div class="ba-divider" style="left:50%;"><div class="ba-handle"></div></div>
                             <div class="ba-label">${item.label}</div>
-                            <button class="ba-pin-btn" onclick="window.pinBASlide('${item.after.replace(/'/g, "\\'")}', '${item.label.replace(/'/g, "\\'")}')" title="Сохранить в Pinterest">
-                                <i class="fab fa-pinterest-p"></i>
-                            </button>
+                            <button class="ba-pin-btn" onclick="window.pinBASlide('${item.after.replace(/'/g, "\\'")}', '${item.label.replace(/'/g, "\\'")}')" title="Сохранить в Pinterest"><i class="fab fa-pinterest-p"></i></button>
                         </div>
                     `).join('');
                     initBASliders();
@@ -228,10 +225,7 @@
                 const faqContainer = document.getElementById('faq-container');
                 if(faqContainer && data.faq?.length) {
                     faqContainer.innerHTML = data.faq.map((item, i) => `
-                        <div class="faq-item">
-                            <div class="faq-question" onclick="window.toggleFaq(${i})">${item.question}<i class="fas fa-chevron-down"></i></div>
-                            <div class="faq-answer" id="faq-ans-${i}">${item.answer}</div>
-                        </div>
+                        <div class="faq-item"><div class="faq-question" onclick="window.toggleFaq(${i})">${item.question}<i class="fas fa-chevron-down"></i></div><div class="faq-answer" id="faq-ans-${i}">${item.answer}</div></div>
                     `).join('');
                 }
 
@@ -241,8 +235,6 @@
                         const listItems = item.content.split('\n').filter(l => l.trim()).map(l => `<li>${l.trim()}</li>`).join('');
                         return `<div class="care-col"><h3><i class="fas fa-info-circle"></i> ${item.title}</h3><ul>${listItems}</ul></div>`;
                     }).join('');
-                } else if (careContainer) {
-                    careContainer.innerHTML = '<p style="text-align:center;color:#666;">Информация скоро появится</p>';
                 }
 
                 const socialButtons = document.getElementById('social-buttons');
@@ -261,14 +253,11 @@
 
         function initBASliders() {
             document.querySelectorAll('.ba-slider').forEach(slider => {
-                const afterImg = slider.querySelector('.ba-img-after');
-                const divider = slider.querySelector('.ba-divider');
+                const afterImg = slider.querySelector('.ba-img-after'); const divider = slider.querySelector('.ba-divider');
                 let isDragging = false;
                 const update = (x) => {
-                    const rect = slider.getBoundingClientRect();
-                    let pos = ((x - rect.left) / rect.width) * 100;
-                    pos = Math.max(0, Math.min(100, pos));
-                    afterImg.style.width = `${pos}%`; divider.style.left = `${pos}%`;
+                    const rect = slider.getBoundingClientRect(); let pos = ((x - rect.left) / rect.width) * 100;
+                    pos = Math.max(0, Math.min(100, pos)); afterImg.style.width = `${pos}%`; divider.style.left = `${pos}%`;
                 };
                 slider.addEventListener('mousedown', () => isDragging = true);
                 window.addEventListener('mouseup', () => isDragging = false);
@@ -280,50 +269,22 @@
         }
 
         window.toggleFaq = function(idx) {
-            const ans = document.getElementById(`faq-ans-${idx}`);
-            const icon = ans.previousElementSibling.querySelector('i');
+            const ans = document.getElementById(`faq-ans-${idx}`); const icon = ans.previousElementSibling.querySelector('i');
             if (ans.style.maxHeight) { ans.style.maxHeight = null; ans.style.padding = '0 20px'; icon.style.transform = 'rotate(0deg)'; }
             else { ans.style.maxHeight = ans.scrollHeight + 'px'; ans.style.padding = '20px'; icon.style.transform = 'rotate(180deg)'; }
         };
 
-        function openLightbox(src, label) { 
-            const lb = document.getElementById('lightbox'); const lbImg = document.getElementById('lightbox-img'); lbImg.src = src; lbImg.alt = label; lb.dataset.label = label || 'Ladi Sugar'; lb.classList.add('active'); document.body.style.overflow = 'hidden'; 
-        }
-        function closeLightbox(e) { 
-            if (e && e.target.closest('.lightbox-pin')) return; document.getElementById('lightbox').classList.remove('active'); document.body.style.overflow = ''; setTimeout(() => { document.getElementById('lightbox-img').src = ''; }, 250); 
-        }
-        function pinToPinterest(imageUrl, description) { 
-            const pageUrl = encodeURIComponent(window.location.href); const media = encodeURIComponent(imageUrl); const desc = encodeURIComponent(description || 'Ladi Sugar Polotsk'); 
-            window.open(`https://www.pinterest.com/pin/create/button/?url=${pageUrl}&media=${media}&description=${desc}`, '_blank', 'width=750,height=350'); 
-        }
+        function openLightbox(src, label) { const lb = document.getElementById('lightbox'); const lbImg = document.getElementById('lightbox-img'); lbImg.src = src; lbImg.alt = label; lb.dataset.label = label || 'Ladi Sugar'; lb.classList.add('active'); document.body.style.overflow = 'hidden'; }
+        function closeLightbox(e) { if (e && e.target.closest('.lightbox-pin')) return; document.getElementById('lightbox').classList.remove('active'); document.body.style.overflow = ''; setTimeout(() => { document.getElementById('lightbox-img').src = ''; }, 250); }
+        function pinToPinterest(imageUrl, description) { const pageUrl = encodeURIComponent(window.location.href); const media = encodeURIComponent(imageUrl); const desc = encodeURIComponent(description || 'Ladi Sugar Polotsk'); window.open(`https://www.pinterest.com/pin/create/button/?url=${pageUrl}&media=${media}&description=${desc}`, '_blank', 'width=750,height=350'); }
         function pinLightboxImage() { pinToPinterest(document.getElementById('lightbox-img').src, document.getElementById('lightbox').dataset.label); }
-        
         window.pinBASlide = function(imageUrl, label) { pinToPinterest(imageUrl, `Ladi Sugar - ${label || 'Результат'}`); };
 
-        function initShareButtons() { 
-            const url = encodeURIComponent(window.location.href); const title = encodeURIComponent(document.title || 'Ladi Sugar Polotsk'); 
-            document.querySelector('.share-wa').href = `https://wa.me/?text=${title}%20${url}`; document.querySelector('.share-tg').href = `https://t.me/share/url?url=${url}&text=${title}`; document.querySelector('.share-vk').href = `https://vk.com/share.php?url=${url}&title=${title}`; document.querySelector('.share-pin').href = `https://www.pinterest.com/pin/create/button/?url=${url}&description=${title}`; 
-        }
-        
-        function copyShareLink() { 
-            navigator.clipboard.writeText(window.location.href).then(() => showShareToast('✅ Ссылка скопирована!')).catch(() => { 
-                const input = document.createElement('input'); input.value = window.location.href; document.body.appendChild(input); input.select(); document.execCommand('copy'); document.body.removeChild(input); showShareToast('✅ Ссылка скопирована!'); 
-            }); 
-        }
-        
-        function showShareToast(msg) { 
-            let t = document.querySelector('.share-toast') || document.createElement('div'); t.className = 'share-toast'; t.textContent = msg; document.body.appendChild(t); setTimeout(() => t.classList.add('show'), 10); setTimeout(() => t.classList.remove('show'), 2500); 
-        }
+        function initShareButtons() { const url = encodeURIComponent(window.location.href); const title = encodeURIComponent(document.title || 'Ladi Sugar Polotsk'); document.querySelector('.share-wa').href = `https://wa.me/?text=${title}%20${url}`; document.querySelector('.share-tg').href = `https://t.me/share/url?url=${url}&text=${title}`; document.querySelector('.share-vk').href = `https://vk.com/share.php?url=${url}&title=${title}`; document.querySelector('.share-pin').href = `https://www.pinterest.com/pin/create/button/?url=${url}&description=${title}`; }
+        function copyShareLink() { navigator.clipboard.writeText(window.location.href).then(() => showShareToast('✅ Ссылка скопирована!')).catch(() => { const input = document.createElement('input'); input.value = window.location.href; document.body.appendChild(input); input.select(); document.execCommand('copy'); document.body.removeChild(input); showShareToast('✅ Ссылка скопирована!'); }); }
+        function showShareToast(msg) { let t = document.querySelector('.share-toast') || document.createElement('div'); t.className = 'share-toast'; t.textContent = msg; document.body.appendChild(t); setTimeout(() => t.classList.add('show'), 10); setTimeout(() => t.classList.remove('show'), 2500); }
 
-        document.getElementById('reviewForm')?.addEventListener('submit', async (e) => { 
-            e.preventDefault(); const btn = document.getElementById('rev-submit-btn'); const status = document.getElementById('rev-status'); btn.disabled = true; btn.textContent = '⏳ Отправка...'; status.textContent = ''; 
-            try { 
-                const res = await fetch('/api/review/submit', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ name: document.getElementById('rev-name').value, text: document.getElementById('rev-text').value, rating: document.getElementById('rev-rating').value }) }); 
-                const data = await res.json(); status.style.color = res.ok ? '#22c55e' : '#ef4444'; status.textContent = data.message; if (res.ok) e.target.reset(); 
-            } catch (err) { status.style.color = '#ef4444'; status.textContent = '❌ Ошибка сети'; } 
-            finally { btn.disabled = false; btn.textContent = 'Отправить на модерацию'; } 
-        });
-
+        document.getElementById('reviewForm')?.addEventListener('submit', async (e) => { e.preventDefault(); const btn = document.getElementById('rev-submit-btn'); const status = document.getElementById('rev-status'); btn.disabled = true; btn.textContent = '⏳ Отправка...'; status.textContent = ''; try { const res = await fetch('/api/review/submit', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ name: document.getElementById('rev-name').value, text: document.getElementById('rev-text').value, rating: document.getElementById('rev-rating').value }) }); const data = await res.json(); status.style.color = res.ok ? '#22c55e' : '#ef4444'; status.textContent = data.message; if (res.ok) e.target.reset(); } catch (err) { status.style.color = '#ef4444'; status.textContent = '❌ Ошибка сети'; } finally { btn.disabled = false; btn.textContent = 'Отправить на модерацию'; } });
         document.addEventListener('DOMContentLoaded', () => { loadData(); initShareButtons(); });
     </script>
 </body>
