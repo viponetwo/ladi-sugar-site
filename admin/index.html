@@ -112,7 +112,6 @@
                 <div class="form-group"><label>Ссылка Dikidi</label><input type="url" data-bind="hero.dikidiUrl"></div>
             </section>
 
-            <!-- 🔍 SEO SECTION -->
             <section id="seo" class="section">
                 <div class="section-header"><h2>🔍 SEO Оптимизация</h2></div>
                 <div class="form-group">
@@ -190,6 +189,10 @@
                         </select>
                     </div>
                     <div class="field-row full" style="margin-bottom:10px;">
+                        <label>Размер заголовка (px)</label>
+                        <input type="number" id="size-title" min="20" max="100" step="1">
+                    </div>
+                    <div class="field-row full" style="margin-bottom:10px;">
                         <label>Шрифт подзаголовка</label>
                         <select id="font-subtitle">
                             <optgroup label="Без засечек (Modern)">
@@ -214,6 +217,10 @@
                                 <option value="'Great Vibes', cursive">Great Vibes</option>
                             </optgroup>
                         </select>
+                    </div>
+                    <div class="field-row full" style="margin-bottom:10px;">
+                        <label>Размер подзаголовка (px)</label>
+                        <input type="number" id="size-subtitle" min="12" max="60" step="1">
                     </div>
                     <div class="color-row">
                         <input type="color" id="color-hero-text">
@@ -393,7 +400,7 @@
                 if (!currentData.seo) currentData.seo = { title: 'Ladi Sugar | Шугаринг Полоцк', description: 'Профессиональный шугаринг в Полоцке.', keywords: 'шугаринг, полоцк, эпиляция', ogImage: '' };
                 
                 // 🎨 Инициализация темы и шрифтов
-                if (!currentData.theme) currentData.theme = { heroImage: '', color_bg_light: '#FDEEF4', color_bg_white: '#FFFFFF', color_primary: '#B08D74', color_text: '#333333', hero_text_color: '#FFFFFF', font_title: "'Montserrat', sans-serif", font_subtitle: "'Open Sans', sans-serif" };
+                if (!currentData.theme) currentData.theme = { heroImage: '', color_bg_light: '#FDEEF4', color_bg_white: '#FFFFFF', color_primary: '#B08D74', color_text: '#333333', hero_text_color: '#FFFFFF', font_title: "'Montserrat', sans-serif", font_subtitle: "'Open Sans', sans-serif", title_size: 56, subtitle_size: 21 };
                 else { 
                     currentData.theme.color_bg_light = currentData.theme.color_bg_light || '#FDEEF4'; 
                     currentData.theme.color_bg_white = currentData.theme.color_bg_white || '#FFFFFF'; 
@@ -402,11 +409,13 @@
                     currentData.theme.hero_text_color = currentData.theme.hero_text_color || '#FFFFFF';
                     currentData.theme.font_title = currentData.theme.font_title || "'Montserrat', sans-serif";
                     currentData.theme.font_subtitle = currentData.theme.font_subtitle || "'Open Sans', sans-serif";
+                    currentData.theme.title_size = currentData.theme.title_size || 56;
+                    currentData.theme.subtitle_size = currentData.theme.subtitle_size || 21;
                 }
 
                 document.querySelectorAll('[data-bind]').forEach(el => { const path = el.dataset.bind; el.value = getNested(currentData, path) || ''; el.addEventListener('input', e => setNested(currentData, path, e.target.value)); });
                 
-                // 🎨 Привязка цветов, баннера и шрифтов
+                // 🎨 Привязка цветов, баннера, шрифтов и размеров
                 document.getElementById('color-bg-light').value = currentData.theme.color_bg_light;
                 document.getElementById('color-bg-white').value = currentData.theme.color_bg_white;
                 document.getElementById('color-primary').value = currentData.theme.color_primary;
@@ -414,6 +423,8 @@
                 document.getElementById('color-hero-text').value = currentData.theme.hero_text_color;
                 document.getElementById('font-title').value = currentData.theme.font_title;
                 document.getElementById('font-subtitle').value = currentData.theme.font_subtitle;
+                document.getElementById('size-title').value = currentData.theme.title_size;
+                document.getElementById('size-subtitle').value = currentData.theme.subtitle_size;
                 
                 if (currentData.theme.heroImage) { const p = document.getElementById('banner-preview'); p.src = currentData.theme.heroImage; p.style.display = 'block'; }
                 if (currentData.seo.ogImage) { const p = document.getElementById('og-image-preview'); p.src = currentData.seo.ogImage; p.style.display = 'block'; }
@@ -425,6 +436,8 @@
                 document.getElementById('color-hero-text').oninput = e => currentData.theme.hero_text_color = e.target.value;
                 document.getElementById('font-title').oninput = e => currentData.theme.font_title = e.target.value;
                 document.getElementById('font-subtitle').oninput = e => currentData.theme.font_subtitle = e.target.value;
+                document.getElementById('size-title').oninput = e => currentData.theme.title_size = parseInt(e.target.value);
+                document.getElementById('size-subtitle').oninput = e => currentData.theme.subtitle_size = parseInt(e.target.value);
 
                 renderList('masters'); renderList('features'); renderList('beforeAfter'); renderList('prices'); renderList('reviews'); renderList('faq'); renderList('blog'); 
                 renderList('careInstructions'); renderExtraButtons(); renderPending();
@@ -477,4 +490,3 @@
     </script>
 </body>
 </html>
-
