@@ -29,7 +29,7 @@
         <div class="container hero-content">
             <h1 id="hero-title">Загрузка...</h1>
             <p id="hero-subtitle"></p>
-            <a href="#" id="hero-btn" target="_blank" class="btn-hero">Записаться онлайн</a>
+            <!-- Кнопка удалена по запросу -->
         </div>
     </section>
 
@@ -167,7 +167,7 @@
                 const bookingUrl = data.contacts.dikidi || '#';
                 
                 document.getElementById('header-dikidi-btn').textContent = bookingText; document.getElementById('header-dikidi-btn').href = bookingUrl;
-                document.getElementById('hero-btn').textContent = bookingText; document.getElementById('hero-btn').href = bookingUrl;
+                // Кнопка в баннере удалена, код обновлен только для шапки и подвала
                 document.getElementById('btn-dikidi-footer').innerHTML = `<i class="far fa-calendar-check"></i> ${bookingText}`; document.getElementById('btn-dikidi-footer').href = bookingUrl;
                 
                 document.getElementById('btn-wa').href = data.contacts.whatsapp ? `https://wa.me/${data.contacts.whatsapp}` : '#';
