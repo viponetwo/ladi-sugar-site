@@ -143,8 +143,9 @@
     <script>
         function loadGoogleFonts(fontTitle, fontSubtitle) {
             const fonts = new Set();
-            fonts.add(fontTitle.split(',')[0].replace(/'/g, '').trim());
-            fonts.add(fontSubtitle.split(',')[0].replace(/'/g, '').trim());
+            // Извлечение имени шрифта (например, 'Montserrat' из "'Montserrat', sans-serif")
+            fonts.add(fontTitle.split(',')[0].replace(/'/g, '').trim().replace(/\s+/g, '+'));
+            fonts.add(fontSubtitle.split(',')[0].replace(/'/g, '').trim().replace(/\s+/g, '+'));
             
             const link = document.createElement('link');
             link.href = `https://fonts.googleapis.com/css2?family=${Array.from(fonts).join('&family=')}&display=swap`;
@@ -179,10 +180,9 @@
                     document.querySelector('.hero').style.backgroundImage = `url('${data.theme.heroImage}')`;
                 }
 
-                // 📍 ПРИМЕНЕНИЕ РАСПОЛОЖЕНИЯ ТЕКСТА
                 const heroSection = document.querySelector('.hero');
                 const alignment = data.hero.alignment || 'center';
-                heroSection.className = 'hero'; // Сброс классов
+                heroSection.className = 'hero';
                 heroSection.classList.add(`hero-align-${alignment}`);
 
                 document.getElementById('hero-title').textContent = data.hero.title;
