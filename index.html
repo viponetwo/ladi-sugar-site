@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ladi Sugar | Шугаринг в Полоцке</title>
-    <meta name="description" content="Профессиональный шугаринг в Полоцке. Стерильно, безопасно, комфортно.">
+    <!-- Мета-теги будут обновляться динамически через JS -->
+    <meta name="description" content="Профессиональный шугаринг в Полоцке.">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="css/style.css">
 </head>
@@ -143,7 +143,6 @@
     <script>
         function loadGoogleFonts(fontTitle, fontSubtitle) {
             const fonts = new Set();
-            // Извлечение имени шрифта (например, 'Montserrat' из "'Montserrat', sans-serif")
             fonts.add(fontTitle.split(',')[0].replace(/'/g, '').trim().replace(/\s+/g, '+'));
             fonts.add(fontSubtitle.split(',')[0].replace(/'/g, '').trim().replace(/\s+/g, '+'));
             
@@ -159,6 +158,42 @@
                 if (!response.ok) throw new Error('Не удалось загрузить data.json');
                 const data = await response.json();
                 window.siteData = data;
+
+                // 🔍 SEO OPTIMIZATION
+                if (data.seo) {
+                    // Title
+                    if (data.seo.title) document.title = data.seo.title;
+                    
+                    // Description
+                    let metaDesc = document.querySelector('meta[name="description"]');
+                    if (!metaDesc) { metaDesc = document.createElement('meta'); metaDesc.name = "description"; document.head.appendChild(metaDesc); }
+                    metaDesc.content = data.seo.description || '';
+
+                    // Keywords
+                    let metaKeys = document.querySelector('meta[name="keywords"]');
+                    if (data.seo.keywords) {
+                        if (!metaKeys) { metaKeys = document.createElement('meta'); metaKeys.name = "keywords"; document.head.appendChild(metaKeys); }
+                        metaKeys.content = data.seo.keywords;
+                    }
+
+                    // Open Graph (Social Media Preview)
+                    const ogUrl = window.location.href;
+                    const ogTitle = data.seo.title || document.title;
+                    const ogDesc = data.seo.description || '';
+                    const ogImage = data.seo.ogImage || (data.theme?.heroImage) || '';
+
+                    const setMeta = (property, content) => {
+                        let tag = document.querySelector(`meta[property="${property}"]`) || document.querySelector(`meta[name="${property}"]`);
+                        if (!tag) { tag = document.createElement('meta'); tag.setAttribute(property.startsWith('og:') ? 'property' : 'name', property); document.head.appendChild(tag); }
+                        tag.content = content;
+                    };
+
+                    setMeta('og:title', ogTitle);
+                    setMeta('og:description', ogDesc);
+                    setMeta('og:image', ogImage);
+                    setMeta('og:url', ogUrl);
+                    setMeta('og:type', 'website');
+                }
 
                 if (data.theme) {
                     document.documentElement.style.setProperty('--bg-light', data.theme.color_bg_light);
@@ -181,7 +216,7 @@
                 }
 
                 const heroSection = document.querySelector('.hero');
-                const alignment = data.hero.alignment || 'center';
+                const alignment = (data.hero && data.hero.alignment) ? data.hero.alignment : 'center';
                 heroSection.className = 'hero';
                 heroSection.classList.add(`hero-align-${alignment}`);
 
