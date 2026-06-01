@@ -81,7 +81,6 @@
             <div class="nav-item" onclick="show('moderation')">🕒 Модерация</div>
             <div class="nav-item" onclick="show('blog')">📝 Блог</div>
             <div class="nav-item" onclick="show('contacts')">📞 Контакты и кнопки</div>
-            <div class="nav-item" onclick="show('custom')">⚙️ Доп. поля</div>
         </aside>
         <main class="main">
             <section id="hero" class="section active">
@@ -144,12 +143,11 @@
                 <hr style="margin: 20px 0; border: 0; border-top: 1px solid var(--border);">
                 <div class="form-group"><label>Текст кнопки записи</label><input data-bind="contacts.bookingText"></div>
                 <div class="form-group"><label>Ссылка для записи (Dikidi/YCLIENTS)</label><input type="url" data-bind="contacts.dikidi"></div>
-            </section>
-            <section id="custom" class="section">
-                <div class="section-header"><h2>⚙️ Дополнительные поля</h2></div>
-                <div id="custom-list" class="dynamic-list"></div>
-                <button class="add-btn" onclick="addCustomField()">+ Добавить поле</button>
-                <small>Ключ используется как идентификатор. Значение отображается на сайте в разделе "Доп. информация".</small>
+                <hr style="margin: 20px 0; border: 0; border-top: 1px solid var(--border);">
+                <h3 style="margin-bottom:15px;">➕ Дополнительные кнопки</h3>
+                <div class="dynamic-list" id="extra-buttons-list"></div>
+                <button class="add-btn" onclick="addExtraButton()">+ Добавить кнопку</button>
+                <small>Иконки: fa-telegram, fa-youtube, fa-tiktok, fa-vk и др. (FontAwesome 6). Цвет в формате #hex.</small>
             </section>
         </main>
         <button class="btn-save" id="saveBtn" onclick="saveData()">💾 Сохранить и Опубликовать</button>
@@ -176,6 +174,14 @@
             reviews: { name: 'Имя', text: 'Отзыв...', rating: 5 },
             blog: { title: 'Статья', date: new Date().toISOString().split('T')[0], excerpt: 'Кратко...', content: 'Текст...', image: '' }
         };
+
+        const EXTRA_BTN_FIELDS = [
+            { name: 'icon', label: 'Иконка (fa-...)', type: 'text' },
+            { name: 'label', label: 'Название', type: 'text' },
+            { name: 'url', label: 'Ссылка', type: 'text' },
+            { name: 'color', label: 'Цвет фона (#hex)', type: 'text' }
+        ];
+        const DEFAULT_EXTRA_BTN = { icon: 'fa-star', label: 'Кнопка', url: '#', color: '#333333' };
 
         function getNested(obj, path) { return path.split('.').reduce((acc, part) => acc && acc[part], obj); }
         function setNested(obj, path, value) {
@@ -221,8 +227,8 @@
                 if (!Array.isArray(currentData.prices)) currentData.prices = [];
                 if (!Array.isArray(currentData.reviews)) currentData.reviews = [];
                 if (!Array.isArray(currentData.blog)) currentData.blog = [];
-                if (!Array.isArray(currentData.customFields)) currentData.customFields = [];
                 if (!currentData.contacts) currentData.contacts = {};
+                if (!Array.isArray(currentData.contacts.extraButtons)) currentData.contacts.extraButtons = [];
 
                 document.querySelectorAll('[data-bind]').forEach(el => {
                     const path = el.dataset.bind;
@@ -231,7 +237,7 @@
                 });
 
                 if (currentData.masterPhoto) { const preview = document.getElementById('master-photo-preview'); preview.src = currentData.masterPhoto; preview.style.display = 'block'; }
-                renderList('features'); renderList('gallery'); renderList('prices'); renderList('reviews'); renderPending(); renderList('blog'); renderCustomFields();
+                renderList('features'); renderList('gallery'); renderList('prices'); renderList('reviews'); renderPending(); renderList('blog'); renderExtraButtons();
                 showToast('✅ Данные загружены');
             } catch (e) { showToast('❌ Ошибка загрузки data.json', true); }
         }
@@ -256,32 +262,24 @@
             });
         }
 
-        function renderCustomFields() {
-            const container = document.getElementById('custom-list');
-            if (!container) return;
-            container.innerHTML = '';
-            currentData.customFields.forEach((field, idx) => {
+        function renderExtraButtons() {
+            const container = document.getElementById('extra-buttons-list');
+            if (!container) return; container.innerHTML = '';
+            currentData.contacts.extraButtons.forEach((item, idx) => {
                 const card = document.createElement('div'); card.className = 'list-card';
-                const delBtn = document.createElement('button'); delBtn.className = 'delete-btn'; delBtn.innerHTML = '🗑'; delBtn.onclick = () => { currentData.customFields.splice(idx, 1); renderCustomFields(); };
+                const delBtn = document.createElement('button'); delBtn.className = 'delete-btn'; delBtn.innerHTML = '🗑'; delBtn.onclick = () => { currentData.contacts.extraButtons.splice(idx, 1); renderExtraButtons(); };
                 card.appendChild(delBtn);
-                const w1 = document.createElement('div'); w1.className = 'field-row';
-                const l1 = document.createElement('label'); l1.textContent = 'Ключ (ID)';
-                const i1 = document.createElement('input'); i1.value = field.key || '';
-                i1.oninput = e => currentData.customFields[idx].key = e.target.value;
-                w1.appendChild(l1); w1.appendChild(i1);
-                const w2 = document.createElement('div'); w2.className = 'field-row full';
-                const l2 = document.createElement('label'); l2.textContent = 'Значение';
-                const i2 = document.createElement('textarea'); i2.value = field.value || ''; i2.rows = 2;
-                i2.oninput = e => currentData.customFields[idx].value = e.target.value;
-                w2.appendChild(l2); w2.appendChild(i2);
-                card.appendChild(w1); card.appendChild(w2);
+                EXTRA_BTN_FIELDS.forEach(f => {
+                    const wrap = document.createElement('div'); wrap.className = 'field-row';
+                    const label = document.createElement('label'); label.textContent = f.label;
+                    const input = document.createElement('input'); input.type = 'text'; input.value = item[f.name] || '';
+                    input.oninput = e => currentData.contacts.extraButtons[idx][f.name] = e.target.value;
+                    wrap.appendChild(label); wrap.appendChild(input); card.appendChild(wrap);
+                });
                 container.appendChild(card);
             });
         }
-        function addCustomField() {
-            currentData.customFields.push({key: 'new_field', value: ''});
-            renderCustomFields();
-        }
+        function addExtraButton() { currentData.contacts.extraButtons.push({...DEFAULT_EXTRA_BTN}); renderExtraButtons(); }
 
         function renderPending() { const container = document.getElementById('pending-list'); const noMsg = document.getElementById('no-pending'); container.innerHTML = ''; const pending = (currentData.reviews || []).filter(r => r.status === 'pending'); noMsg.style.display = pending.length ? 'none' : 'block'; pending.forEach((item) => { const realIdx = currentData.reviews.indexOf(item); const card = document.createElement('div'); card.className = 'list-card'; card.innerHTML = `<div class="field-row full"><label><b>${item.name}</b> (${item.rating}⭐) — ${item.date || ''}</label><p style="margin:8px 0; background:#f1f5f9; padding:10px; border-radius:6px; white-space: pre-wrap;">${item.text}</p></div><div style="display:flex; gap:10px; margin-top:10px;"><button class="delete-btn" style="position:static; background:#dcfce7; color:#166534;" onclick="moderateReview(${realIdx}, 'approved')">✅ Принять</button><button class="delete-btn" style="position:static; background:#fee2e2; color:#991b1b;" onclick="moderateReview(${realIdx}, 'rejected')">❌ Удалить</button></div>`; container.appendChild(card); }); }
         function moderateReview(index, status) { if (status === 'approved') delete currentData.reviews[index].status; else currentData.reviews.splice(index, 1); renderPending(); renderList('reviews'); saveData(); }
