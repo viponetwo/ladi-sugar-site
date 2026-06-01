@@ -124,24 +124,67 @@
                     <div class="field-row full" style="margin-bottom:10px;">
                         <label>Шрифт заголовка</label>
                         <select id="font-title">
-                            <option value="'Montserrat', sans-serif">Montserrat</option>
-                            <option value="'Open Sans', sans-serif">Open Sans</option>
-                            <option value="'Roboto', sans-serif">Roboto</option>
-                            <option value="'Playfair Display', serif">Playfair Display</option>
-                            <option value="'Oswald', sans-serif">Oswald</option>
-                            <option value="'Lato', sans-serif">Lato</option>
-                            <option value="'Raleway', sans-serif">Raleway</option>
+                            <optgroup label="Без засечек (Modern)">
+                                <option value="'Montserrat', sans-serif">Montserrat</option>
+                                <option value="'Open Sans', sans-serif">Open Sans</option>
+                                <option value="'Roboto', sans-serif">Roboto</option>
+                                <option value="'Poppins', sans-serif">Poppins</option>
+                                <option value="'Raleway', sans-serif">Raleway</option>
+                                <option value="'Lato', sans-serif">Lato</option>
+                                <option value="'Ubuntu', sans-serif">Ubuntu</option>
+                                <option value="'Nunito', sans-serif">Nunito</option>
+                                <option value="'PT Sans', sans-serif">PT Sans</option>
+                                <option value="'Oswald', sans-serif">Oswald</option>
+                                <option value="'Quicksand', sans-serif">Quicksand</option>
+                                <option value="'Josefin Sans', sans-serif">Josefin Sans</option>
+                                <option value="'Work Sans', sans-serif">Work Sans</option>
+                                <option value="'Comfortaa', sans-serif">Comfortaa</option>
+                            </optgroup>
+                            <optgroup label="С засечками (Classic/Elegant)">
+                                <option value="'Playfair Display', serif">Playfair Display</option>
+                                <option value="'Merriweather', serif">Merriweather</option>
+                                <option value="'Cormorant Garamond', serif">Cormorant Garamond</option>
+                                <option value="'Libre Baskerville', serif">Libre Baskerville</option>
+                                <option value="'Lora', serif">Lora</option>
+                                <option value="'Arvo', serif">Arvo (Slab)</option>
+                                <option value="'Bitter', serif">Bitter</option>
+                                <option value="'Zilla Slab', serif">Zilla Slab</option>
+                            </optgroup>
+                            <optgroup label="Рукописные (Handwriting)">
+                                <option value="'Lobster', cursive">Lobster</option>
+                                <option value="'Pacifico', cursive">Pacifico</option>
+                                <option value="'Dancing Script', cursive">Dancing Script</option>
+                                <option value="'Great Vibes', cursive">Great Vibes</option>
+                                <option value="'Amatic SC', cursive">Amatic SC</option>
+                                <option value="'Kaushan Script', cursive">Kaushan Script</option>
+                                <option value="'Yellowtail', cursive">Yellowtail</option>
+                            </optgroup>
                         </select>
                     </div>
                     <div class="field-row full" style="margin-bottom:10px;">
                         <label>Шрифт подзаголовка</label>
                         <select id="font-subtitle">
-                            <option value="'Open Sans', sans-serif">Open Sans</option>
-                            <option value="'Montserrat', sans-serif">Montserrat</option>
-                            <option value="'Roboto', sans-serif">Roboto</option>
-                            <option value="'Playfair Display', serif">Playfair Display</option>
-                            <option value="'Lato', sans-serif">Lato</option>
-                            <option value="'Raleway', sans-serif">Raleway</option>
+                            <optgroup label="Без засечек (Modern)">
+                                <option value="'Open Sans', sans-serif">Open Sans</option>
+                                <option value="'Montserrat', sans-serif">Montserrat</option>
+                                <option value="'Roboto', sans-serif">Roboto</option>
+                                <option value="'Poppins', sans-serif">Poppins</option>
+                                <option value="'Lato', sans-serif">Lato</option>
+                                <option value="'Nunito', sans-serif">Nunito</option>
+                                <option value="'Quicksand', sans-serif">Quicksand</option>
+                                <option value="'Comfortaa', sans-serif">Comfortaa</option>
+                            </optgroup>
+                            <optgroup label="С засечками (Classic/Elegant)">
+                                <option value="'Playfair Display', serif">Playfair Display</option>
+                                <option value="'Merriweather', serif">Merriweather</option>
+                                <option value="'Cormorant Garamond', serif">Cormorant Garamond</option>
+                                <option value="'Lora', serif">Lora</option>
+                            </optgroup>
+                            <optgroup label="Рукописные (Handwriting)">
+                                <option value="'Dancing Script', cursive">Dancing Script</option>
+                                <option value="'Amatic SC', cursive">Amatic SC</option>
+                                <option value="'Great Vibes', cursive">Great Vibes</option>
+                            </optgroup>
                         </select>
                     </div>
                     <div class="color-row">
@@ -219,7 +262,7 @@
                 <button class="add-btn" onclick="addExtraButton()">+ Добавить кнопку</button>
             </section>
         </main>
-        <button class="btn-save" id="saveBtn" onclick="saveData()"> Сохранить и Опубликовать</button>
+        <button class="btn-save" id="saveBtn" onclick="saveData()">💾 Сохранить и Опубликовать</button>
     </div>
 
     <div id="toast" class="toast"></div>
@@ -375,7 +418,7 @@
                     const status = document.createElement('span'); status.className = 'upload-status'; status.textContent = 'Загрузить';
                     fileInput.onchange = async (e) => {
                         const file = e.target.files[0]; if (!file) return;
-                        if (file.size > 5_000_000) { status.textContent = '❌ > 5МБ'; return; }
+                        if (file.size > 5_000_000) { status.textContent = ' > 5МБ'; return; }
                         status.textContent = '⏳...'; fileInput.disabled = true;
                         try { const base64 = await fileToBase64(file); const res = await fetch('/api/upload', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ fileName: file.name, contentBase64: base64 }) }); const data = await res.json(); if (res.ok) { input.value = data.url; currentData[type][index][f.name] = data.url; status.textContent = '✅'; } else status.textContent = '❌'; } catch { status.textContent = '❌'; }
                         finally { fileInput.disabled = false; }
@@ -384,7 +427,7 @@
             });
         }
 
-        function renderExtraButtons() { const c = document.getElementById('extra-buttons-list'); if (!c) return; c.innerHTML = ''; currentData.contacts.extraButtons.forEach((item, idx) => { const card = document.createElement('div'); card.className = 'list-card'; const del = document.createElement('button'); del.className = 'delete-btn'; del.innerHTML = '🗑'; del.onclick = () => { currentData.contacts.extraButtons.splice(idx, 1); renderExtraButtons(); }; card.appendChild(del); EXTRA_BTN_FIELDS.forEach(f => { const w = document.createElement('div'); w.className = 'field-row'; const l = document.createElement('label'); l.textContent = f.label; const i = document.createElement('input'); i.type = 'text'; i.value = item[f.name] || ''; i.oninput = e => currentData.contacts.extraButtons[idx][f.name] = e.target.value; w.appendChild(l); w.appendChild(i); card.appendChild(w); }); c.appendChild(card); }); }
+        function renderExtraButtons() { const c = document.getElementById('extra-buttons-list'); if (!c) return; c.innerHTML = ''; currentData.contacts.extraButtons.forEach((item, idx) => { const card = document.createElement('div'); card.className = 'list-card'; const del = document.createElement('button'); del.className = 'delete-btn'; del.innerHTML = ''; del.onclick = () => { currentData.contacts.extraButtons.splice(idx, 1); renderExtraButtons(); }; card.appendChild(del); EXTRA_BTN_FIELDS.forEach(f => { const w = document.createElement('div'); w.className = 'field-row'; const l = document.createElement('label'); l.textContent = f.label; const i = document.createElement('input'); i.type = 'text'; i.value = item[f.name] || ''; i.oninput = e => currentData.contacts.extraButtons[idx][f.name] = e.target.value; w.appendChild(l); w.appendChild(i); card.appendChild(w); }); c.appendChild(card); }); }
         function addExtraButton() { currentData.contacts.extraButtons.push({...DEFAULT_EXTRA_BTN}); renderExtraButtons(); }
         function renderPending() { const c = document.getElementById('pending-list'); const m = document.getElementById('no-pending'); c.innerHTML = ''; const p = (currentData.reviews || []).filter(r => r.status === 'pending'); m.style.display = p.length ? 'none' : 'block'; p.forEach((item) => { const rIdx = currentData.reviews.indexOf(item); const card = document.createElement('div'); card.className = 'list-card'; card.innerHTML = `<div class="field-row full"><label><b>${item.name}</b> (${item.rating}⭐)</label><p style="margin:8px 0; padding:10px; background:#f1f5f9; border-radius:6px;">${item.text}</p></div><div style="display:flex; gap:10px;"><button onclick="moderateReview(${rIdx}, 'approved')" style="background:#dcfce7; color:#166534; border:none; padding:6px; border-radius:6px; cursor:pointer;">✅ Принять</button><button onclick="moderateReview(${rIdx}, 'rejected')" style="background:#fee2e2; color:#991b1b; border:none; padding:6px; border-radius:6px; cursor:pointer;">❌ Удалить</button></div>`; c.appendChild(card); }); }
         function moderateReview(idx, st) { if (st === 'approved') delete currentData.reviews[idx].status; else currentData.reviews.splice(idx, 1); renderPending(); renderList('reviews'); saveData(); }
@@ -393,7 +436,7 @@
         function show(id) { document.querySelectorAll('.section').forEach(s => s.classList.remove('active')); document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active')); document.getElementById(id).classList.add('active'); event.target.classList.add('active'); }
         function showToast(msg, err = false) { const t = document.getElementById('toast'); t.textContent = msg; t.className = `toast ${err ? 'error' : ''} show`; setTimeout(() => t.classList.remove('show'), 4000); }
 
-        document.getElementById('banner-input').onchange = async (e) => { const f = e.target.files[0]; if (!f) return; if (f.size > 5_000_000) { document.getElementById('banner-status').textContent = ' > 5 МБ'; return; } document.getElementById('banner-status').textContent = '⏳...'; e.target.disabled = true; try { const base64 = await fileToBase64(f); const res = await fetch('/api/upload', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ fileName: f.name, contentBase64: base64 }) }); const d = await res.json(); if (res.ok) { currentData.theme.heroImage = d.url; document.getElementById('banner-preview').src = d.url; document.getElementById('banner-preview').style.display = 'block'; document.getElementById('banner-status').textContent = '✅'; } else document.getElementById('banner-status').textContent = '❌'; } catch { document.getElementById('banner-status').textContent = '❌'; } finally { e.target.disabled = false; } };
+        document.getElementById('banner-input').onchange = async (e) => { const f = e.target.files[0]; if (!f) return; if (f.size > 5_000_000) { document.getElementById('banner-status').textContent = '❌ > 5 МБ'; return; } document.getElementById('banner-status').textContent = '⏳...'; e.target.disabled = true; try { const base64 = await fileToBase64(f); const res = await fetch('/api/upload', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ fileName: f.name, contentBase64: base64 }) }); const d = await res.json(); if (res.ok) { currentData.theme.heroImage = d.url; document.getElementById('banner-preview').src = d.url; document.getElementById('banner-preview').style.display = 'block'; document.getElementById('banner-status').textContent = '✅'; } else document.getElementById('banner-status').textContent = '❌'; } catch { document.getElementById('banner-status').textContent = '❌'; } finally { e.target.disabled = false; } };
         
         document.addEventListener('DOMContentLoaded', checkSession);
     </script>
