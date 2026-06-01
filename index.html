@@ -161,33 +161,24 @@
 
                 // 🔍 SEO OPTIMIZATION
                 if (data.seo) {
-                    // Title
                     if (data.seo.title) document.title = data.seo.title;
-                    
-                    // Description
                     let metaDesc = document.querySelector('meta[name="description"]');
                     if (!metaDesc) { metaDesc = document.createElement('meta'); metaDesc.name = "description"; document.head.appendChild(metaDesc); }
                     metaDesc.content = data.seo.description || '';
-
-                    // Keywords
                     let metaKeys = document.querySelector('meta[name="keywords"]');
                     if (data.seo.keywords) {
                         if (!metaKeys) { metaKeys = document.createElement('meta'); metaKeys.name = "keywords"; document.head.appendChild(metaKeys); }
                         metaKeys.content = data.seo.keywords;
                     }
-
-                    // Open Graph (Social Media Preview)
                     const ogUrl = window.location.href;
                     const ogTitle = data.seo.title || document.title;
                     const ogDesc = data.seo.description || '';
                     const ogImage = data.seo.ogImage || (data.theme?.heroImage) || '';
-
                     const setMeta = (property, content) => {
                         let tag = document.querySelector(`meta[property="${property}"]`) || document.querySelector(`meta[name="${property}"]`);
                         if (!tag) { tag = document.createElement('meta'); tag.setAttribute(property.startsWith('og:') ? 'property' : 'name', property); document.head.appendChild(tag); }
                         tag.content = content;
                     };
-
                     setMeta('og:title', ogTitle);
                     setMeta('og:description', ogDesc);
                     setMeta('og:image', ogImage);
@@ -204,10 +195,14 @@
                     const fontTitle = data.theme.font_title || "'Montserrat', sans-serif";
                     const fontSubtitle = data.theme.font_subtitle || "'Open Sans', sans-serif";
                     const heroColor = data.theme.hero_text_color || '#FFFFFF';
+                    const titleSize = data.theme.title_size || 56;
+                    const subtitleSize = data.theme.subtitle_size || 21;
                     
                     document.documentElement.style.setProperty('--hero-title-font', fontTitle);
                     document.documentElement.style.setProperty('--hero-subtitle-font', fontSubtitle);
                     document.documentElement.style.setProperty('--hero-text-color', heroColor);
+                    document.documentElement.style.setProperty('--hero-title-size', titleSize + 'px');
+                    document.documentElement.style.setProperty('--hero-subtitle-size', subtitleSize + 'px');
                     
                     loadGoogleFonts(fontTitle, fontSubtitle);
                 }
