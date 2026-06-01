@@ -127,10 +127,8 @@
             </section>
             <section id="care" class="section">
                 <div class="section-header"><h2>📋 Инструкции по уходу</h2></div>
-                <!-- ✅ ИСПРАВЛЕН ID: careInstructions-list вместо care-list -->
                 <div class="dynamic-list" id="careInstructions-list"></div>
                 <button class="add-btn" onclick="addItem('careInstructions')">+ Добавить раздел</button>
-                <small>Например: "До процедуры", "После", "Противопоказания".</small>
             </section>
             <section id="moderation" class="section">
                 <div class="section-header"><h2>🕒 Отзывы на проверке</h2></div>
@@ -170,7 +168,6 @@
         const LIST_CONFIG = {
             features: [ { name: 'icon', label: 'Иконка (класс FontAwesome)', type: 'text' }, { name: 'title', label: 'Заголовок', type: 'text' }, { name: 'desc', label: 'Описание', type: 'text' } ],
             beforeAfter: [ { name: 'before', label: 'Фото ДО (URL)', type: 'text' }, { name: 'after', label: 'Фото ПОСЛЕ (URL)', type: 'text' }, { name: 'label', label: 'Зона', type: 'text' } ],
-            // ✅ Конфигурация для инструкций
             careInstructions: [ { name: 'title', label: 'Заголовок раздела', type: 'text' }, { name: 'content', label: 'Текст (каждая строка = новый пункт)', type: 'textarea' } ],
             prices: [ { name: 'name', label: 'Название услуги', type: 'text' }, { name: 'value', label: 'Цена (BYN)', type: 'text' } ],
             reviews: [ { name: 'name', label: 'Имя клиента', type: 'text' }, { name: 'text', label: 'Текст отзыва', type: 'textarea' }, { name: 'rating', label: 'Рейтинг (1-5)', type: 'number', min: 1, max: 5 } ],
@@ -181,7 +178,6 @@
         const DEFAULTS = {
             features: { icon: 'fa-star', title: 'Новое преимущество', desc: 'Описание...' },
             beforeAfter: { before: '', after: '', label: 'Зона' },
-            // ✅ Дефолт для новой инструкции
             careInstructions: { title: '🟢 Новый раздел', content: 'Пункт 1\nПункт 2' },
             prices: { name: 'Услуга', value: '0' },
             reviews: { name: 'Имя', text: 'Отзыв...', rating: 5 },
@@ -213,51 +209,31 @@
             try {
                 const res = await fetch('/data.json'); currentData = await res.json();
                 
-                // Инициализация массивов
                 if (!Array.isArray(currentData.features)) currentData.features = [];
                 if (!Array.isArray(currentData.beforeAfter)) currentData.beforeAfter = [];
                 if (!Array.isArray(currentData.prices)) currentData.prices = [];
                 if (!Array.isArray(currentData.reviews)) currentData.reviews = [];
                 if (!Array.isArray(currentData.faq)) currentData.faq = [];
                 if (!Array.isArray(currentData.blog)) currentData.blog = [];
-                
-                // 🔄 Миграция старых данных инструкций
-                if (!Array.isArray(currentData.careInstructions)) {
-                    if (currentData.careInstructions && typeof currentData.careInstructions === 'object') {
-                        // Если есть старые поля before/after
-                        currentData.careInstructions = [
-                            { title: '🟢 До процедуры', content: currentData.careInstructions.before || '' },
-                            { title: '🔴 После процедуры', content: currentData.careInstructions.after || '' }
-                        ];
-                    } else {
-                        currentData.careInstructions = [];
-                    }
-                }
-                
+                if (!Array.isArray(currentData.careInstructions)) currentData.careInstructions = [];
                 if (!currentData.contacts) currentData.contacts = {};
                 if (!Array.isArray(currentData.contacts.extraButtons)) currentData.contacts.extraButtons = [];
 
                 document.querySelectorAll('[data-bind]').forEach(el => { const path = el.dataset.bind; el.value = getNested(currentData, path) || ''; el.addEventListener('input', e => setNested(currentData, path, e.target.value)); });
                 if (currentData.masterPhoto) { const preview = document.getElementById('master-photo-preview'); preview.src = currentData.masterPhoto; preview.style.display = 'block'; }
                 
-                // ✅ Отрисовка всех списков
                 renderList('features'); renderList('beforeAfter'); renderList('prices'); renderList('reviews'); renderList('faq'); renderList('blog'); 
-                renderList('careInstructions'); // Отрисовка инструкций
-                renderExtraButtons(); renderPending();
+                renderList('careInstructions'); renderExtraButtons(); renderPending();
                 showToast('✅ Данные загружены');
             } catch (e) { showToast('❌ Ошибка загрузки data.json', true); }
         }
 
         function renderList(type) {
-            // ✅ Исправлен поиск контейнера по ID: careInstructions-list
-            const container = document.getElementById(`${type}-list`); 
-            if (!container) return; container.innerHTML = '';
-            
+            const container = document.getElementById(`${type}-list`); if (!container) return; container.innerHTML = '';
             const fields = LIST_CONFIG[type];
             currentData[type].forEach((item, index) => {
                 const card = document.createElement('div'); card.className = 'list-card';
                 const delBtn = document.createElement('button'); delBtn.className = 'delete-btn'; delBtn.innerHTML = '🗑'; delBtn.onclick = () => { currentData[type].splice(index, 1); renderList(type); }; card.appendChild(delBtn);
-                
                 fields.forEach(f => {
                     const wrap = document.createElement('div'); wrap.className = `field-row ${f.type === 'textarea' ? 'full' : ''}`;
                     const label = document.createElement('label'); label.textContent = f.label;
@@ -266,8 +242,29 @@
                     input.value = item[f.name] || ''; input.oninput = e => currentData[type][index][f.name] = e.target.value;
                     wrap.appendChild(label); wrap.appendChild(input); card.appendChild(wrap);
 
-                    // Загрузчик для До/После
+                    // 📸 Загрузчик для До/После
                     if (type === 'beforeAfter' && (f.name === 'before' || f.name === 'after')) {
+                        const uploadRow = document.createElement('div'); uploadRow.className = 'upload-row';
+                        const fileInput = document.createElement('input'); fileInput.type = 'file'; fileInput.accept = 'image/*';
+                        const status = document.createElement('span'); status.className = 'upload-status'; status.textContent = 'Загрузить с ПК';
+                        fileInput.onchange = async (e) => {
+                            const file = e.target.files[0]; if (!file) return;
+                            if (file.size > 5_000_000) { status.textContent = '❌ > 5 МБ'; status.style.color = '#ef4444'; fileInput.value = ''; return; }
+                            status.textContent = '⏳ Загрузка...'; status.style.color = '#3b82f6'; fileInput.disabled = true;
+                            try {
+                                const base64 = await fileToBase64(file);
+                                const res = await fetch('/api/upload', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ fileName: file.name, contentBase64: base64 }) });
+                                const data = await res.json();
+                                if (res.ok) { input.value = data.url; currentData[type][index][f.name] = data.url; status.textContent = '✅ Загружено'; status.style.color = '#22c55e'; } 
+                                else { status.textContent = '❌ ' + (data.message || 'Ошибка'); status.style.color = '#ef4444'; }
+                            } catch (err) { status.textContent = '❌ Ошибка сети'; status.style.color = '#ef4444'; }
+                            finally { fileInput.disabled = false; }
+                        };
+                        uploadRow.appendChild(fileInput); uploadRow.appendChild(status); card.appendChild(uploadRow);
+                    }
+
+                    // 📸 Загрузчик для Блога (обложка)
+                    if (type === 'blog' && f.name === 'image') {
                         const uploadRow = document.createElement('div'); uploadRow.className = 'upload-row';
                         const fileInput = document.createElement('input'); fileInput.type = 'file'; fileInput.accept = 'image/*';
                         const status = document.createElement('span'); status.className = 'upload-status'; status.textContent = 'Загрузить с ПК';
