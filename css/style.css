@@ -43,6 +43,14 @@ section { padding: 80px 0; }
 .ba-handle::after { transform: rotate(-30deg); right: 8px; }
 .ba-label { position: absolute; bottom: 15px; left: 15px; background: rgba(0,0,0,0.6); color: white; padding: 6px 12px; border-radius: 20px; font-size: 0.85rem; z-index: 3; pointer-events: none; }
 
+/* 📌 КНОПКА PINTEREST НА СЛАЙДЕРЕ */
+.ba-pin-btn { 
+    position: absolute; top: 15px; right: 15px; background: #E60023; color: white; width: 40px; height: 40px; border-radius: 50%; border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 1.1rem; transition: all 0.2s; z-index: 4; opacity: 0; box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+}
+.ba-slider:hover .ba-pin-btn { opacity: 1; }
+.ba-pin-btn:hover { background: #bd001c; transform: scale(1.1); }
+/* --------------------------- */
+
 /* ❓ FAQ */
 .faq-container { max-width: 800px; margin: 0 auto; }
 .faq-item { background: white; border-radius: 12px; margin-bottom: 15px; overflow: hidden; box-shadow: 0 2px 10px rgba(0,0,0,0.05); }
@@ -133,4 +141,5 @@ footer { background: var(--text-dark); color: white; text-align: center; padding
     .social-buttons { flex-direction: column; } .btn-social { width: 100%; }
     .lightbox-pin { right: 55px; top: 18px; width: 32px; height: 32px; font-size: 0.9rem; }
     .ba-slider { height: 300px; }
+    .ba-pin-btn { opacity: 1; width: 36px; height: 36px; font-size: 1rem; }
 }
