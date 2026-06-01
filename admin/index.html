@@ -37,10 +37,6 @@
         .list-card .delete-btn:hover { background: #fecaca; }
         .list-card .field-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 10px; }
         .list-card .field-row.full { grid-template-columns: 1fr; }
-        .list-card .img-preview { max-height: 90px; width: 100%; object-fit: cover; border-radius: 6px; border: 1px solid var(--border); margin-bottom: 10px; display: none; }
-        .upload-row { display: flex; gap: 8px; margin-top: 5px; align-items: center; }
-        .upload-row input[type="file"] { flex: 1; font-size: 12px; padding: 4px; border: 1px dashed var(--border); border-radius: 4px; background: #f8fafc; }
-        .upload-status { font-size: 11px; color: #64748b; white-space: nowrap; }
         
         .add-btn { width: 100%; padding: 12px; background: #f1f5f9; border: 2px dashed var(--border); border-radius: 8px; cursor: pointer; color: #64748b; font-weight: 500; transition: 0.2s; }
         .add-btn:hover { background: #e2e8f0; color: var(--text); border-color: #cbd5e1; }
@@ -76,8 +72,11 @@
             <div class="nav-item" onclick="show('master')">👤 О мастере</div>
             <div class="nav-item" onclick="show('features')">✨ Преимущества</div>
             <div class="nav-item" onclick="show('gallery')">🖼 Мои работы</div>
+            <div class="nav-item" onclick="show('beforeAfter')">🔄 До/После</div>
             <div class="nav-item" onclick="show('prices')">💰 Прайс</div>
             <div class="nav-item" onclick="show('reviews')">💬 Отзывы</div>
+            <div class="nav-item" onclick="show('faq')">❓ FAQ</div>
+            <div class="nav-item" onclick="show('care')">📋 Инструкции</div>
             <div class="nav-item" onclick="show('moderation')">🕒 Модерация</div>
             <div class="nav-item" onclick="show('blog')">📝 Блог</div>
             <div class="nav-item" onclick="show('contacts')">📞 Контакты и кнопки</div>
@@ -93,14 +92,9 @@
                 <div class="section-header"><h2>👤 О мастере</h2></div>
                 <div class="form-group"><label>Имя</label><input data-bind="master.name"></div>
                 <div class="form-group"><label>Описание</label><textarea rows="5" data-bind="master.description"></textarea></div>
-                <div class="form-group">
-                    <label>Фото мастера</label>
-                    <div class="upload-row">
-                        <input type="file" id="master-photo-input" accept="image/*">
-                        <span class="upload-status" id="master-photo-status"></span>
-                    </div>
-                    <img id="master-photo-preview" class="img-preview" style="margin-top:10px; max-height:150px; width:auto; display:none;">
-                    <small>Рекомендуемый размер: 500x500 px. Формат: JPG/PNG.</small>
+                <div class="form-group"><label>Фото мастера (URL или загрузка)</label>
+                    <div class="upload-row"><input type="file" id="master-photo-input" accept="image/*"><span class="upload-status" id="master-photo-status"></span></div>
+                    <img id="master-photo-preview" class="img-preview" style="margin-top:10px; max-height:150px; width:auto; display:none;"><small>Рекомендуемый размер: 500x500 px.</small>
                 </div>
             </section>
             <section id="features" class="section">
@@ -113,6 +107,11 @@
                 <div class="dynamic-list" id="gallery-list"></div>
                 <button class="add-btn" onclick="addItem('gallery')">+ Добавить фото</button>
             </section>
+            <section id="beforeAfter" class="section">
+                <div class="section-header"><h2>🔄 До / После</h2></div>
+                <div class="dynamic-list" id="beforeAfter-list"></div>
+                <button class="add-btn" onclick="addItem('beforeAfter')">+ Добавить сравнение</button>
+            </section>
             <section id="prices" class="section">
                 <div class="section-header"><h2>💰 Прайс-лист</h2></div>
                 <div class="dynamic-list" id="prices-list"></div>
@@ -122,6 +121,17 @@
                 <div class="section-header"><h2>💬 Отзывы (вручную)</h2></div>
                 <div class="dynamic-list" id="reviews-list"></div>
                 <button class="add-btn" onclick="addItem('reviews')">+ Добавить отзыв</button>
+            </section>
+            <section id="faq" class="section">
+                <div class="section-header"><h2>❓ Частые вопросы (FAQ)</h2></div>
+                <div class="dynamic-list" id="faq-list"></div>
+                <button class="add-btn" onclick="addItem('faq')">+ Добавить вопрос</button>
+            </section>
+            <section id="care" class="section">
+                <div class="section-header"><h2>📋 Инструкции по уходу</h2></div>
+                <div class="form-group"><label>🟢 ДО процедуры (каждая строка = новый пункт)</label><textarea rows="6" data-bind="careInstructions.before"></textarea></div>
+                <div class="form-group"><label>🔴 ПОСЛЕ процедуры (каждая строка = новый пункт)</label><textarea rows="6" data-bind="careInstructions.after"></textarea></div>
+                <small>На сайте автоматически преобразуются в маркированные списки.</small>
             </section>
             <section id="moderation" class="section">
                 <div class="section-header"><h2>🕒 Отзывы на проверке</h2></div>
@@ -147,7 +157,6 @@
                 <h3 style="margin-bottom:15px;">➕ Дополнительные кнопки</h3>
                 <div class="dynamic-list" id="extra-buttons-list"></div>
                 <button class="add-btn" onclick="addExtraButton()">+ Добавить кнопку</button>
-                <small>Иконки: fa-telegram, fa-youtube, fa-tiktok, fa-vk и др. (FontAwesome 6). Цвет в формате #hex.</small>
             </section>
         </main>
         <button class="btn-save" id="saveBtn" onclick="saveData()">💾 Сохранить и Опубликовать</button>
@@ -161,135 +170,92 @@
 
         const LIST_CONFIG = {
             features: [ { name: 'icon', label: 'Иконка (класс FontAwesome)', type: 'text' }, { name: 'title', label: 'Заголовок', type: 'text' }, { name: 'desc', label: 'Описание', type: 'text' } ],
-            gallery: [ { name: 'image', label: 'Ссылка на фото или загрузка', type: 'text' }, { name: 'label', label: 'Подпись (зона)', type: 'text' } ],
+            gallery: [ { name: 'image', label: 'Ссылка на фото', type: 'text' }, { name: 'label', label: 'Подпись (зона)', type: 'text' } ],
+            beforeAfter: [ { name: 'before', label: 'Фото ДО (URL)', type: 'text' }, { name: 'after', label: 'Фото ПОСЛЕ (URL)', type: 'text' }, { name: 'label', label: 'Зона', type: 'text' } ],
             prices: [ { name: 'name', label: 'Название услуги', type: 'text' }, { name: 'value', label: 'Цена (BYN)', type: 'text' } ],
             reviews: [ { name: 'name', label: 'Имя клиента', type: 'text' }, { name: 'text', label: 'Текст отзыва', type: 'textarea' }, { name: 'rating', label: 'Рейтинг (1-5)', type: 'number', min: 1, max: 5 } ],
-            blog: [ { name: 'title', label: 'Заголовок', type: 'text' }, { name: 'date', label: 'Дата', type: 'text' }, { name: 'excerpt', label: 'Краткое описание', type: 'textarea' }, { name: 'content', label: 'Полный текст', type: 'textarea' }, { name: 'image', label: 'Обложка (URL или загрузка)', type: 'text' } ]
+            faq: [ { name: 'question', label: 'Вопрос', type: 'text' }, { name: 'answer', label: 'Ответ', type: 'textarea' } ],
+            blog: [ { name: 'title', label: 'Заголовок', type: 'text' }, { name: 'date', label: 'Дата', type: 'text' }, { name: 'excerpt', label: 'Краткое описание', type: 'textarea' }, { name: 'content', label: 'Полный текст', type: 'textarea' }, { name: 'image', label: 'Обложка (URL)', type: 'text' } ]
         };
 
         const DEFAULTS = {
             features: { icon: 'fa-star', title: 'Новое преимущество', desc: 'Описание...' },
             gallery: { image: '', label: 'Новое фото' },
+            beforeAfter: { before: '', after: '', label: 'Зона' },
             prices: { name: 'Услуга', value: '0' },
             reviews: { name: 'Имя', text: 'Отзыв...', rating: 5 },
+            faq: { question: 'Вопрос?', answer: 'Ответ...' },
             blog: { title: 'Статья', date: new Date().toISOString().split('T')[0], excerpt: 'Кратко...', content: 'Текст...', image: '' }
         };
 
-        const EXTRA_BTN_FIELDS = [
-            { name: 'icon', label: 'Иконка (fa-...)', type: 'text' },
-            { name: 'label', label: 'Название', type: 'text' },
-            { name: 'url', label: 'Ссылка', type: 'text' },
-            { name: 'color', label: 'Цвет фона (#hex)', type: 'text' }
-        ];
+        const EXTRA_BTN_FIELDS = [ { name: 'icon', label: 'Иконка (fa-...)', type: 'text' }, { name: 'label', label: 'Название', type: 'text' }, { name: 'url', label: 'Ссылка', type: 'text' }, { name: 'color', label: 'Цвет фона (#hex)', type: 'text' } ];
         const DEFAULT_EXTRA_BTN = { icon: 'fa-star', label: 'Кнопка', url: '#', color: '#333333' };
 
         function getNested(obj, path) { return path.split('.').reduce((acc, part) => acc && acc[part], obj); }
-        function setNested(obj, path, value) {
-            const keys = path.split('.');
-            let current = obj;
-            for (let i = 0; i < keys.length - 1; i++) current = current[keys[i]];
-            current[keys[keys.length - 1]] = value;
-        }
-
-        function fileToBase64(file) {
-            return new Promise((resolve, reject) => {
-                const reader = new FileReader();
-                reader.readAsDataURL(file);
-                reader.onload = () => resolve(reader.result.split(',')[1]);
-                reader.onerror = error => reject(error);
-            });
-        }
+        function setNested(obj, path, value) { const keys = path.split('.'); let current = obj; for (let i = 0; i < keys.length - 1; i++) current = current[keys[i]]; current[keys[keys.length - 1]] = value; }
+        function fileToBase64(file) { return new Promise((resolve, reject) => { const reader = new FileReader(); reader.readAsDataURL(file); reader.onload = () => resolve(reader.result.split(',')[1]); reader.onerror = error => reject(error); }); }
 
         async function login() {
             const pass = document.getElementById('pass-input').value;
-            const btn = document.querySelector('.login-box button');
-            const err = document.getElementById('error-msg');
+            const btn = document.querySelector('.login-box button'); const err = document.getElementById('error-msg');
             btn.textContent = 'Проверка...'; btn.disabled = true; err.style.display = 'none';
             try {
                 const res = await fetch('/api/auth/login', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ password: pass }) });
                 const data = await res.json();
-                if (data.success) {
-                    sessionToken = data.token;
-                    document.getElementById('login-overlay').style.display = 'none';
-                    document.getElementById('admin-ui').style.display = 'flex';
-                    loadData();
-                } else { err.style.display = 'block'; }
+                if (data.success) { sessionToken = data.token; document.getElementById('login-overlay').style.display = 'none'; document.getElementById('admin-ui').style.display = 'flex'; loadData(); } 
+                else { err.style.display = 'block'; }
             } catch (e) { err.textContent = 'Ошибка соединения'; err.style.display = 'block'; }
             finally { btn.textContent = 'Войти'; btn.disabled = false; }
         }
 
         async function loadData() {
             try {
-                const res = await fetch('/data.json');
-                currentData = await res.json();
+                const res = await fetch('/data.json'); currentData = await res.json();
                 if (!Array.isArray(currentData.features)) currentData.features = [];
                 if (!Array.isArray(currentData.gallery)) currentData.gallery = [];
+                if (!Array.isArray(currentData.beforeAfter)) currentData.beforeAfter = [];
                 if (!Array.isArray(currentData.prices)) currentData.prices = [];
                 if (!Array.isArray(currentData.reviews)) currentData.reviews = [];
+                if (!Array.isArray(currentData.faq)) currentData.faq = [];
                 if (!Array.isArray(currentData.blog)) currentData.blog = [];
                 if (!currentData.contacts) currentData.contacts = {};
                 if (!Array.isArray(currentData.contacts.extraButtons)) currentData.contacts.extraButtons = [];
+                if (!currentData.careInstructions) currentData.careInstructions = { before: '', after: '' };
 
-                document.querySelectorAll('[data-bind]').forEach(el => {
-                    const path = el.dataset.bind;
-                    el.value = getNested(currentData, path) || '';
-                    el.addEventListener('input', e => setNested(currentData, path, e.target.value));
-                });
-
+                document.querySelectorAll('[data-bind]').forEach(el => { const path = el.dataset.bind; el.value = getNested(currentData, path) || ''; el.addEventListener('input', e => setNested(currentData, path, e.target.value)); });
                 if (currentData.masterPhoto) { const preview = document.getElementById('master-photo-preview'); preview.src = currentData.masterPhoto; preview.style.display = 'block'; }
-                renderList('features'); renderList('gallery'); renderList('prices'); renderList('reviews'); renderPending(); renderList('blog'); renderExtraButtons();
+                renderList('features'); renderList('gallery'); renderList('beforeAfter'); renderList('prices'); renderList('reviews'); renderList('faq'); renderList('blog'); renderExtraButtons(); renderPending();
                 showToast('✅ Данные загружены');
             } catch (e) { showToast('❌ Ошибка загрузки data.json', true); }
         }
 
         function renderList(type) {
-            const container = document.getElementById(`${type}-list`);
-            if (!container) return; container.innerHTML = '';
+            const container = document.getElementById(`${type}-list`); if (!container) return; container.innerHTML = '';
             const fields = LIST_CONFIG[type];
             currentData[type].forEach((item, index) => {
                 const card = document.createElement('div'); card.className = 'list-card';
-                const delBtn = document.createElement('button'); delBtn.className = 'delete-btn'; delBtn.innerHTML = '🗑 Удалить'; delBtn.onclick = () => removeItem(type, index); card.appendChild(delBtn);
-                if (type === 'gallery') { const img = document.createElement('img'); img.className = 'img-preview'; img.src = item.image || ''; img.onerror = () => img.style.display = 'none'; img.onload = () => img.style.display = 'block'; if (item.image) img.style.display = 'block'; card.appendChild(img); }
+                const delBtn = document.createElement('button'); delBtn.className = 'delete-btn'; delBtn.innerHTML = '🗑'; delBtn.onclick = () => { currentData[type].splice(index, 1); renderList(type); }; card.appendChild(delBtn);
                 fields.forEach(f => {
                     const wrap = document.createElement('div'); wrap.className = `field-row ${f.type === 'textarea' ? 'full' : ''}`;
                     const label = document.createElement('label'); label.textContent = f.label;
                     let input = f.type === 'textarea' ? document.createElement('textarea') : document.createElement('input');
-                    if (f.type === 'textarea') input.rows = 3; else { input.type = f.type; if (f.min !== undefined) input.min = f.min; if (f.max !== undefined) input.max = f.max; }
-                    input.value = item[f.name] || '';
-                    input.oninput = (e) => { currentData[type][index][f.name] = e.target.value; if (type === 'gallery' && f.name === 'image') { const imgEl = card.querySelector('.img-preview'); if (imgEl) { imgEl.src = e.target.value; imgEl.style.display = 'block'; imgEl.onerror = () => imgEl.style.display = 'none'; } } };
-                    if (f.name === 'image') { const uploadRow = document.createElement('div'); uploadRow.className = 'upload-row'; const fileInput = document.createElement('input'); fileInput.type = 'file'; fileInput.accept = 'image/*'; const status = document.createElement('span'); status.className = 'upload-status'; fileInput.onchange = async (e) => { const file = e.target.files[0]; if (!file) return; if (file.size > 5_000_000) { status.textContent = '❌ > 5 МБ'; status.style.color = '#ef4444'; fileInput.value = ''; return; } status.textContent = '⏳ Загрузка...'; status.style.color = '#3b82f6'; fileInput.disabled = true; try { const base64 = await fileToBase64(file); const res = await fetch('/api/upload', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ fileName: file.name, contentBase64: base64 }) }); const data = await res.json(); if (res.ok) { input.value = data.url; currentData[type][index][f.name] = data.url; status.textContent = '✅ Загружено'; status.style.color = '#22c55e'; if (type === 'gallery') { const imgEl = card.querySelector('.img-preview'); if (imgEl) { imgEl.src = data.url; imgEl.style.display = 'block'; } } } else { status.textContent = '❌ ' + (data.message || 'Ошибка'); status.style.color = '#ef4444'; } } catch (err) { status.textContent = '❌ Ошибка сети'; status.style.color = '#ef4444'; } finally { fileInput.disabled = false; } }; uploadRow.appendChild(fileInput); uploadRow.appendChild(status); wrap.appendChild(label); wrap.appendChild(input); wrap.appendChild(uploadRow); } else { wrap.appendChild(label); wrap.appendChild(input); } card.appendChild(wrap);
+                    if (f.type === 'textarea') input.rows = 3; else input.type = 'text';
+                    input.value = item[f.name] || ''; input.oninput = e => currentData[type][index][f.name] = e.target.value;
+                    wrap.appendChild(label); wrap.appendChild(input); card.appendChild(wrap);
                 }); container.appendChild(card);
             });
         }
 
-        function renderExtraButtons() {
-            const container = document.getElementById('extra-buttons-list');
-            if (!container) return; container.innerHTML = '';
-            currentData.contacts.extraButtons.forEach((item, idx) => {
-                const card = document.createElement('div'); card.className = 'list-card';
-                const delBtn = document.createElement('button'); delBtn.className = 'delete-btn'; delBtn.innerHTML = '🗑'; delBtn.onclick = () => { currentData.contacts.extraButtons.splice(idx, 1); renderExtraButtons(); };
-                card.appendChild(delBtn);
-                EXTRA_BTN_FIELDS.forEach(f => {
-                    const wrap = document.createElement('div'); wrap.className = 'field-row';
-                    const label = document.createElement('label'); label.textContent = f.label;
-                    const input = document.createElement('input'); input.type = 'text'; input.value = item[f.name] || '';
-                    input.oninput = e => currentData.contacts.extraButtons[idx][f.name] = e.target.value;
-                    wrap.appendChild(label); wrap.appendChild(input); card.appendChild(wrap);
-                });
-                container.appendChild(card);
-            });
-        }
+        function renderExtraButtons() { const container = document.getElementById('extra-buttons-list'); if (!container) return; container.innerHTML = ''; currentData.contacts.extraButtons.forEach((item, idx) => { const card = document.createElement('div'); card.className = 'list-card'; const delBtn = document.createElement('button'); delBtn.className = 'delete-btn'; delBtn.innerHTML = '🗑'; delBtn.onclick = () => { currentData.contacts.extraButtons.splice(idx, 1); renderExtraButtons(); }; card.appendChild(delBtn); EXTRA_BTN_FIELDS.forEach(f => { const wrap = document.createElement('div'); wrap.className = 'field-row'; const label = document.createElement('label'); label.textContent = f.label; const input = document.createElement('input'); input.type = 'text'; input.value = item[f.name] || ''; input.oninput = e => currentData.contacts.extraButtons[idx][f.name] = e.target.value; wrap.appendChild(label); wrap.appendChild(input); card.appendChild(wrap); }); container.appendChild(card); }); }
         function addExtraButton() { currentData.contacts.extraButtons.push({...DEFAULT_EXTRA_BTN}); renderExtraButtons(); }
-
         function renderPending() { const container = document.getElementById('pending-list'); const noMsg = document.getElementById('no-pending'); container.innerHTML = ''; const pending = (currentData.reviews || []).filter(r => r.status === 'pending'); noMsg.style.display = pending.length ? 'none' : 'block'; pending.forEach((item) => { const realIdx = currentData.reviews.indexOf(item); const card = document.createElement('div'); card.className = 'list-card'; card.innerHTML = `<div class="field-row full"><label><b>${item.name}</b> (${item.rating}⭐) — ${item.date || ''}</label><p style="margin:8px 0; background:#f1f5f9; padding:10px; border-radius:6px; white-space: pre-wrap;">${item.text}</p></div><div style="display:flex; gap:10px; margin-top:10px;"><button class="delete-btn" style="position:static; background:#dcfce7; color:#166534;" onclick="moderateReview(${realIdx}, 'approved')">✅ Принять</button><button class="delete-btn" style="position:static; background:#fee2e2; color:#991b1b;" onclick="moderateReview(${realIdx}, 'rejected')">❌ Удалить</button></div>`; container.appendChild(card); }); }
         function moderateReview(index, status) { if (status === 'approved') delete currentData.reviews[index].status; else currentData.reviews.splice(index, 1); renderPending(); renderList('reviews'); saveData(); }
         function addItem(type) { if (!Array.isArray(currentData[type])) currentData[type] = []; currentData[type].push({ ...DEFAULTS[type] }); renderList(type); }
-        function removeItem(type, index) { if (confirm('Удалить этот элемент?')) { currentData[type].splice(index, 1); renderList(type); } }
-        async function saveData() { const btn = document.getElementById('saveBtn'); btn.disabled = true; btn.textContent = '⏳ Сохранение...'; try { const res = await fetch('/api/save', { method: 'POST', headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${sessionToken}` }, body: JSON.stringify({ content: currentData, token: sessionToken }) }); const result = await res.json(); if (res.ok) showToast('✅ Успешно! Сайт обновится через ~60 сек.'); else showToast('❌ ' + (result.message || result.details), true); } catch (e) { showToast('❌ Ошибка сети', true); } finally { btn.disabled = false; btn.textContent = '💾 Сохранить и Опубликовать'; } }
+        async function saveData() { const btn = document.getElementById('saveBtn'); btn.disabled = true; btn.textContent = '⏳ Сохранение...'; try { const res = await fetch('/api/save', { method: 'POST', headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${sessionToken}` }, body: JSON.stringify({ content: currentData, token: sessionToken }) }); const result = await res.json(); if (res.ok) showToast('✅ Успешно!'); else showToast('❌ ' + (result.message || result.details), true); } catch (e) { showToast('❌ Ошибка сети', true); } finally { btn.disabled = false; btn.textContent = '💾 Сохранить и Опубликовать'; } }
         function show(id) { document.querySelectorAll('.section').forEach(s => s.classList.remove('active')); document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active')); document.getElementById(id).classList.add('active'); event.target.classList.add('active'); }
         function showToast(msg, isError = false) { const t = document.getElementById('toast'); t.textContent = msg; t.className = `toast ${isError ? 'error' : ''} show`; setTimeout(() => t.classList.remove('show'), 4000); }
 
-        document.getElementById('master-photo-input').onchange = async (e) => { const file = e.target.files[0]; if (!file) return; if (file.size > 5_000_000) { document.getElementById('master-photo-status').textContent = '❌ Файл > 5 МБ'; return; } const status = document.getElementById('master-photo-status'); status.textContent = '⏳ Загрузка...'; status.style.color = '#3b82f6'; e.target.disabled = true; try { const base64 = await fileToBase64(file); const res = await fetch('/api/upload', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ fileName: file.name, contentBase64: base64 }) }); const data = await res.json(); if (res.ok) { currentData.masterPhoto = data.url; const preview = document.getElementById('master-photo-preview'); preview.src = data.url; preview.style.display = 'block'; status.textContent = '✅ Загружено'; status.style.color = '#22c55e'; } else { status.textContent = '❌ ' + (data.message || 'Ошибка'); status.style.color = '#ef4444'; } } catch (err) { status.textContent = '❌ Ошибка сети'; status.style.color = '#ef4444'; } finally { e.target.disabled = false; } };
+        document.getElementById('master-photo-input').onchange = async (e) => { const file = e.target.files[0]; if (!file) return; if (file.size > 5_000_000) { document.getElementById('master-photo-status').textContent = '❌ > 5 МБ'; return; } const status = document.getElementById('master-photo-status'); status.textContent = '⏳...'; e.target.disabled = true; try { const base64 = await fileToBase64(file); const res = await fetch('/api/upload', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ fileName: file.name, contentBase64: base64 }) }); const data = await res.json(); if (res.ok) { currentData.masterPhoto = data.url; document.getElementById('master-photo-preview').src = data.url; document.getElementById('master-photo-preview').style.display = 'block'; status.textContent = '✅'; } else { status.textContent = '❌'; } } catch { status.textContent = '❌'; } finally { e.target.disabled = false; } };
     </script>
 </body>
 </html>
