@@ -38,7 +38,6 @@
         </div>
     </section>
 
-    <!-- ГАЛЕРЕЯ С КАРУСЕЛЯМИ ПО БЛОКАМ -->
     <section id="gallery" class="bg-white">
         <div class="container">
             <h2 class="section-title">Мои работы</h2>
@@ -56,7 +55,7 @@
 
     <section id="master" class="bg-white">
         <div class="container master-wrapper">
-            <img src="images/master.jpg" alt="Мастер" class="master-photo">
+            <img id="master-photo" src="images/master.jpg" alt="Мастер" class="master-photo">
             <div class="master-text">
                 <h3 id="master-name">Привет!</h3>
                 <div id="master-desc-container"></div>
@@ -164,6 +163,9 @@
                     if (line.trim()) { const p = document.createElement('p'); p.textContent = line; descContainer.appendChild(p); }
                 });
 
+                // 📸 Динамическая подстановка фото мастера
+                if (data.masterPhoto) document.getElementById('master-photo').src = data.masterPhoto;
+
                 document.getElementById('contact-address').textContent = data.contacts.address;
                 const phoneEl = document.getElementById('contact-phone');
                 phoneEl.textContent = data.contacts.phone;
@@ -215,7 +217,6 @@
                     blogContainer.innerHTML = '<p style="text-align:center;color:#666; grid-column: 1/-1;">Статей пока нет.</p>';
                 }
 
-                // 🖼 ГАЛЕРЕЯ: группировка по категориям + карусель в каждой
                 const galleryPhotos = (data.gallery || []).filter(item => item.image && item.image.trim() !== '');
                 const categoriesContainer = document.getElementById('gallery-categories');
                 const emptyMsg = document.getElementById('gallery-empty');
@@ -223,196 +224,64 @@
                 if (galleryPhotos.length > 0 && categoriesContainer) {
                     emptyMsg.style.display = 'none';
                     categoriesContainer.innerHTML = '';
-                    
-                    // Группируем по label
                     const grouped = {};
                     galleryPhotos.forEach(photo => {
                         const cat = photo.label || 'Без категории';
                         if (!grouped[cat]) grouped[cat] = [];
                         grouped[cat].push(photo);
                     });
-
-                    // Создаём блоки с каруселями
                     Object.keys(grouped).forEach((cat, index) => {
                         const blockId = `carousel-block-${index}`;
                         const wrapper = document.createElement('div');
                         wrapper.className = 'gallery-category-block';
-                        wrapper.innerHTML = `
-                            <h3 class="gallery-category-title">${cat}</h3>
-                            <div class="carousel-wrapper">
-                                <div class="carousel" id="${blockId}">
-                                    <div class="carousel-track"></div>
-                                </div>
-                                <button class="carousel-btn prev" data-target="${blockId}" aria-label="Предыдущее"><i class="fas fa-chevron-left"></i></button>
-                                <button class="carousel-btn next" data-target="${blockId}" aria-label="Следующее"><i class="fas fa-chevron-right"></i></button>
-                                <div class="carousel-dots" data-target="${blockId}"></div>
-                            </div>
-                        `;
+                        wrapper.innerHTML = `<h3 class="gallery-category-title">${cat}</h3><div class="carousel-wrapper"><div class="carousel" id="${blockId}"><div class="carousel-track"></div></div><button class="carousel-btn prev" data-target="${blockId}" aria-label="Предыдущее"><i class="fas fa-chevron-left"></i></button><button class="carousel-btn next" data-target="${blockId}" aria-label="Следующее"><i class="fas fa-chevron-right"></i></button><div class="carousel-dots" data-target="${blockId}"></div></div>`;
                         categoriesContainer.appendChild(wrapper);
-
                         const track = wrapper.querySelector('.carousel-track');
-                        track.innerHTML = grouped[cat].map(photo => `
-                            <div class="carousel-slide">
-                                <div class="carousel-item">
-                                    <img src="${photo.image}" alt="${photo.label}" loading="lazy" onclick="openLightbox('${photo.image.replace(/'/g, "\\'")}', '${photo.label}')" style="cursor:pointer;">
-                                    <button class="carousel-pin-btn" onclick="event.stopPropagation(); pinToPinterest('${photo.image}', '${photo.label}')" title="В Pinterest"><i class="fab fa-pinterest-p"></i></button>
-                                </div>
-                            </div>
-                        `).join('');
-
-                        // Инициализируем карусель для этого блока
+                        track.innerHTML = grouped[cat].map(photo => `<div class="carousel-slide"><div class="carousel-item"><img src="${photo.image}" alt="${photo.label}" loading="lazy" onclick="openLightbox('${photo.image.replace(/'/g, "\\'")}', '${photo.label}')" style="cursor:pointer;"><button class="carousel-pin-btn" onclick="event.stopPropagation(); pinToPinterest('${photo.image}', '${photo.label}')" title="В Pinterest"><i class="fab fa-pinterest-p"></i></button></div></div>`).join('');
                         initCarouselForBlock(blockId, grouped[cat].length);
                     });
-                } else if (categoriesContainer) {
-                    emptyMsg.style.display = 'block';
-                }
+                } else if (categoriesContainer) { emptyMsg.style.display = 'block'; }
 
             } catch (error) { console.error('Ошибка загрузки данных:', error); }
         }
 
-        // 🎠 ЛОГИКА КАРУСЕЛИ ДЛЯ КАЖДОГО БЛОКА
         function initCarouselForBlock(blockId, totalSlides) {
             const wrapper = document.querySelector(`#${blockId}`).closest('.carousel-wrapper');
             const track = wrapper.querySelector('.carousel-track');
             const dotsContainer = wrapper.querySelector('.carousel-dots');
             const prevBtn = wrapper.querySelector('.prev');
             const nextBtn = wrapper.querySelector('.next');
-            
             let current = 0;
             let slidesPerView = window.innerWidth >= 1024 ? 3 : window.innerWidth >= 768 ? 2 : 1;
             let maxIndex = Math.max(0, totalSlides - slidesPerView);
             let autoplay = null;
-
-            function renderDots() {
-                const totalDots = Math.ceil(totalSlides / slidesPerView);
-                dotsContainer.innerHTML = Array.from({length: totalDots}, (_, i) => `
-                    <button class="carousel-dot ${i === Math.floor(current/slidesPerView) ? 'active' : ''}" data-idx="${i * slidesPerView}"></button>
-                `).join('');
-            }
-
-            function update() {
-                track.style.transform = `translateX(-${current * (100/slidesPerView)}%)`;
-                renderDots();
-                prevBtn.disabled = current === 0;
-                nextBtn.disabled = current >= maxIndex;
-            }
-
-            function next() {
-                current = current >= maxIndex ? 0 : current + 1;
-                update();
-                resetAutoplay();
-            }
-            function prev() {
-                current = current <= 0 ? maxIndex : current - 1;
-                update();
-                resetAutoplay();
-            }
-            function goTo(idx) {
-                current = Math.min(idx, maxIndex);
-                update();
-                resetAutoplay();
-            }
-
+            function renderDots() { dotsContainer.innerHTML = Array.from({length: Math.ceil(totalSlides / slidesPerView)}, (_, i) => `<button class="carousel-dot ${i === Math.floor(current/slidesPerView) ? 'active' : ''}" data-idx="${i * slidesPerView}"></button>`).join(''); }
+            function update() { track.style.transform = `translateX(-${current * (100/slidesPerView)}%)`; renderDots(); prevBtn.disabled = current === 0; nextBtn.disabled = current >= maxIndex; }
+            function next() { current = current >= maxIndex ? 0 : current + 1; update(); resetAutoplay(); }
+            function prev() { current = current <= 0 ? maxIndex : current - 1; update(); resetAutoplay(); }
+            function goTo(idx) { current = Math.min(idx, maxIndex); update(); resetAutoplay(); }
             function startAutoplay() { stopAutoplay(); autoplay = setInterval(next, 5000); }
             function stopAutoplay() { clearInterval(autoplay); }
             function resetAutoplay() { stopAutoplay(); startAutoplay(); }
-
-            prevBtn.onclick = prev;
-            nextBtn.onclick = next;
-            dotsContainer.onclick = (e) => {
-                if (e.target.classList.contains('carousel-dot')) goTo(parseInt(e.target.dataset.idx));
-            };
-
-            wrapper.onmouseenter = stopAutoplay;
-            wrapper.onmouseleave = startAutoplay;
-
-            // Свайп
+            prevBtn.onclick = prev; nextBtn.onclick = next;
+            dotsContainer.onclick = (e) => { if (e.target.classList.contains('carousel-dot')) goTo(parseInt(e.target.dataset.idx)); };
+            wrapper.onmouseenter = stopAutoplay; wrapper.onmouseleave = startAutoplay;
             let startX = 0, endX = 0;
             const carousel = wrapper.querySelector('.carousel');
             carousel.ontouchstart = (e) => startX = e.changedTouches[0].screenX;
-            carousel.ontouchend = (e) => {
-                endX = e.changedTouches[0].screenX;
-                if (startX - endX > 50) next();
-                if (endX - startX > 50) prev();
-            };
-
-            window.addEventListener('resize', () => {
-                const newView = window.innerWidth >= 1024 ? 3 : window.innerWidth >= 768 ? 2 : 1;
-                if (newView !== slidesPerView) {
-                    slidesPerView = newView;
-                    maxIndex = Math.max(0, totalSlides - slidesPerView);
-                    current = Math.min(current, maxIndex);
-                    update();
-                }
-            });
-
-            startAutoplay();
-            update();
+            carousel.ontouchend = (e) => { endX = e.changedTouches[0].screenX; if (startX - endX > 50) next(); if (endX - startX > 50) prev(); };
+            window.addEventListener('resize', () => { const newView = window.innerWidth >= 1024 ? 3 : window.innerWidth >= 768 ? 2 : 1; if (newView !== slidesPerView) { slidesPerView = newView; maxIndex = Math.max(0, totalSlides - slidesPerView); current = Math.min(current, maxIndex); update(); } });
+            startAutoplay(); update();
         }
 
-        function openLightbox(src, label) {
-            const lb = document.getElementById('lightbox');
-            const lbImg = document.getElementById('lightbox-img');
-            lbImg.src = src; lbImg.alt = label; lb.dataset.label = label || 'Ladi Sugar';
-            lb.classList.add('active'); document.body.style.overflow = 'hidden';
-        }
-        function closeLightbox(e) {
-            if (e && e.target.closest('.lightbox-pin')) return;
-            document.getElementById('lightbox').classList.remove('active');
-            document.body.style.overflow = '';
-            setTimeout(() => { document.getElementById('lightbox-img').src = ''; }, 250);
-        }
-
-        function pinToPinterest(imageUrl, description) {
-            const pageUrl = encodeURIComponent(window.location.href);
-            const media = encodeURIComponent(imageUrl);
-            const desc = encodeURIComponent(description || 'Ladi Sugar Polotsk');
-            window.open(`https://www.pinterest.com/pin/create/button/?url=${pageUrl}&media=${media}&description=${desc}`, '_blank', 'width=750,height=350');
-        }
-        function pinLightboxImage() {
-            pinToPinterest(document.getElementById('lightbox-img').src, document.getElementById('lightbox').dataset.label);
-        }
-
-        function initShareButtons() {
-            const url = encodeURIComponent(window.location.href);
-            const title = encodeURIComponent(document.title || 'Ladi Sugar Polotsk');
-            document.querySelector('.share-wa').href = `https://wa.me/?text=${title}%20${url}`;
-            document.querySelector('.share-tg').href = `https://t.me/share/url?url=${url}&text=${title}`;
-            document.querySelector('.share-vk').href = `https://vk.com/share.php?url=${url}&title=${title}`;
-            document.querySelector('.share-pin').href = `https://www.pinterest.com/pin/create/button/?url=${url}&description=${title}`;
-        }
-
-        function copyShareLink() {
-            navigator.clipboard.writeText(window.location.href).then(() => showShareToast('✅ Ссылка скопирована!'))
-            .catch(() => {
-                const input = document.createElement('input'); input.value = window.location.href;
-                document.body.appendChild(input); input.select(); document.execCommand('copy'); document.body.removeChild(input);
-                showShareToast('✅ Ссылка скопирована!');
-            });
-        }
-        function showShareToast(msg) {
-            let t = document.querySelector('.share-toast') || document.createElement('div');
-            t.className = 'share-toast'; t.textContent = msg; document.body.appendChild(t);
-            setTimeout(() => t.classList.add('show'), 10); setTimeout(() => t.classList.remove('show'), 2500);
-        }
-
-        document.getElementById('reviewForm')?.addEventListener('submit', async (e) => {
-            e.preventDefault();
-            const btn = document.getElementById('rev-submit-btn');
-            const status = document.getElementById('rev-status');
-            btn.disabled = true; btn.textContent = '⏳ Отправка...'; status.textContent = '';
-            try {
-                const res = await fetch('/api/review/submit', {
-                    method: 'POST', headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ name: document.getElementById('rev-name').value, text: document.getElementById('rev-text').value, rating: document.getElementById('rev-rating').value })
-                });
-                const data = await res.json();
-                status.style.color = res.ok ? '#22c55e' : '#ef4444'; status.textContent = data.message;
-                if (res.ok) e.target.reset();
-            } catch (err) { status.style.color = '#ef4444'; status.textContent = '❌ Ошибка сети'; }
-            finally { btn.disabled = false; btn.textContent = 'Отправить на модерацию'; }
-        });
-
+        function openLightbox(src, label) { const lb = document.getElementById('lightbox'); const lbImg = document.getElementById('lightbox-img'); lbImg.src = src; lbImg.alt = label; lb.dataset.label = label || 'Ladi Sugar'; lb.classList.add('active'); document.body.style.overflow = 'hidden'; }
+        function closeLightbox(e) { if (e && e.target.closest('.lightbox-pin')) return; document.getElementById('lightbox').classList.remove('active'); document.body.style.overflow = ''; setTimeout(() => { document.getElementById('lightbox-img').src = ''; }, 250); }
+        function pinToPinterest(imageUrl, description) { const pageUrl = encodeURIComponent(window.location.href); const media = encodeURIComponent(imageUrl); const desc = encodeURIComponent(description || 'Ladi Sugar Polotsk'); window.open(`https://www.pinterest.com/pin/create/button/?url=${pageUrl}&media=${media}&description=${desc}`, '_blank', 'width=750,height=350'); }
+        function pinLightboxImage() { pinToPinterest(document.getElementById('lightbox-img').src, document.getElementById('lightbox').dataset.label); }
+        function initShareButtons() { const url = encodeURIComponent(window.location.href); const title = encodeURIComponent(document.title || 'Ladi Sugar Polotsk'); document.querySelector('.share-wa').href = `https://wa.me/?text=${title}%20${url}`; document.querySelector('.share-tg').href = `https://t.me/share/url?url=${url}&text=${title}`; document.querySelector('.share-vk').href = `https://vk.com/share.php?url=${url}&title=${title}`; document.querySelector('.share-pin').href = `https://www.pinterest.com/pin/create/button/?url=${url}&description=${title}`; }
+        function copyShareLink() { navigator.clipboard.writeText(window.location.href).then(() => showShareToast('✅ Ссылка скопирована!')).catch(() => { const input = document.createElement('input'); input.value = window.location.href; document.body.appendChild(input); input.select(); document.execCommand('copy'); document.body.removeChild(input); showShareToast('✅ Ссылка скопирована!'); }); }
+        function showShareToast(msg) { let t = document.querySelector('.share-toast') || document.createElement('div'); t.className = 'share-toast'; t.textContent = msg; document.body.appendChild(t); setTimeout(() => t.classList.add('show'), 10); setTimeout(() => t.classList.remove('show'), 2500); }
+        document.getElementById('reviewForm')?.addEventListener('submit', async (e) => { e.preventDefault(); const btn = document.getElementById('rev-submit-btn'); const status = document.getElementById('rev-status'); btn.disabled = true; btn.textContent = '⏳ Отправка...'; status.textContent = ''; try { const res = await fetch('/api/review/submit', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ name: document.getElementById('rev-name').value, text: document.getElementById('rev-text').value, rating: document.getElementById('rev-rating').value }) }); const data = await res.json(); status.style.color = res.ok ? '#22c55e' : '#ef4444'; status.textContent = data.message; if (res.ok) e.target.reset(); } catch (err) { status.style.color = '#ef4444'; status.textContent = '❌ Ошибка сети'; } finally { btn.disabled = false; btn.textContent = 'Отправить на модерацию'; } });
         document.addEventListener('DOMContentLoaded', () => { loadData(); initShareButtons(); });
     </script>
 </body>
