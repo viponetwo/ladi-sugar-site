@@ -81,6 +81,7 @@
             <div class="nav-item" onclick="show('moderation')">🕒 Модерация</div>
             <div class="nav-item" onclick="show('blog')">📝 Блог</div>
             <div class="nav-item" onclick="show('contacts')">📞 Контакты и кнопки</div>
+            <div class="nav-item" onclick="show('custom')">⚙️ Доп. поля</div>
         </aside>
         <main class="main">
             <section id="hero" class="section active">
@@ -143,7 +144,12 @@
                 <hr style="margin: 20px 0; border: 0; border-top: 1px solid var(--border);">
                 <div class="form-group"><label>Текст кнопки записи</label><input data-bind="contacts.bookingText"></div>
                 <div class="form-group"><label>Ссылка для записи (Dikidi/YCLIENTS)</label><input type="url" data-bind="contacts.dikidi"></div>
-                <small>Изменения кнопок автоматически применятся к шапке, главному экрану и подвалу сайта после сохранения.</small>
+            </section>
+            <section id="custom" class="section">
+                <div class="section-header"><h2>⚙️ Дополнительные поля</h2></div>
+                <div id="custom-list" class="dynamic-list"></div>
+                <button class="add-btn" onclick="addCustomField()">+ Добавить поле</button>
+                <small>Ключ используется как идентификатор. Значение отображается на сайте в разделе "Доп. информация".</small>
             </section>
         </main>
         <button class="btn-save" id="saveBtn" onclick="saveData()">💾 Сохранить и Опубликовать</button>
@@ -215,6 +221,7 @@
                 if (!Array.isArray(currentData.prices)) currentData.prices = [];
                 if (!Array.isArray(currentData.reviews)) currentData.reviews = [];
                 if (!Array.isArray(currentData.blog)) currentData.blog = [];
+                if (!Array.isArray(currentData.customFields)) currentData.customFields = [];
                 if (!currentData.contacts) currentData.contacts = {};
 
                 document.querySelectorAll('[data-bind]').forEach(el => {
@@ -224,7 +231,7 @@
                 });
 
                 if (currentData.masterPhoto) { const preview = document.getElementById('master-photo-preview'); preview.src = currentData.masterPhoto; preview.style.display = 'block'; }
-                renderList('features'); renderList('gallery'); renderList('prices'); renderList('reviews'); renderPending(); renderList('blog');
+                renderList('features'); renderList('gallery'); renderList('prices'); renderList('reviews'); renderPending(); renderList('blog'); renderCustomFields();
                 showToast('✅ Данные загружены');
             } catch (e) { showToast('❌ Ошибка загрузки data.json', true); }
         }
@@ -247,6 +254,33 @@
                     if (f.name === 'image') { const uploadRow = document.createElement('div'); uploadRow.className = 'upload-row'; const fileInput = document.createElement('input'); fileInput.type = 'file'; fileInput.accept = 'image/*'; const status = document.createElement('span'); status.className = 'upload-status'; fileInput.onchange = async (e) => { const file = e.target.files[0]; if (!file) return; if (file.size > 5_000_000) { status.textContent = '❌ > 5 МБ'; status.style.color = '#ef4444'; fileInput.value = ''; return; } status.textContent = '⏳ Загрузка...'; status.style.color = '#3b82f6'; fileInput.disabled = true; try { const base64 = await fileToBase64(file); const res = await fetch('/api/upload', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ fileName: file.name, contentBase64: base64 }) }); const data = await res.json(); if (res.ok) { input.value = data.url; currentData[type][index][f.name] = data.url; status.textContent = '✅ Загружено'; status.style.color = '#22c55e'; if (type === 'gallery') { const imgEl = card.querySelector('.img-preview'); if (imgEl) { imgEl.src = data.url; imgEl.style.display = 'block'; } } } else { status.textContent = '❌ ' + (data.message || 'Ошибка'); status.style.color = '#ef4444'; } } catch (err) { status.textContent = '❌ Ошибка сети'; status.style.color = '#ef4444'; } finally { fileInput.disabled = false; } }; uploadRow.appendChild(fileInput); uploadRow.appendChild(status); wrap.appendChild(label); wrap.appendChild(input); wrap.appendChild(uploadRow); } else { wrap.appendChild(label); wrap.appendChild(input); } card.appendChild(wrap);
                 }); container.appendChild(card);
             });
+        }
+
+        function renderCustomFields() {
+            const container = document.getElementById('custom-list');
+            if (!container) return;
+            container.innerHTML = '';
+            currentData.customFields.forEach((field, idx) => {
+                const card = document.createElement('div'); card.className = 'list-card';
+                const delBtn = document.createElement('button'); delBtn.className = 'delete-btn'; delBtn.innerHTML = '🗑'; delBtn.onclick = () => { currentData.customFields.splice(idx, 1); renderCustomFields(); };
+                card.appendChild(delBtn);
+                const w1 = document.createElement('div'); w1.className = 'field-row';
+                const l1 = document.createElement('label'); l1.textContent = 'Ключ (ID)';
+                const i1 = document.createElement('input'); i1.value = field.key || '';
+                i1.oninput = e => currentData.customFields[idx].key = e.target.value;
+                w1.appendChild(l1); w1.appendChild(i1);
+                const w2 = document.createElement('div'); w2.className = 'field-row full';
+                const l2 = document.createElement('label'); l2.textContent = 'Значение';
+                const i2 = document.createElement('textarea'); i2.value = field.value || ''; i2.rows = 2;
+                i2.oninput = e => currentData.customFields[idx].value = e.target.value;
+                w2.appendChild(l2); w2.appendChild(i2);
+                card.appendChild(w1); card.appendChild(w2);
+                container.appendChild(card);
+            });
+        }
+        function addCustomField() {
+            currentData.customFields.push({key: 'new_field', value: ''});
+            renderCustomFields();
         }
 
         function renderPending() { const container = document.getElementById('pending-list'); const noMsg = document.getElementById('no-pending'); container.innerHTML = ''; const pending = (currentData.reviews || []).filter(r => r.status === 'pending'); noMsg.style.display = pending.length ? 'none' : 'block'; pending.forEach((item) => { const realIdx = currentData.reviews.indexOf(item); const card = document.createElement('div'); card.className = 'list-card'; card.innerHTML = `<div class="field-row full"><label><b>${item.name}</b> (${item.rating}⭐) — ${item.date || ''}</label><p style="margin:8px 0; background:#f1f5f9; padding:10px; border-radius:6px; white-space: pre-wrap;">${item.text}</p></div><div style="display:flex; gap:10px; margin-top:10px;"><button class="delete-btn" style="position:static; background:#dcfce7; color:#166534;" onclick="moderateReview(${realIdx}, 'approved')">✅ Принять</button><button class="delete-btn" style="position:static; background:#fee2e2; color:#991b1b;" onclick="moderateReview(${realIdx}, 'rejected')">❌ Удалить</button></div>`; container.appendChild(card); }); }
