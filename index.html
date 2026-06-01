@@ -107,6 +107,14 @@
         </div>
     </section>
 
+    <!-- ДОПОЛНИТЕЛЬНЫЕ ПОЛЯ -->
+    <section id="custom-fields" class="custom-fields-section">
+        <div class="container">
+            <h2 class="section-title">Дополнительная информация</h2>
+            <div class="custom-field-grid" id="custom-fields-container"></div>
+        </div>
+    </section>
+
     <section class="share-section">
         <h3>Поделиться с друзьями</h3>
         <div class="share-buttons">
@@ -127,36 +135,29 @@
     </div>
 
     <script>
-        let activeCarousels = [];
-
         async function loadData() {
             try {
                 const response = await fetch('/data.json');
                 if (!response.ok) throw new Error('Не удалось загрузить data.json');
                 const data = await response.json();
+                window.siteData = data; // Доступно в консоли и скриптах
 
                 document.getElementById('hero-title').textContent = data.hero.title;
                 document.getElementById('hero-subtitle').innerHTML = data.hero.subtitle.replace(/\n/g, '<br>');
                 
-                // 🔗 Динамическое обновление кнопок записи и связи
                 const bookingText = data.contacts.bookingText || 'Записаться онлайн';
                 const bookingUrl = data.contacts.dikidi || '#';
-                const waNum = data.contacts.whatsapp || '';
-                const vibNum = data.contacts.viber || '';
-                const instaUrl = data.contacts.instagram || '#';
-                const phoneNum = data.contacts.phone || '';
-
                 document.getElementById('header-dikidi-btn').textContent = bookingText;
                 document.getElementById('header-dikidi-btn').href = bookingUrl;
                 document.getElementById('hero-btn').textContent = bookingText;
                 document.getElementById('hero-btn').href = bookingUrl;
                 document.getElementById('btn-dikidi-footer').innerHTML = `<i class="far fa-calendar-check"></i> ${bookingText}`;
                 document.getElementById('btn-dikidi-footer').href = bookingUrl;
-                document.getElementById('btn-wa').href = waNum ? `https://wa.me/${waNum}` : '#';
-                document.getElementById('btn-viber').href = vibNum ? `viber://chat?number=%2B${vibNum}` : '#';
-                document.getElementById('btn-insta').href = instaUrl;
-                document.getElementById('contact-phone').textContent = phoneNum;
-                document.getElementById('contact-phone').href = phoneNum ? `tel:${phoneNum}` : '#';
+                document.getElementById('btn-wa').href = data.contacts.whatsapp ? `https://wa.me/${data.contacts.whatsapp}` : '#';
+                document.getElementById('btn-viber').href = data.contacts.viber ? `viber://chat?number=%2B${data.contacts.viber}` : '#';
+                document.getElementById('btn-insta').href = data.contacts.instagram || '#';
+                document.getElementById('contact-phone').textContent = data.contacts.phone || '';
+                document.getElementById('contact-phone').href = data.contacts.phone ? `tel:${data.contacts.phone}` : '#';
                 document.getElementById('contact-address').textContent = data.contacts.address || '';
 
                 document.getElementById('master-name').textContent = `Привет! Я — ${data.master.name}`;
@@ -194,6 +195,20 @@
                         initCarouselForBlock(blockId, grouped[cat].length);
                     });
                 } else if (categoriesContainer) { emptyMsg.style.display = 'block'; }
+
+                // ⚙️ Рендер дополнительных полей
+                const customContainer = document.getElementById('custom-fields-container');
+                if (customContainer && data.customFields?.length) {
+                    customContainer.innerHTML = data.customFields.map(f => `
+                        <div class="custom-field-item">
+                            <h4>${f.key.replace(/_/g, ' ').replace(/\b\w/g, c => c.toUpperCase())}</h4>
+                            <p>${f.value}</p>
+                        </div>
+                    `).join('');
+                    document.getElementById('custom-fields').style.display = 'block';
+                } else if (document.getElementById('custom-fields')) {
+                    document.getElementById('custom-fields').style.display = 'none';
+                }
 
             } catch (error) { console.error('Ошибка загрузки данных:', error); }
         }
