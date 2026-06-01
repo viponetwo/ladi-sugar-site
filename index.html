@@ -55,7 +55,8 @@
 
     <section id="master" class="bg-white">
         <div class="container master-wrapper">
-            <img id="master-photo" src="images/master.jpg" alt="Мастер" class="master-photo">
+            <!-- ФОТО СКРЫТО ПО УМОЛЧАНИЮ, ПОЯВИТСЯ ТОЛЬКО ЕСЛИ ЕСТЬ ССЫЛКА В JSON -->
+            <img id="master-photo" src="" alt="Мастер" class="master-photo" style="display:none;">
             <div class="master-text">
                 <h3 id="master-name">Привет!</h3>
                 <div id="master-desc-container"></div>
@@ -156,7 +157,15 @@
                 const descContainer = document.getElementById('master-desc-container');
                 descContainer.innerHTML = '';
                 data.master.description.split('\n').forEach(line => { if (line.trim()) { const p = document.createElement('p'); p.textContent = line; descContainer.appendChild(p); } });
-                if (data.masterPhoto) document.getElementById('master-photo').src = data.masterPhoto;
+                
+                // 📸 ЛОГИКА ФОТО МАСТЕРА: Если есть ссылка — показываем, если нет — скрываем
+                const masterImg = document.getElementById('master-photo');
+                if (data.masterPhoto) {
+                    masterImg.src = data.masterPhoto;
+                    masterImg.style.display = 'block';
+                } else {
+                    masterImg.style.display = 'none';
+                }
 
                 const featuresContainer = document.getElementById('features-container');
                 if(featuresContainer && data.features) { featuresContainer.innerHTML = data.features.map(f => `<div class="feature-card"><i class="fas ${f.icon} feature-icon"></i><h3>${f.title}</h3><p>${f.desc}</p></div>`).join(''); }
@@ -188,7 +197,6 @@
                     });
                 } else if (categoriesContainer) { emptyMsg.style.display = 'block'; }
 
-                // 🔗 Рендер дополнительных кнопок связи
                 const socialContainer = document.querySelector('.social-buttons');
                 if (socialContainer && data.contacts?.extraButtons?.length) {
                     document.querySelectorAll('.social-btn-extra').forEach(el => el.remove());
