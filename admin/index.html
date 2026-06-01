@@ -90,8 +90,18 @@
                 <div class="form-group"><label>Ссылка Dikidi</label><input type="url" data-bind="hero.dikidiUrl"></div>
             </section>
             <section id="master" class="section">
+                <div class="section-header"><h2>👤 О мастере</h2></div>
                 <div class="form-group"><label>Имя</label><input data-bind="master.name"></div>
                 <div class="form-group"><label>Описание</label><textarea rows="5" data-bind="master.description"></textarea></div>
+                <div class="form-group">
+                    <label>Фото мастера</label>
+                    <div class="upload-row">
+                        <input type="file" id="master-photo-input" accept="image/*">
+                        <span class="upload-status" id="master-photo-status"></span>
+                    </div>
+                    <img id="master-photo-preview" class="img-preview" style="margin-top:10px; max-height:150px; width:auto; display:none;">
+                    <small>Рекомендуемый размер: 500x500 px. Формат: JPG/PNG.</small>
+                </div>
             </section>
             <section id="features" class="section">
                 <div class="section-header"><h2>✨ Преимущества</h2></div>
@@ -163,7 +173,6 @@
             current[keys[keys.length - 1]] = value;
         }
 
-        // 📤 Преобразование файла в Base64 (без data:image/...;base64,)
         function fileToBase64(file) {
             return new Promise((resolve, reject) => {
                 const reader = new FileReader();
@@ -208,6 +217,13 @@
                     el.value = getNested(currentData, path) || '';
                     el.addEventListener('input', e => setNested(currentData, path, e.target.value));
                 });
+
+                // 🖼 Загрузка превью фото мастера
+                if (currentData.masterPhoto) {
+                    const preview = document.getElementById('master-photo-preview');
+                    preview.src = currentData.masterPhoto;
+                    preview.style.display = 'block';
+                }
 
                 renderList('features');
                 renderList('gallery');
@@ -261,69 +277,34 @@
                         }
                     };
 
-                    // 🖼 Кнопка загрузки локального файла для полей image
                     if (f.name === 'image') {
                         const uploadRow = document.createElement('div');
                         uploadRow.className = 'upload-row';
-                        
                         const fileInput = document.createElement('input');
-                        fileInput.type = 'file';
-                        fileInput.accept = 'image/*';
-                        
+                        fileInput.type = 'file'; fileInput.accept = 'image/*';
                         const status = document.createElement('span');
                         status.className = 'upload-status';
                         
                         fileInput.onchange = async (e) => {
                             const file = e.target.files[0];
                             if (!file) return;
-                            if (file.size > 5_000_000) {
-                                status.textContent = '❌ Файл > 5 МБ. Сожмите изображение.';
-                                status.style.color = '#ef4444';
-                                fileInput.value = '';
-                                return;
-                            }
-                            status.textContent = '⏳ Загрузка...';
-                            status.style.color = '#3b82f6';
-                            fileInput.disabled = true;
-
+                            if (file.size > 5_000_000) { status.textContent = '❌ > 5 МБ'; status.style.color = '#ef4444'; fileInput.value = ''; return; }
+                            status.textContent = '⏳ Загрузка...'; status.style.color = '#3b82f6'; fileInput.disabled = true;
                             try {
                                 const base64 = await fileToBase64(file);
-                                const res = await fetch('/api/upload', {
-                                    method: 'POST',
-                                    headers: { 'Content-Type': 'application/json' },
-                                    body: JSON.stringify({ fileName: file.name, contentBase64: base64 })
-                                });
+                                const res = await fetch('/api/upload', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ fileName: file.name, contentBase64: base64 }) });
                                 const data = await res.json();
                                 if (res.ok) {
-                                    input.value = data.url;
-                                    currentData[type][index][f.name] = data.url;
-                                    status.textContent = '✅ Загружено';
-                                    status.style.color = '#22c55e';
-                                    if (type === 'gallery') {
-                                        const imgEl = card.querySelector('.img-preview');
-                                        if (imgEl) { imgEl.src = data.url; imgEl.style.display = 'block'; }
-                                    }
-                                } else {
-                                    status.textContent = '❌ ' + (data.message || 'Ошибка');
-                                    status.style.color = '#ef4444';
-                                }
-                            } catch (err) {
-                                status.textContent = '❌ Ошибка сети';
-                                status.style.color = '#ef4444';
-                            } finally {
-                                fileInput.disabled = false;
-                            }
+                                    input.value = data.url; currentData[type][index][f.name] = data.url;
+                                    status.textContent = '✅ Загружено'; status.style.color = '#22c55e';
+                                    if (type === 'gallery') { const imgEl = card.querySelector('.img-preview'); if (imgEl) { imgEl.src = data.url; imgEl.style.display = 'block'; } }
+                                } else { status.textContent = '❌ ' + (data.message || 'Ошибка'); status.style.color = '#ef4444'; }
+                            } catch (err) { status.textContent = '❌ Ошибка сети'; status.style.color = '#ef4444'; }
+                            finally { fileInput.disabled = false; }
                         };
-
-                        uploadRow.appendChild(fileInput);
-                        uploadRow.appendChild(status);
-                        wrap.appendChild(label);
-                        wrap.appendChild(input);
-                        wrap.appendChild(uploadRow);
-                    } else {
-                        wrap.appendChild(label);
-                        wrap.appendChild(input);
-                    }
+                        uploadRow.appendChild(fileInput); uploadRow.appendChild(status);
+                        wrap.appendChild(label); wrap.appendChild(input); wrap.appendChild(uploadRow);
+                    } else { wrap.appendChild(label); wrap.appendChild(input); }
                     card.appendChild(wrap);
                 });
                 container.appendChild(card);
@@ -336,21 +317,10 @@
             container.innerHTML = '';
             const pending = (currentData.reviews || []).filter(r => r.status === 'pending');
             noMsg.style.display = pending.length ? 'none' : 'block';
-
             pending.forEach((item) => {
                 const realIdx = currentData.reviews.indexOf(item);
-                const card = document.createElement('div');
-                card.className = 'list-card';
-                card.innerHTML = `
-                    <div class="field-row full">
-                        <label><b>${item.name}</b> (${item.rating}⭐) — ${item.date || ''}</label>
-                        <p style="margin:8px 0; background:#f1f5f9; padding:10px; border-radius:6px; white-space: pre-wrap;">${item.text}</p>
-                    </div>
-                    <div style="display:flex; gap:10px; margin-top:10px;">
-                        <button class="delete-btn" style="position:static; background:#dcfce7; color:#166534;" onclick="moderateReview(${realIdx}, 'approved')">✅ Принять</button>
-                        <button class="delete-btn" style="position:static; background:#fee2e2; color:#991b1b;" onclick="moderateReview(${realIdx}, 'rejected')">❌ Удалить</button>
-                    </div>
-                `;
+                const card = document.createElement('div'); card.className = 'list-card';
+                card.innerHTML = `<div class="field-row full"><label><b>${item.name}</b> (${item.rating}⭐) — ${item.date || ''}</label><p style="margin:8px 0; background:#f1f5f9; padding:10px; border-radius:6px; white-space: pre-wrap;">${item.text}</p></div><div style="display:flex; gap:10px; margin-top:10px;"><button class="delete-btn" style="position:static; background:#dcfce7; color:#166534;" onclick="moderateReview(${realIdx}, 'approved')">✅ Принять</button><button class="delete-btn" style="position:static; background:#fee2e2; color:#991b1b;" onclick="moderateReview(${realIdx}, 'rejected')">❌ Удалить</button></div>`;
                 container.appendChild(card);
             });
         }
@@ -368,22 +338,14 @@
         }
 
         function removeItem(type, index) {
-            if (confirm('Удалить этот элемент?')) {
-                currentData[type].splice(index, 1);
-                renderList(type);
-            }
+            if (confirm('Удалить этот элемент?')) { currentData[type].splice(index, 1); renderList(type); }
         }
 
         async function saveData() {
             const btn = document.getElementById('saveBtn');
             btn.disabled = true; btn.textContent = '⏳ Сохранение...';
-
             try {
-                const res = await fetch('/api/save', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${sessionToken}` },
-                    body: JSON.stringify({ content: currentData, token: sessionToken })
-                });
+                const res = await fetch('/api/save', { method: 'POST', headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${sessionToken}` }, body: JSON.stringify({ content: currentData, token: sessionToken }) });
                 const result = await res.json();
                 if (res.ok) showToast('✅ Успешно! Сайт обновится через ~60 сек.');
                 else showToast('❌ ' + (result.message || result.details), true);
@@ -403,6 +365,29 @@
             t.textContent = msg; t.className = `toast ${isError ? 'error' : ''} show`;
             setTimeout(() => t.classList.remove('show'), 4000);
         }
+
+        // 📸 Загрузка фото мастера
+        document.getElementById('master-photo-input').onchange = async (e) => {
+            const file = e.target.files[0];
+            if (!file) return;
+            if (file.size > 5_000_000) { document.getElementById('master-photo-status').textContent = '❌ Файл > 5 МБ'; return; }
+            
+            const status = document.getElementById('master-photo-status');
+            status.textContent = '⏳ Загрузка...'; status.style.color = '#3b82f6'; e.target.disabled = true;
+
+            try {
+                const base64 = await fileToBase64(file);
+                const res = await fetch('/api/upload', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ fileName: file.name, contentBase64: base64 }) });
+                const data = await res.json();
+                if (res.ok) {
+                    currentData.masterPhoto = data.url;
+                    const preview = document.getElementById('master-photo-preview');
+                    preview.src = data.url; preview.style.display = 'block';
+                    status.textContent = '✅ Загружено'; status.style.color = '#22c55e';
+                } else { status.textContent = '❌ ' + (data.message || 'Ошибка'); status.style.color = '#ef4444'; }
+            } catch (err) { status.textContent = '❌ Ошибка сети'; status.style.color = '#ef4444'; }
+            finally { e.target.disabled = false; }
+        };
     </script>
 </body>
 </html>
