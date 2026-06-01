@@ -1,21 +1,47 @@
 {
-  "hero": { "title": "...", "subtitle": "...", "btnText": "...", "dikidiUrl": "..." },
-  "master": { "name": "...", "description": "..." },
-  "contacts": { "address": "...", "phone": "...", "whatsapp": "...", "viber": "...", "instagram": "...", "dikidi": "...", "bookingText": "Записаться", "extraButtons": [] },
+  "hero": {
+    "title": "...",
+    "subtitle": "...",
+    "btnText": "...",
+    "dikidiUrl": "..."
+  },
+  "master": {
+    "name": "...",
+    "description": "..."
+  },
+  "contacts": {
+    "address": "...",
+    "phone": "...",
+    "whatsapp": "...",
+    "viber": "...",
+    "instagram": "...",
+    "dikidi": "...",
+    "bookingText": "Записаться",
+    "extraButtons": []
+  },
   "features": [],
   "gallery": [],
   "prices": [],
   "reviews": [],
   "blog": [],
-  "masterPhoto": "",
+  "masterPhoto": "/images/uploads/1780320054029-logo.png",
   "customFields": [],
-  
   "beforeAfter": [
-    { "before": "https://images.unsplash.com/photo-1519494026892-80bbd2d6fd0d?w=800", "after": "https://images.unsplash.com/photo-1570172619644-dfd03ed5d881?w=800", "label": "Бикини" }
+    {
+      "before": "https://images.unsplash.com/photo-1519494026892-80bbd2d6fd0d?w=800",
+      "after": "https://images.unsplash.com/photo-1570172619644-dfd03ed5d881?w=800",
+      "label": "Бикини"
+    }
   ],
   "faq": [
-    { "question": "Больно ли делать шугаринг?", "answer": "Ощущения индивидуальны. Большинство клиентов отмечают лишь лёгкий дискомфорт в первые разы. Кожа быстро адаптируется." },
-    { "question": "Как подготовиться к процедуре?", "answer": "Длина волосков должна быть 4-6 мм. За 2 дня до визита используйте мягкий скраб. Не загорайте и не используйте кремы с ретинолом." }
+    {
+      "question": "Больно ли делать шугаринг?",
+      "answer": "Ощущения индивидуальны. Большинство клиентов отмечают лишь лёгкий дискомфорт в первые разы. Кожа быстро адаптируется."
+    },
+    {
+      "question": "Как подготовиться к процедуре?",
+      "answer": "Длина волосков должна быть 4-6 мм. За 2 дня до визита используйте мягкий скраб. Не загорайте и не используйте кремы с ретинолом."
+    }
   ],
   "careInstructions": {
     "before": "За 2 дня до процедуры используйте мягкий скраб.\nДлина волосков должна быть 4-6 мм.\nНе загорайте и не посещайте солярий.\nНе используйте спиртовые лосьоны.",
