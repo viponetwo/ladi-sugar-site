@@ -141,6 +141,15 @@ iframe { width: 100%; height: 100%; border: 0; }
 .lightbox-pin { position: absolute; top: 15px; right: 60px; background: #E60023; color: white; width: 36px; height: 36px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.1rem; text-decoration: none; transition: 0.2s; }
 .lightbox-pin:hover { background: #bd001c; transform: scale(1.1); }
 
+/* ⚙️ ДОПОЛНИТЕЛЬНЫЕ ПОЛЯ */
+.custom-fields-section { padding: 60px 0; background: var(--bg-light); display: block; }
+.custom-field-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 25px; max-width: 1000px; margin: 0 auto; }
+.custom-field-item { background: white; padding: 25px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); transition: transform 0.3s; }
+.custom-field-item:hover { transform: translateY(-4px); }
+.custom-field-item h4 { font-size: 1.1rem; margin-bottom: 10px; color: var(--primary); text-transform: capitalize; }
+.custom-field-item p { color: var(--text-gray); line-height: 1.6; font-size: 0.95rem; white-space: pre-wrap; }
+/* --------------------------- */
+
 footer { background: var(--text-dark); color: white; text-align: center; padding: 30px 0; }
 
 @media (max-width: 768px) {
@@ -157,5 +166,3 @@ footer { background: var(--text-dark); color: white; text-align: center; padding
     .btn-social { width: 100%; }
     .lightbox-pin { right: 55px; top: 18px; width: 32px; height: 32px; font-size: 0.9rem; }
 }
-
-
