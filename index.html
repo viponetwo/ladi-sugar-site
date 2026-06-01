@@ -12,37 +12,67 @@
     <header>
         <div class="container nav-wrapper">
             <a href="#" class="logo-link"><img src="images/logo.png" alt="Logo" class="logo-img"></a>
-            <nav class="nav-links"><a href="#about">Преимущества</a><a href="#gallery">Работы</a><a href="#before-after">До/После</a><a href="#faq">FAQ</a><a href="#blog">Блог</a><a href="#prices">Цены</a><a href="#contacts">Контакты</a></nav>
+            <nav class="nav-links">
+                <a href="#about">Преимущества</a>
+                <a href="#before-after">До/После</a>
+                <a href="#blog">Блог</a>
+                <a href="#faq">FAQ</a>
+                <a href="#prices">Цены</a>
+                <a href="#contacts">Контакты</a>
+            </nav>
             <a href="#" id="header-dikidi-btn" target="_blank" class="btn-header">Записаться</a>
         </div>
     </header>
 
     <section class="hero">
         <div class="container hero-content">
-            <h1 id="hero-title">Загрузка...</h1><p id="hero-subtitle"></p><a href="#" id="hero-btn" target="_blank" class="btn-hero">Записаться онлайн</a>
+            <h1 id="hero-title">Загрузка...</h1>
+            <p id="hero-subtitle"></p>
+            <a href="#" id="hero-btn" target="_blank" class="btn-hero">Записаться онлайн</a>
         </div>
     </section>
 
-    <section id="about" class="bg-light"><div class="container"><h2 class="section-title">Почему выбирают меня</h2><div class="features-grid" id="features-container"></div></div></section>
-
-    <section id="gallery" class="bg-white"><div class="container"><h2 class="section-title">Мои работы</h2><div id="gallery-categories"></div><div id="gallery-empty" style="text-align:center;color:#888; padding:60px 0; display:none;">Фотографии скоро появятся</div></div></section>
+    <section id="about" class="bg-light">
+        <div class="container">
+            <h2 class="section-title">Почему выбирают меня</h2>
+            <div class="features-grid" id="features-container"></div>
+        </div>
+    </section>
 
     <!-- 🔄 ДО / ПОСЛЕ -->
-    <section id="before-after" class="bg-light">
+    <section id="before-after" class="bg-white">
         <div class="container">
             <h2 class="section-title">Результат работ</h2>
             <div class="ba-grid" id="ba-container"></div>
         </div>
     </section>
 
-    <section id="blog" class="bg-white"><div class="container"><h2 class="section-title">Полезные статьи</h2><div class="blog-grid" id="blog-container"></div></div></section>
+    <section id="blog" class="bg-light">
+        <div class="container">
+            <h2 class="section-title">Полезные статьи</h2>
+            <div class="blog-grid" id="blog-container"></div>
+        </div>
+    </section>
 
-    <section id="master" class="bg-light"><div class="container master-wrapper"><img id="master-photo" src="" alt="Мастер" class="master-photo" style="display:none;"><div class="master-text"><h3 id="master-name">Привет!</h3><div id="master-desc-container"></div></div></div></section>
+    <section id="master" class="bg-white">
+        <div class="container master-wrapper">
+            <img id="master-photo" src="" alt="Мастер" class="master-photo" style="display:none;">
+            <div class="master-text">
+                <h3 id="master-name">Привет!</h3>
+                <div id="master-desc-container"></div>
+            </div>
+        </div>
+    </section>
 
-    <section id="prices" class="bg-white"><div class="container"><h2 class="section-title" style="text-align:center;">Прайс-лист</h2><div class="price-list" id="price-list-container"></div></div></section>
+    <section id="prices" class="bg-light">
+        <div class="container">
+            <h2 class="section-title" style="text-align:center;">Прайс-лист</h2>
+            <div class="price-list" id="price-list-container"></div>
+        </div>
+    </section>
 
     <!-- ❓ FAQ -->
-    <section id="faq" class="bg-light">
+    <section id="faq" class="bg-white">
         <div class="container">
             <h2 class="section-title">Частые вопросы</h2>
             <div class="faq-container" id="faq-container"></div>
@@ -50,76 +80,133 @@
     </section>
 
     <!-- 📋 ИНСТРУКЦИИ -->
-    <section id="care" class="bg-white">
+    <section id="care" class="bg-light">
         <div class="container">
             <h2 class="section-title">Памятка клиенту</h2>
             <div class="care-grid" id="care-container"></div>
         </div>
     </section>
 
-    <section id="reviews" class="bg-light"><div class="container"><h2 class="section-title">Отзывы клиентов</h2><div class="reviews-grid" id="reviews-container"></div><div class="review-form-wrapper"><h3 style="text-align:center; margin-bottom:20px;">Оставить отзыв</h3><form id="reviewForm" class="review-form"><input type="text" id="rev-name" placeholder="Ваше имя" required><div class="rating-input"><span>Оценка:</span><select id="rev-rating"><option value="5">⭐⭐⭐⭐⭐ (5)</option><option value="4">⭐⭐⭐⭐ (4)</option><option value="3">⭐⭐⭐ (3)</option><option value="2">⭐⭐ (2)</option><option value="1">⭐ (1)</option></select></div><textarea id="rev-text" placeholder="Расскажите о вашем опыте..." rows="4" required></textarea><button type="submit" id="rev-submit-btn" class="btn-hero" style="padding:12px 30px; font-size:1rem; width:100%;">Отправить на модерацию</button><div id="rev-status" style="text-align:center; margin-top:10px; font-size:0.9rem;"></div></form></div></div></section>
+    <section id="reviews" class="bg-white">
+        <div class="container">
+            <h2 class="section-title">Отзывы клиентов</h2>
+            <div class="reviews-grid" id="reviews-container"></div>
+            <div class="review-form-wrapper">
+                <h3 style="text-align:center; margin-bottom:20px;">Оставить отзыв</h3>
+                <form id="reviewForm" class="review-form">
+                    <input type="text" id="rev-name" placeholder="Ваше имя" required>
+                    <div class="rating-input">
+                        <span>Оценка:</span>
+                        <select id="rev-rating">
+                            <option value="5">⭐⭐⭐⭐⭐ (5)</option>
+                            <option value="4">⭐⭐⭐⭐ (4)</option>
+                            <option value="3">⭐⭐⭐ (3)</option>
+                            <option value="2">⭐⭐ (2)</option>
+                            <option value="1">⭐ (1)</option>
+                        </select>
+                    </div>
+                    <textarea id="rev-text" placeholder="Расскажите о вашем опыте..." rows="4" required></textarea>
+                    <button type="submit" id="rev-submit-btn" class="btn-hero" style="padding:12px 30px; font-size:1rem; width:100%;">Отправить на модерацию</button>
+                    <div id="rev-status" style="text-align:center; margin-top:10px; font-size:0.9rem;"></div>
+                </form>
+            </div>
+        </div>
+    </section>
 
-    <section id="contacts" class="bg-white"><div class="container"><h2 class="section-title" style="text-align:center;">Контакты</h2><div class="contacts-wrapper"><div class="contact-info"><h3>Жду вас в студии!</h3><div class="contact-item"><i class="fas fa-map-marker-alt"></i><span id="contact-address">...</span></div><div class="contact-item"><i class="fas fa-phone-alt"></i><a id="contact-phone" href="#">...</a></div><div class="social-buttons" id="social-buttons"><a href="#" id="btn-dikidi-footer" target="_blank" class="btn-social btn-dikidi"><i class="far fa-calendar-check"></i> Записаться</a><a href="#" id="btn-wa" target="_blank" class="btn-social btn-wa"><i class="fab fa-whatsapp"></i></a><a href="#" id="btn-viber" target="_blank" class="btn-social btn-viber"><i class="fab fa-viber"></i></a><a href="#" id="btn-insta" target="_blank" class="btn-social btn-insta"><i class="fab fa-instagram"></i></a></div></div><div class="map-container"><iframe src="https://yandex.ru/map-widget/v1/?um=constructor%3Ab893ccbe0c115b6b91c8b5b6581a5e81d06ace6875cc4528a08ba8fecfff3da5&amp;source=constructor" width="100%" height="400" frameborder="0"></iframe></div></div></div></section>
+    <section id="contacts" class="bg-light">
+        <div class="container">
+            <h2 class="section-title" style="text-align:center;">Контакты</h2>
+            <div class="contacts-wrapper">
+                <div class="contact-info">
+                    <h3>Жду вас в студии!</h3>
+                    <div class="contact-item"><i class="fas fa-map-marker-alt"></i><span id="contact-address">...</span></div>
+                    <div class="contact-item"><i class="fas fa-phone-alt"></i><a id="contact-phone" href="#">...</a></div>
+                    <div class="social-buttons" id="social-buttons">
+                        <a href="#" id="btn-dikidi-footer" target="_blank" class="btn-social btn-dikidi"><i class="far fa-calendar-check"></i> Записаться</a>
+                        <a href="#" id="btn-wa" target="_blank" class="btn-social btn-wa"><i class="fab fa-whatsapp"></i></a>
+                        <a href="#" id="btn-viber" target="_blank" class="btn-social btn-viber"><i class="fab fa-viber"></i></a>
+                        <a href="#" id="btn-insta" target="_blank" class="btn-social btn-insta"><i class="fab fa-instagram"></i></a>
+                    </div>
+                </div>
+                <div class="map-container"><iframe src="https://yandex.ru/map-widget/v1/?um=constructor%3Ab893ccbe0c115b6b91c8b5b6581a5e81d06ace6875cc4528a08ba8fecfff3da5&amp;source=constructor" width="100%" height="400" frameborder="0"></iframe></div>
+            </div>
+        </div>
+    </section>
 
-    <section class="share-section"><h3>Поделиться с друзьями</h3><div class="share-buttons"><a href="#" class="share-btn share-wa" target="_blank" title="WhatsApp"><i class="fab fa-whatsapp"></i></a><a href="#" class="share-btn share-tg" target="_blank" title="Telegram"><i class="fab fa-telegram-plane"></i></a><a href="#" class="share-btn share-vk" target="_blank" title="ВКонтакте"><i class="fab fa-vk"></i></a><a href="#" class="share-btn share-pin" target="_blank" title="Pinterest"><i class="fab fa-pinterest-p"></i></a><button class="share-btn share-copy" onclick="copyShareLink()" title="Скопировать ссылку"><i class="fas fa-link"></i></button></div></section>
+    <section class="share-section">
+        <h3>Поделиться с друзьями</h3>
+        <div class="share-buttons">
+            <a href="#" class="share-btn share-wa" target="_blank" title="WhatsApp"><i class="fab fa-whatsapp"></i></a>
+            <a href="#" class="share-btn share-tg" target="_blank" title="Telegram"><i class="fab fa-telegram-plane"></i></a>
+            <a href="#" class="share-btn share-vk" target="_blank" title="ВКонтакте"><i class="fab fa-vk"></i></a>
+            <a href="#" class="share-btn share-pin" target="_blank" title="Pinterest"><i class="fab fa-pinterest-p"></i></a>
+            <button class="share-btn share-copy" onclick="copyShareLink()" title="Скопировать ссылку"><i class="fas fa-link"></i></button>
+        </div>
+    </section>
 
     <footer><div class="container"><p>&copy; 2026 Ladi Sugar Polotsk. Все права защищены.</p></div></footer>
 
-    <div id="lightbox" class="lightbox" onclick="closeLightbox(event)"><a href="#" class="lightbox-pin" onclick="pinLightboxImage(); return false;" title="Сохранить в Pinterest"><i class="fab fa-pinterest-p"></i></a><span class="lightbox-close">&times;</span><img id="lightbox-img" src="" alt="Увеличенное фото"></div>
+    <div id="lightbox" class="lightbox" onclick="closeLightbox(event)">
+        <a href="#" class="lightbox-pin" onclick="pinLightboxImage(); return false;" title="Сохранить в Pinterest"><i class="fab fa-pinterest-p"></i></a>
+        <span class="lightbox-close">&times;</span>
+        <img id="lightbox-img" src="" alt="Увеличенное фото">
+    </div>
 
     <script>
         async function loadData() {
             try {
                 const response = await fetch('/data.json');
                 if (!response.ok) throw new Error('Не удалось загрузить data.json');
-                const data = await response.json(); window.siteData = data;
+                const data = await response.json();
+                window.siteData = data;
 
+                // --- Основные элементы ---
                 document.getElementById('hero-title').textContent = data.hero.title;
                 document.getElementById('hero-subtitle').innerHTML = data.hero.subtitle.replace(/\n/g, '<br>');
+                
                 const bookingText = data.contacts.bookingText || 'Записаться онлайн';
                 const bookingUrl = data.contacts.dikidi || '#';
+                
                 document.getElementById('header-dikidi-btn').textContent = bookingText; document.getElementById('header-dikidi-btn').href = bookingUrl;
                 document.getElementById('hero-btn').textContent = bookingText; document.getElementById('hero-btn').href = bookingUrl;
                 document.getElementById('btn-dikidi-footer').innerHTML = `<i class="far fa-calendar-check"></i> ${bookingText}`; document.getElementById('btn-dikidi-footer').href = bookingUrl;
+                
                 document.getElementById('btn-wa').href = data.contacts.whatsapp ? `https://wa.me/${data.contacts.whatsapp}` : '#';
                 document.getElementById('btn-viber').href = data.contacts.viber ? `viber://chat?number=%2B${data.contacts.viber}` : '#';
                 document.getElementById('btn-insta').href = data.contacts.instagram || '#';
-                document.getElementById('contact-phone').textContent = data.contacts.phone || ''; document.getElementById('contact-phone').href = data.contacts.phone ? `tel:${data.contacts.phone}` : '#';
+                document.getElementById('contact-phone').textContent = data.contacts.phone || ''; 
+                document.getElementById('contact-phone').href = data.contacts.phone ? `tel:${data.contacts.phone}` : '#';
                 document.getElementById('contact-address').textContent = data.contacts.address || '';
 
                 document.getElementById('master-name').textContent = `Привет! Я — ${data.master.name}`;
-                const descContainer = document.getElementById('master-desc-container'); descContainer.innerHTML = '';
+                const descContainer = document.getElementById('master-desc-container');
+                descContainer.innerHTML = '';
                 data.master.description.split('\n').forEach(line => { if (line.trim()) { const p = document.createElement('p'); p.textContent = line; descContainer.appendChild(p); } });
-                const masterImg = document.getElementById('master-photo'); if (data.masterPhoto) { masterImg.src = data.masterPhoto; masterImg.style.display = 'block'; } else { masterImg.style.display = 'none'; }
+                
+                const masterImg = document.getElementById('master-photo'); 
+                if (data.masterPhoto) { masterImg.src = data.masterPhoto; masterImg.style.display = 'block'; } else { masterImg.style.display = 'none'; }
 
+                // --- Преимущества ---
                 const featuresContainer = document.getElementById('features-container');
                 if(featuresContainer && data.features) featuresContainer.innerHTML = data.features.map(f => `<div class="feature-card"><i class="fas ${f.icon} feature-icon"></i><h3>${f.title}</h3><p>${f.desc}</p></div>`).join('');
 
+                // --- Прайс ---
                 const priceContainer = document.getElementById('price-list-container');
                 if(priceContainer && data.prices) priceContainer.innerHTML = data.prices.map(p => `<div class="price-item"><span class="zone-name">${p.name}</span><span class="zone-price">${p.value} BYN</span></div>`).join('');
 
+                // --- Отзывы ---
                 const reviewContainer = document.getElementById('reviews-container');
-                if(reviewContainer && data.reviews) { const visible = data.reviews.filter(r => r.status !== 'pending'); reviewContainer.innerHTML = visible.map(r => `<div class="review-card"><div class="review-stars">${'<i class="fas fa-star"></i>'.repeat(r.rating)}</div><p class="review-text">«${r.text}»</p><div class="review-author"><i class="fas fa-user-circle"></i> ${r.name} <span style="color:#888; font-weight:400; font-size:0.8rem;">${r.date || ''}</span></div></div>`).join(''); }
+                if(reviewContainer && data.reviews) { 
+                    const visible = data.reviews.filter(r => r.status !== 'pending'); 
+                    reviewContainer.innerHTML = visible.map(r => `<div class="review-card"><div class="review-stars">${'<i class="fas fa-star"></i>'.repeat(r.rating)}</div><p class="review-text">«${r.text}»</p><div class="review-author"><i class="fas fa-user-circle"></i> ${r.name} <span style="color:#888; font-weight:400; font-size:0.8rem;">${r.date || ''}</span></div></div>`).join(''); 
+                }
 
+                // --- Блог ---
                 const blogContainer = document.getElementById('blog-container');
                 if(blogContainer && data.blog && data.blog.length > 0) blogContainer.innerHTML = data.blog.map(post => `<div class="blog-card"><img src="${post.image || ''}" alt="${post.title}" class="blog-img"><div class="blog-content"><span class="blog-date">${post.date}</span><h3>${post.title}</h3><p>${post.excerpt}</p></div></div>`).join(''); 
                 else if (blogContainer) blogContainer.innerHTML = '<p style="text-align:center;color:#666; grid-column: 1/-1;">Статей пока нет.</p>';
 
-                const galleryPhotos = (data.gallery || []).filter(item => item.image && item.image.trim() !== '');
-                const categoriesContainer = document.getElementById('gallery-categories');
-                const emptyMsg = document.getElementById('gallery-empty');
-                if (galleryPhotos.length > 0 && categoriesContainer) {
-                    emptyMsg.style.display = 'none'; categoriesContainer.innerHTML = '';
-                    const grouped = {}; galleryPhotos.forEach(photo => { const cat = photo.label || 'Без категории'; if (!grouped[cat]) grouped[cat] = []; grouped[cat].push(photo); });
-                    Object.keys(grouped).forEach((cat, index) => {
-                        const blockId = `carousel-block-${index}`; const wrapper = document.createElement('div'); wrapper.className = 'gallery-category-block';
-                        wrapper.innerHTML = `<h3 class="gallery-category-title">${cat}</h3><div class="carousel-wrapper"><div class="carousel" id="${blockId}"><div class="carousel-track"></div></div><button class="carousel-btn prev" data-target="${blockId}" aria-label="Предыдущее"><i class="fas fa-chevron-left"></i></button><button class="carousel-btn next" data-target="${blockId}" aria-label="Следующее"><i class="fas fa-chevron-right"></i></button><div class="carousel-dots" data-target="${blockId}"></div></div>`;
-                        categoriesContainer.appendChild(wrapper); wrapper.querySelector('.carousel-track').innerHTML = grouped[cat].map(photo => `<div class="carousel-slide"><div class="carousel-item"><img src="${photo.image}" alt="${photo.label}" loading="lazy" onclick="openLightbox('${photo.image.replace(/'/g, "\\'")}', '${photo.label}')" style="cursor:pointer;"></div></div>`).join('');
-                        initCarouselForBlock(blockId, grouped[cat].length);
-                    });
-                } else if (categoriesContainer) emptyMsg.style.display = 'block';
-
-                // 🔄 DO / POSLE
+                // --- До / После ---
                 const baContainer = document.getElementById('ba-container');
                 if(baContainer && data.beforeAfter?.length) {
                     baContainer.innerHTML = data.beforeAfter.map((item, i) => `
@@ -133,7 +220,7 @@
                     initBASliders();
                 }
 
-                // ❓ FAQ
+                // --- FAQ ---
                 const faqContainer = document.getElementById('faq-container');
                 if(faqContainer && data.faq?.length) {
                     faqContainer.innerHTML = data.faq.map((item, i) => `
@@ -144,7 +231,7 @@
                     `).join('');
                 }
 
-                // 📋 CARE
+                // --- Инструкции ---
                 const careContainer = document.getElementById('care-container');
                 if(careContainer && data.careInstructions) {
                     const renderList = (txt) => txt.split('\n').filter(l => l.trim()).map(l => `<li>${l.trim()}</li>`).join('');
@@ -154,18 +241,22 @@
                     `;
                 }
 
+                // --- Доп кнопки ---
                 const socialButtons = document.getElementById('social-buttons');
                 if (socialButtons && data.contacts?.extraButtons?.length) {
                     document.querySelectorAll('.social-btn-extra').forEach(el => el.remove());
                     data.contacts.extraButtons.forEach(btn => {
-                        const a = document.createElement('a'); a.href = btn.url; a.target = '_blank'; a.rel = 'noopener noreferrer'; a.className = 'btn-social social-btn-extra'; a.style.background = btn.color || '#333333'; a.innerHTML = `<i class="fas ${btn.icon}"></i> ${btn.label}`; socialButtons.appendChild(a);
+                        const a = document.createElement('a'); a.href = btn.url; a.target = '_blank'; a.rel = 'noopener noreferrer'; 
+                        a.className = 'btn-social social-btn-extra'; a.style.background = btn.color || '#333333'; 
+                        a.innerHTML = `<i class="fas ${btn.icon}"></i> ${btn.label}`; 
+                        socialButtons.appendChild(a);
                     });
                 }
 
             } catch (error) { console.error('Ошибка загрузки данных:', error); }
         }
 
-        // 🔄 SLIDER JS
+        // 🔄 Слайдер До/После
         function initBASliders() {
             document.querySelectorAll('.ba-slider').forEach(slider => {
                 const afterImg = slider.querySelector('.ba-img-after');
@@ -186,7 +277,7 @@
             });
         }
 
-        // ❓ FAQ JS
+        // ❓ FAQ
         window.toggleFaq = function(idx) {
             const ans = document.getElementById(`faq-ans-${idx}`);
             const icon = ans.previousElementSibling.querySelector('i');
@@ -194,31 +285,66 @@
             else { ans.style.maxHeight = ans.scrollHeight + 'px'; ans.style.padding = '20px'; icon.style.transform = 'rotate(180deg)'; }
         };
 
-        function initCarouselForBlock(blockId, totalSlides) {
-            const wrapper = document.querySelector(`#${blockId}`).closest('.carousel-wrapper'); const track = wrapper.querySelector('.carousel-track'); const dotsContainer = wrapper.querySelector('.carousel-dots'); const prevBtn = wrapper.querySelector('.prev'); const nextBtn = wrapper.querySelector('.next');
-            let current = 0; let slidesPerView = window.innerWidth >= 1024 ? 3 : window.innerWidth >= 768 ? 2 : 1; let maxIndex = Math.max(0, totalSlides - slidesPerView); let autoplay = null;
-            function renderDots() { dotsContainer.innerHTML = Array.from({length: Math.ceil(totalSlides / slidesPerView)}, (_, i) => `<button class="carousel-dot ${i === Math.floor(current/slidesPerView) ? 'active' : ''}" data-idx="${i * slidesPerView}"></button>`).join(''); }
-            function update() { track.style.transform = `translateX(-${current * (100/slidesPerView)}%)`; renderDots(); prevBtn.disabled = current === 0; nextBtn.disabled = current >= maxIndex; }
-            function next() { current = current >= maxIndex ? 0 : current + 1; update(); resetAutoplay(); }
-            function prev() { current = current <= 0 ? maxIndex : current - 1; update(); resetAutoplay(); }
-            function goTo(idx) { current = Math.min(idx, maxIndex); update(); resetAutoplay(); }
-            function startAutoplay() { stopAutoplay(); autoplay = setInterval(next, 5000); }
-            function stopAutoplay() { clearInterval(autoplay); }
-            function resetAutoplay() { stopAutoplay(); startAutoplay(); }
-            prevBtn.onclick = prev; nextBtn.onclick = next; dotsContainer.onclick = (e) => { if (e.target.classList.contains('carousel-dot')) goTo(parseInt(e.target.dataset.idx)); };
-            wrapper.onmouseenter = stopAutoplay; wrapper.onmouseleave = startAutoplay;
-            let startX = 0, endX = 0; const carousel = wrapper.querySelector('.carousel');
-            carousel.ontouchstart = (e) => startX = e.changedTouches[0].screenX;
-            carousel.ontouchend = (e) => { endX = e.changedTouches[0].screenX; if (startX - endX > 50) next(); if (endX - startX > 50) prev(); };
-            window.addEventListener('resize', () => { const newView = window.innerWidth >= 1024 ? 3 : window.innerWidth >= 768 ? 2 : 1; if (newView !== slidesPerView) { slidesPerView = newView; maxIndex = Math.max(0, totalSlides - slidesPerView); current = Math.min(current, maxIndex); update(); } });
-            startAutoplay(); update();
+        // 📷 Лайтбокс
+        function openLightbox(src, label) { 
+            const lb = document.getElementById('lightbox'); 
+            const lbImg = document.getElementById('lightbox-img'); 
+            lbImg.src = src; lbImg.alt = label; lb.dataset.label = label || 'Ladi Sugar'; 
+            lb.classList.add('active'); document.body.style.overflow = 'hidden'; 
+        }
+        function closeLightbox(e) { 
+            if (e && e.target.closest('.lightbox-pin')) return; 
+            document.getElementById('lightbox').classList.remove('active'); 
+            document.body.style.overflow = ''; 
+            setTimeout(() => { document.getElementById('lightbox-img').src = ''; }, 250); 
+        }
+        function pinToPinterest(imageUrl, description) { 
+            const pageUrl = encodeURIComponent(window.location.href); 
+            const media = encodeURIComponent(imageUrl); 
+            const desc = encodeURIComponent(description || 'Ladi Sugar Polotsk'); 
+            window.open(`https://www.pinterest.com/pin/create/button/?url=${pageUrl}&media=${media}&description=${desc}`, '_blank', 'width=750,height=350'); 
+        }
+        function pinLightboxImage() { pinToPinterest(document.getElementById('lightbox-img').src, document.getElementById('lightbox').dataset.label); }
+        
+        function initShareButtons() { 
+            const url = encodeURIComponent(window.location.href); 
+            const title = encodeURIComponent(document.title || 'Ladi Sugar Polotsk'); 
+            document.querySelector('.share-wa').href = `https://wa.me/?text=${title}%20${url}`; 
+            document.querySelector('.share-tg').href = `https://t.me/share/url?url=${url}&text=${title}`; 
+            document.querySelector('.share-vk').href = `https://vk.com/share.php?url=${url}&title=${title}`; 
+            document.querySelector('.share-pin').href = `https://www.pinterest.com/pin/create/button/?url=${url}&description=${title}`; 
+        }
+        
+        function copyShareLink() { 
+            navigator.clipboard.writeText(window.location.href).then(() => showShareToast('✅ Ссылка скопирована!')).catch(() => { 
+                const input = document.createElement('input'); input.value = window.location.href; 
+                document.body.appendChild(input); input.select(); document.execCommand('copy'); document.body.removeChild(input); 
+                showShareToast('✅ Ссылка скопирована!'); 
+            }); 
+        }
+        
+        function showShareToast(msg) { 
+            let t = document.querySelector('.share-toast') || document.createElement('div'); 
+            t.className = 'share-toast'; t.textContent = msg; document.body.appendChild(t); 
+            setTimeout(() => t.classList.add('show'), 10); setTimeout(() => t.classList.remove('show'), 2500); 
         }
 
-        function openLightbox(src, label) { const lb = document.getElementById('lightbox'); const lbImg = document.getElementById('lightbox-img'); lbImg.src = src; lbImg.alt = label; lb.dataset.label = label || 'Ladi Sugar'; lb.classList.add('active'); document.body.style.overflow = 'hidden'; }
-        function closeLightbox(e) { if (e && e.target.closest('.lightbox-pin')) return; document.getElementById('lightbox').classList.remove('active'); document.body.style.overflow = ''; setTimeout(() => { document.getElementById('lightbox-img').src = ''; }, 250); }
-        function pinToPinterest(imageUrl, description) { const pageUrl = encodeURIComponent(window.location.href); const media = encodeURIComponent(imageUrl); const desc = encodeURIComponent(description || 'Ladi Sugar Polotsk'); window.open(`https://www.pinterest.com/pin/create/button/?url=${pageUrl}&media=${media}&description=${desc}`, '_blank', 'width=750,height=350'); }
-        function pinLightboxImage() { pinToPinterest(document.getElementById('lightbox-img').src, document.getElementById('lightbox').dataset.label); }
-        function initShareButtons() { const url = encodeURIComponent(window.location.href); const title = encodeURIComponent(document.title || 'Ladi Sugar Polotsk'); document.querySelector('.share-wa').href = `https://wa.me/?text=${title}%20${url}`; document.querySelector('.share-tg').href = `https://t.me/share/url?url=${url}&text=${title}`; document.querySelector('.share-vk').href = `https://vk.com/share.php?url=${url}&title=${title}`; document.querySelector('.share-pin').href = `https://www.pinterest.com/pin/create/button/?url=${url}&description=${title}`; }
-        function copyShareLink() { navigator.clipboard.writeText(window.location.href).then(() => showShareToast('✅ Ссылка скопирована!')).catch(() => { const input = document.createElement('input'); input.value = window.location.href; document.body.appendChild(input); input.select(); document.execCommand('copy'); document.body.removeChild(input); showShareToast('✅ Ссылка скопирована!'); }); }
-        function showShareToast(msg) { let t = document.querySelector('.share-toast') || document.createElement('div'); t.className = 'share-toast'; t.textContent = msg; document.body.appendChild(t); setTimeout(() => t.classList.add('show'), 10); setTimeout(() => t.classList.remove('show'), 2500); }
-        document.getElementById('reviewForm')?.addEventListener('submit', async (e) => { e.preventDefault(); const btn = document.getElementById('rev-submit-btn'); const status = document.getElementById('rev-status'); btn.disabled = true; btn.textContent = '⏳ Отправка...'; status.textContent = ''; try {
+        document.getElementById('reviewForm')?.addEventListener('submit', async (e) => { 
+            e.preventDefault(); const btn = document.getElementById('rev-submit-btn'); const status = document.getElementById('rev-status'); 
+            btn.disabled = true; btn.textContent = '⏳ Отправка...'; status.textContent = ''; 
+            try { 
+                const res = await fetch('/api/review/submit', { 
+                    method: 'POST', headers: { 'Content-Type': 'application/json' }, 
+                    body: JSON.stringify({ name: document.getElementById('rev-name').value, text: document.getElementById('rev-text').value, rating: document.getElementById('rev-rating').value }) 
+                }); 
+                const data = await res.json(); 
+                status.style.color = res.ok ? '#22c55e' : '#ef4444'; status.textContent = data.message; 
+                if (res.ok) e.target.reset(); 
+            } catch (err) { status.style.color = '#ef4444'; status.textContent = '❌ Ошибка сети'; } 
+            finally { btn.disabled = false; btn.textContent = 'Отправить на модерацию'; } 
+        });
+
+        document.addEventListener('DOMContentLoaded', () => { loadData(); initShareButtons(); });
+    </script>
+</body>
+</html>
