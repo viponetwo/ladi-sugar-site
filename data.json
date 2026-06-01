@@ -81,8 +81,8 @@
     "color_bg_white": "#FFFFFF",
     "color_primary": "#B08D74",
     "color_text": "#333333",
-    "hero_text_color": "#ed1d1d",
-    "font_title": "'Work Sans', sans-serif",
+    "hero_text_color": "#ecdada",
+    "font_title": "'Lobster', cursive",
     "font_subtitle": "'Dancing Script', cursive"
   }
 }
