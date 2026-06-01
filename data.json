@@ -84,5 +84,11 @@
     "hero_text_color": "#ecdada",
     "font_title": "'Lobster', cursive",
     "font_subtitle": "'Dancing Script', cursive"
+  },
+  "seo": {
+    "title": "Lady Sugar | Шугаринг Полоцк",
+    "description": "Профессиональный шугаринг в Полоцке.",
+    "keywords": "шугаринг, полоцк, эпиляция",
+    "ogImage": ""
   }
 }
