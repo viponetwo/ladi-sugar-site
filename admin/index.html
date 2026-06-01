@@ -72,7 +72,7 @@
         <aside class="sidebar">
             <div style="padding: 0 20px 20px; font-weight: bold; border-bottom: 1px solid #334155;">🔧 Ladi Sugar Admin</div>
             <div class="nav-item active" onclick="show('hero')">🏠 Главный экран</div>
-            <div class="nav-item" onclick="show('master')">👤 О мастере</div>
+            <div class="nav-item" onclick="show('masters')">👤 Мастера</div>
             <div class="nav-item" onclick="show('features')">✨ Преимущества</div>
             <div class="nav-item" onclick="show('beforeAfter')">🔄 До/После</div>
             <div class="nav-item" onclick="show('prices')">💰 Прайс</div>
@@ -90,14 +90,11 @@
                 <div class="form-group"><label>Текст кнопки</label><input data-bind="hero.btnText"></div>
                 <div class="form-group"><label>Ссылка Dikidi</label><input type="url" data-bind="hero.dikidiUrl"></div>
             </section>
-            <section id="master" class="section">
-                <div class="section-header"><h2>👤 О мастере</h2></div>
-                <div class="form-group"><label>Имя</label><input data-bind="master.name"></div>
-                <div class="form-group"><label>Описание</label><textarea rows="5" data-bind="master.description"></textarea></div>
-                <div class="form-group"><label>Фото мастера</label>
-                    <div class="upload-row"><input type="file" id="master-photo-input" accept="image/*"><span class="upload-status" id="master-photo-status"></span></div>
-                    <img id="master-photo-preview" class="img-preview" style="margin-top:10px; max-height:150px; width:auto; display:none;"><small>Рекомендуемый размер: 500x500 px.</small>
-                </div>
+            <section id="masters" class="section">
+                <div class="section-header"><h2>👤 Мастера</h2></div>
+                <div class="dynamic-list" id="masters-list"></div>
+                <button class="add-btn" onclick="addItem('masters')">+ Добавить мастера</button>
+                <small>Каждый мастер будет отображаться на сайте отдельной карточкой. Фото можно загрузить локально.</small>
             </section>
             <section id="features" class="section">
                 <div class="section-header"><h2>✨ Преимущества</h2></div>
@@ -108,7 +105,6 @@
                 <div class="section-header"><h2>🔄 До / После</h2></div>
                 <div class="dynamic-list" id="beforeAfter-list"></div>
                 <button class="add-btn" onclick="addItem('beforeAfter')">+ Добавить сравнение</button>
-                <small>Можно вставить ссылку или загрузить фото с компьютера (до 5 МБ каждое).</small>
             </section>
             <section id="prices" class="section">
                 <div class="section-header"><h2>💰 Прайс-лист</h2></div>
@@ -166,6 +162,7 @@
         let sessionToken = '';
 
         const LIST_CONFIG = {
+            masters: [ { name: 'role', label: 'Должность/Специализация', type: 'text' }, { name: 'name', label: 'Имя мастера', type: 'text' }, { name: 'desc', label: 'Описание', type: 'textarea' }, { name: 'photo', label: 'Фото (URL или загрузка)', type: 'text' } ],
             features: [ { name: 'icon', label: 'Иконка (класс FontAwesome)', type: 'text' }, { name: 'title', label: 'Заголовок', type: 'text' }, { name: 'desc', label: 'Описание', type: 'text' } ],
             beforeAfter: [ { name: 'before', label: 'Фото ДО (URL)', type: 'text' }, { name: 'after', label: 'Фото ПОСЛЕ (URL)', type: 'text' }, { name: 'label', label: 'Зона', type: 'text' } ],
             careInstructions: [ { name: 'title', label: 'Заголовок раздела', type: 'text' }, { name: 'content', label: 'Текст (каждая строка = новый пункт)', type: 'textarea' } ],
@@ -176,6 +173,7 @@
         };
 
         const DEFAULTS = {
+            masters: { role: 'Мастер шугаринга', name: 'Имя Фамилия', desc: 'Опыт, специализация...', photo: '' },
             features: { icon: 'fa-star', title: 'Новое преимущество', desc: 'Описание...' },
             beforeAfter: { before: '', after: '', label: 'Зона' },
             careInstructions: { title: '🟢 Новый раздел', content: 'Пункт 1\nПункт 2' },
@@ -209,6 +207,18 @@
             try {
                 const res = await fetch('/data.json'); currentData = await res.json();
                 
+                // 🔄 Миграция старого формата мастера в массив
+                if (!Array.isArray(currentData.masters)) {
+                    if (currentData.master || currentData.masterPhoto) {
+                        currentData.masters = [{
+                            role: 'Мастер',
+                            name: currentData.master?.name || '',
+                            desc: currentData.master?.description || '',
+                            photo: currentData.masterPhoto || ''
+                        }];
+                        delete currentData.master; delete currentData.masterPhoto;
+                    } else { currentData.masters = []; }
+                }
                 if (!Array.isArray(currentData.features)) currentData.features = [];
                 if (!Array.isArray(currentData.beforeAfter)) currentData.beforeAfter = [];
                 if (!Array.isArray(currentData.prices)) currentData.prices = [];
@@ -220,9 +230,8 @@
                 if (!Array.isArray(currentData.contacts.extraButtons)) currentData.contacts.extraButtons = [];
 
                 document.querySelectorAll('[data-bind]').forEach(el => { const path = el.dataset.bind; el.value = getNested(currentData, path) || ''; el.addEventListener('input', e => setNested(currentData, path, e.target.value)); });
-                if (currentData.masterPhoto) { const preview = document.getElementById('master-photo-preview'); preview.src = currentData.masterPhoto; preview.style.display = 'block'; }
                 
-                renderList('features'); renderList('beforeAfter'); renderList('prices'); renderList('reviews'); renderList('faq'); renderList('blog'); 
+                renderList('masters'); renderList('features'); renderList('beforeAfter'); renderList('prices'); renderList('reviews'); renderList('faq'); renderList('blog'); 
                 renderList('careInstructions'); renderExtraButtons(); renderPending();
                 showToast('✅ Данные загружены');
             } catch (e) { showToast('❌ Ошибка загрузки data.json', true); }
@@ -234,6 +243,7 @@
             currentData[type].forEach((item, index) => {
                 const card = document.createElement('div'); card.className = 'list-card';
                 const delBtn = document.createElement('button'); delBtn.className = 'delete-btn'; delBtn.innerHTML = '🗑'; delBtn.onclick = () => { currentData[type].splice(index, 1); renderList(type); }; card.appendChild(delBtn);
+                
                 fields.forEach(f => {
                     const wrap = document.createElement('div'); wrap.className = `field-row ${f.type === 'textarea' ? 'full' : ''}`;
                     const label = document.createElement('label'); label.textContent = f.label;
@@ -242,7 +252,7 @@
                     input.value = item[f.name] || ''; input.oninput = e => currentData[type][index][f.name] = e.target.value;
                     wrap.appendChild(label); wrap.appendChild(input); card.appendChild(wrap);
 
-                    // 📸 Загрузчик для До/После
+                    // 📸 Загрузчик для фото До/После
                     if (type === 'beforeAfter' && (f.name === 'before' || f.name === 'after')) {
                         const uploadRow = document.createElement('div'); uploadRow.className = 'upload-row';
                         const fileInput = document.createElement('input'); fileInput.type = 'file'; fileInput.accept = 'image/*';
@@ -250,20 +260,20 @@
                         fileInput.onchange = async (e) => {
                             const file = e.target.files[0]; if (!file) return;
                             if (file.size > 5_000_000) { status.textContent = '❌ > 5 МБ'; status.style.color = '#ef4444'; fileInput.value = ''; return; }
-                            status.textContent = '⏳ Загрузка...'; status.style.color = '#3b82f6'; fileInput.disabled = true;
+                            status.textContent = '⏳...'; status.style.color = '#3b82f6'; fileInput.disabled = true;
                             try {
                                 const base64 = await fileToBase64(file);
                                 const res = await fetch('/api/upload', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ fileName: file.name, contentBase64: base64 }) });
                                 const data = await res.json();
                                 if (res.ok) { input.value = data.url; currentData[type][index][f.name] = data.url; status.textContent = '✅ Загружено'; status.style.color = '#22c55e'; } 
-                                else { status.textContent = '❌ ' + (data.message || 'Ошибка'); status.style.color = '#ef4444'; }
-                            } catch (err) { status.textContent = '❌ Ошибка сети'; status.style.color = '#ef4444'; }
+                                else { status.textContent = '❌'; status.style.color = '#ef4444'; }
+                            } catch { status.textContent = '❌ Ошибка'; status.style.color = '#ef4444'; }
                             finally { fileInput.disabled = false; }
                         };
                         uploadRow.appendChild(fileInput); uploadRow.appendChild(status); card.appendChild(uploadRow);
                     }
 
-                    // 📸 Загрузчик для Блога (обложка)
+                    // 📸 Загрузчик для фото Блога
                     if (type === 'blog' && f.name === 'image') {
                         const uploadRow = document.createElement('div'); uploadRow.className = 'upload-row';
                         const fileInput = document.createElement('input'); fileInput.type = 'file'; fileInput.accept = 'image/*';
@@ -271,14 +281,35 @@
                         fileInput.onchange = async (e) => {
                             const file = e.target.files[0]; if (!file) return;
                             if (file.size > 5_000_000) { status.textContent = '❌ > 5 МБ'; status.style.color = '#ef4444'; fileInput.value = ''; return; }
-                            status.textContent = '⏳ Загрузка...'; status.style.color = '#3b82f6'; fileInput.disabled = true;
+                            status.textContent = '⏳...'; status.style.color = '#3b82f6'; fileInput.disabled = true;
                             try {
                                 const base64 = await fileToBase64(file);
                                 const res = await fetch('/api/upload', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ fileName: file.name, contentBase64: base64 }) });
                                 const data = await res.json();
                                 if (res.ok) { input.value = data.url; currentData[type][index][f.name] = data.url; status.textContent = '✅ Загружено'; status.style.color = '#22c55e'; } 
-                                else { status.textContent = '❌ ' + (data.message || 'Ошибка'); status.style.color = '#ef4444'; }
-                            } catch (err) { status.textContent = '❌ Ошибка сети'; status.style.color = '#ef4444'; }
+                                else { status.textContent = '❌'; status.style.color = '#ef4444'; }
+                            } catch { status.textContent = '❌ Ошибка'; status.style.color = '#ef4444'; }
+                            finally { fileInput.disabled = false; }
+                        };
+                        uploadRow.appendChild(fileInput); uploadRow.appendChild(status); card.appendChild(uploadRow);
+                    }
+
+                    // 📸 Загрузчик для фото Мастеров
+                    if (type === 'masters' && f.name === 'photo') {
+                        const uploadRow = document.createElement('div'); uploadRow.className = 'upload-row';
+                        const fileInput = document.createElement('input'); fileInput.type = 'file'; fileInput.accept = 'image/*';
+                        const status = document.createElement('span'); status.className = 'upload-status'; status.textContent = 'Загрузить с ПК';
+                        fileInput.onchange = async (e) => {
+                            const file = e.target.files[0]; if (!file) return;
+                            if (file.size > 5_000_000) { status.textContent = '❌ > 5 МБ'; status.style.color = '#ef4444'; fileInput.value = ''; return; }
+                            status.textContent = '⏳...'; status.style.color = '#3b82f6'; fileInput.disabled = true;
+                            try {
+                                const base64 = await fileToBase64(file);
+                                const res = await fetch('/api/upload', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ fileName: file.name, contentBase64: base64 }) });
+                                const data = await res.json();
+                                if (res.ok) { input.value = data.url; currentData[type][index][f.name] = data.url; status.textContent = '✅ Загружено'; status.style.color = '#22c55e'; } 
+                                else { status.textContent = '❌'; status.style.color = '#ef4444'; }
+                            } catch { status.textContent = '❌ Ошибка'; status.style.color = '#ef4444'; }
                             finally { fileInput.disabled = false; }
                         };
                         uploadRow.appendChild(fileInput); uploadRow.appendChild(status); card.appendChild(uploadRow);
@@ -295,8 +326,6 @@
         async function saveData() { const btn = document.getElementById('saveBtn'); btn.disabled = true; btn.textContent = '⏳ Сохранение...'; try { const res = await fetch('/api/save', { method: 'POST', headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${sessionToken}` }, body: JSON.stringify({ content: currentData, token: sessionToken }) }); const result = await res.json(); if (res.ok) showToast('✅ Успешно!'); else showToast('❌ ' + (result.message || result.details), true); } catch (e) { showToast('❌ Ошибка сети', true); } finally { btn.disabled = false; btn.textContent = '💾 Сохранить и Опубликовать'; } }
         function show(id) { document.querySelectorAll('.section').forEach(s => s.classList.remove('active')); document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active')); document.getElementById(id).classList.add('active'); event.target.classList.add('active'); }
         function showToast(msg, isError = false) { const t = document.getElementById('toast'); t.textContent = msg; t.className = `toast ${isError ? 'error' : ''} show`; setTimeout(() => t.classList.remove('show'), 4000); }
-
-        document.getElementById('master-photo-input').onchange = async (e) => { const file = e.target.files[0]; if (!file) return; if (file.size > 5_000_000) { document.getElementById('master-photo-status').textContent = '❌ > 5 МБ'; return; } const status = document.getElementById('master-photo-status'); status.textContent = '⏳...'; e.target.disabled = true; try { const base64 = await fileToBase64(file); const res = await fetch('/api/upload', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ fileName: file.name, contentBase64: base64 }) }); const data = await res.json(); if (res.ok) { currentData.masterPhoto = data.url; document.getElementById('master-photo-preview').src = data.url; document.getElementById('master-photo-preview').style.display = 'block'; status.textContent = '✅'; } else { status.textContent = '❌'; } } catch { status.textContent = '❌'; } finally { e.target.disabled = false; } };
     </script>
 </body>
 </html>
