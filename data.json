@@ -83,7 +83,9 @@
     "color_text": "#333333",
     "hero_text_color": "#ecdada",
     "font_title": "'Lobster', cursive",
-    "font_subtitle": "'Dancing Script', cursive"
+    "font_subtitle": "'Dancing Script', cursive",
+    "title_size": 68,
+    "subtitle_size": 21
   },
   "seo": {
     "title": "Lady Sugar | Шугаринг Полоцк",
