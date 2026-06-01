@@ -71,7 +71,6 @@
             <div class="nav-item active" onclick="show('hero')">🏠 Главный экран</div>
             <div class="nav-item" onclick="show('master')">👤 О мастере</div>
             <div class="nav-item" onclick="show('features')">✨ Преимущества</div>
-            <div class="nav-item" onclick="show('gallery')">🖼 Мои работы</div>
             <div class="nav-item" onclick="show('beforeAfter')">🔄 До/После</div>
             <div class="nav-item" onclick="show('prices')">💰 Прайс</div>
             <div class="nav-item" onclick="show('reviews')">💬 Отзывы</div>
@@ -92,7 +91,7 @@
                 <div class="section-header"><h2>👤 О мастере</h2></div>
                 <div class="form-group"><label>Имя</label><input data-bind="master.name"></div>
                 <div class="form-group"><label>Описание</label><textarea rows="5" data-bind="master.description"></textarea></div>
-                <div class="form-group"><label>Фото мастера (URL или загрузка)</label>
+                <div class="form-group"><label>Фото мастера</label>
                     <div class="upload-row"><input type="file" id="master-photo-input" accept="image/*"><span class="upload-status" id="master-photo-status"></span></div>
                     <img id="master-photo-preview" class="img-preview" style="margin-top:10px; max-height:150px; width:auto; display:none;"><small>Рекомендуемый размер: 500x500 px.</small>
                 </div>
@@ -102,15 +101,11 @@
                 <div class="dynamic-list" id="features-list"></div>
                 <button class="add-btn" onclick="addItem('features')">+ Добавить преимущество</button>
             </section>
-            <section id="gallery" class="section">
-                <div class="section-header"><h2>🖼 Мои работы</h2></div>
-                <div class="dynamic-list" id="gallery-list"></div>
-                <button class="add-btn" onclick="addItem('gallery')">+ Добавить фото</button>
-            </section>
             <section id="beforeAfter" class="section">
                 <div class="section-header"><h2>🔄 До / После</h2></div>
                 <div class="dynamic-list" id="beforeAfter-list"></div>
                 <button class="add-btn" onclick="addItem('beforeAfter')">+ Добавить сравнение</button>
+                <small>Для загрузки фото используйте хостинг картинок (например, imgbb.com) и вставляйте ссылки в поля.</small>
             </section>
             <section id="prices" class="section">
                 <div class="section-header"><h2>💰 Прайс-лист</h2></div>
@@ -131,7 +126,6 @@
                 <div class="section-header"><h2>📋 Инструкции по уходу</h2></div>
                 <div class="form-group"><label>🟢 ДО процедуры (каждая строка = новый пункт)</label><textarea rows="6" data-bind="careInstructions.before"></textarea></div>
                 <div class="form-group"><label>🔴 ПОСЛЕ процедуры (каждая строка = новый пункт)</label><textarea rows="6" data-bind="careInstructions.after"></textarea></div>
-                <small>На сайте автоматически преобразуются в маркированные списки.</small>
             </section>
             <section id="moderation" class="section">
                 <div class="section-header"><h2>🕒 Отзывы на проверке</h2></div>
@@ -170,7 +164,6 @@
 
         const LIST_CONFIG = {
             features: [ { name: 'icon', label: 'Иконка (класс FontAwesome)', type: 'text' }, { name: 'title', label: 'Заголовок', type: 'text' }, { name: 'desc', label: 'Описание', type: 'text' } ],
-            gallery: [ { name: 'image', label: 'Ссылка на фото', type: 'text' }, { name: 'label', label: 'Подпись (зона)', type: 'text' } ],
             beforeAfter: [ { name: 'before', label: 'Фото ДО (URL)', type: 'text' }, { name: 'after', label: 'Фото ПОСЛЕ (URL)', type: 'text' }, { name: 'label', label: 'Зона', type: 'text' } ],
             prices: [ { name: 'name', label: 'Название услуги', type: 'text' }, { name: 'value', label: 'Цена (BYN)', type: 'text' } ],
             reviews: [ { name: 'name', label: 'Имя клиента', type: 'text' }, { name: 'text', label: 'Текст отзыва', type: 'textarea' }, { name: 'rating', label: 'Рейтинг (1-5)', type: 'number', min: 1, max: 5 } ],
@@ -180,7 +173,6 @@
 
         const DEFAULTS = {
             features: { icon: 'fa-star', title: 'Новое преимущество', desc: 'Описание...' },
-            gallery: { image: '', label: 'Новое фото' },
             beforeAfter: { before: '', after: '', label: 'Зона' },
             prices: { name: 'Услуга', value: '0' },
             reviews: { name: 'Имя', text: 'Отзыв...', rating: 5 },
@@ -212,7 +204,6 @@
             try {
                 const res = await fetch('/data.json'); currentData = await res.json();
                 if (!Array.isArray(currentData.features)) currentData.features = [];
-                if (!Array.isArray(currentData.gallery)) currentData.gallery = [];
                 if (!Array.isArray(currentData.beforeAfter)) currentData.beforeAfter = [];
                 if (!Array.isArray(currentData.prices)) currentData.prices = [];
                 if (!Array.isArray(currentData.reviews)) currentData.reviews = [];
@@ -224,7 +215,9 @@
 
                 document.querySelectorAll('[data-bind]').forEach(el => { const path = el.dataset.bind; el.value = getNested(currentData, path) || ''; el.addEventListener('input', e => setNested(currentData, path, e.target.value)); });
                 if (currentData.masterPhoto) { const preview = document.getElementById('master-photo-preview'); preview.src = currentData.masterPhoto; preview.style.display = 'block'; }
-                renderList('features'); renderList('gallery'); renderList('beforeAfter'); renderList('prices'); renderList('reviews'); renderList('faq'); renderList('blog'); renderExtraButtons(); renderPending();
+                
+                renderList('features'); renderList('beforeAfter'); renderList('prices'); renderList('reviews'); renderList('faq'); renderList('blog'); 
+                renderExtraButtons(); renderPending();
                 showToast('✅ Данные загружены');
             } catch (e) { showToast('❌ Ошибка загрузки data.json', true); }
         }
