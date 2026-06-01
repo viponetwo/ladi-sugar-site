@@ -14,6 +14,7 @@
             <a href="#" class="logo-link"><img src="images/logo.png" alt="Logo" class="logo-img"></a>
             <nav class="nav-links">
                 <a href="#about">Преимущества</a>
+                <a href="#masters">Мастера</a>
                 <a href="#before-after">До/После</a>
                 <a href="#blog">Блог</a>
                 <a href="#faq">FAQ</a>
@@ -54,13 +55,11 @@
         </div>
     </section>
 
-    <section id="master" class="bg-white">
-        <div class="container master-wrapper">
-            <img id="master-photo" src="" alt="Мастер" class="master-photo" style="display:none;">
-            <div class="master-text">
-                <h3 id="master-name">Привет!</h3>
-                <div id="master-desc-container"></div>
-            </div>
+    <!-- 👤 МАСТЕРА -->
+    <section id="masters" class="bg-white">
+        <div class="container">
+            <h2 class="section-title">Наша команда</h2>
+            <div class="masters-grid" id="masters-container"></div>
         </div>
     </section>
 
@@ -177,13 +176,22 @@
                 document.getElementById('contact-phone').href = data.contacts.phone ? `tel:${data.contacts.phone}` : '#';
                 document.getElementById('contact-address').textContent = data.contacts.address || '';
 
-                document.getElementById('master-name').textContent = `Привет! Я — ${data.master.name}`;
-                const descContainer = document.getElementById('master-desc-container');
-                descContainer.innerHTML = '';
-                data.master.description.split('\n').forEach(line => { if (line.trim()) { const p = document.createElement('p'); p.textContent = line; descContainer.appendChild(p); } });
-                
-                const masterImg = document.getElementById('master-photo'); 
-                if (data.masterPhoto) { masterImg.src = data.masterPhoto; masterImg.style.display = 'block'; } else { masterImg.style.display = 'none'; }
+                // 👤 Рендер мастеров
+                const mastersContainer = document.getElementById('masters-container');
+                if(mastersContainer && Array.isArray(data.masters) && data.masters.length > 0) {
+                    mastersContainer.innerHTML = data.masters.map(m => `
+                        <div class="master-card">
+                            <img src="${m.photo || ''}" alt="${m.name}" class="master-photo" style="display:${m.photo ? 'block' : 'none'}">
+                            <div class="master-text">
+                                <span class="master-role">${m.role || ''}</span>
+                                <h3>${m.name || 'Мастер'}</h3>
+                                <div class="master-desc">${(m.desc || '').replace(/\n/g, '<br>')}</div>
+                            </div>
+                        </div>
+                    `).join('');
+                } else if (mastersContainer) {
+                    mastersContainer.innerHTML = '<p style="text-align:center;color:#666; grid-column:1/-1;">Информация скоро появится</p>';
+                }
 
                 const featuresContainer = document.getElementById('features-container');
                 if(featuresContainer && data.features) featuresContainer.innerHTML = data.features.map(f => `<div class="feature-card"><i class="fas ${f.icon} feature-icon"></i><h3>${f.title}</h3><p>${f.desc}</p></div>`).join('');
@@ -227,7 +235,6 @@
                     `).join('');
                 }
 
-                // 📋 Динамические инструкции
                 const careContainer = document.getElementById('care-container');
                 if(careContainer && Array.isArray(data.careInstructions) && data.careInstructions.length > 0) {
                     careContainer.innerHTML = data.careInstructions.map(item => {
