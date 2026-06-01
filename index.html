@@ -29,7 +29,6 @@
         <div class="container hero-content">
             <h1 id="hero-title">Загрузка</h1>
             <p id="hero-subtitle"></p>
-            <!-- Кнопка и точки удалены -->
         </div>
     </section>
 
@@ -142,6 +141,18 @@
     </div>
 
     <script>
+        // 🅰️ Функция для подключения Google Fonts
+        function loadGoogleFonts(fontTitle, fontSubtitle) {
+            const fonts = new Set();
+            fonts.add(fontTitle.split(',')[0].replace(/'/g, '').trim());
+            fonts.add(fontSubtitle.split(',')[0].replace(/'/g, '').trim());
+            
+            const link = document.createElement('link');
+            link.href = `https://fonts.googleapis.com/css2?family=${Array.from(fonts).join('&family=')}&display=swap`;
+            link.rel = 'stylesheet';
+            document.head.appendChild(link);
+        }
+
         async function loadData() {
             try {
                 const response = await fetch('/data.json');
@@ -154,6 +165,17 @@
                     document.documentElement.style.setProperty('--bg-white', data.theme.color_bg_white);
                     document.documentElement.style.setProperty('--primary', data.theme.color_primary);
                     document.documentElement.style.setProperty('--text-dark', data.theme.color_text);
+                    
+                    // 🅰️ Применяем шрифты и цвет текста баннера
+                    const fontTitle = data.theme.font_title || "'Montserrat', sans-serif";
+                    const fontSubtitle = data.theme.font_subtitle || "'Open Sans', sans-serif";
+                    const heroColor = data.theme.hero_text_color || '#FFFFFF';
+                    
+                    document.documentElement.style.setProperty('--hero-title-font', fontTitle);
+                    document.documentElement.style.setProperty('--hero-subtitle-font', fontSubtitle);
+                    document.documentElement.style.setProperty('--hero-text-color', heroColor);
+                    
+                    loadGoogleFonts(fontTitle, fontSubtitle);
                 }
                 if (data.theme?.heroImage) {
                     document.querySelector('.hero').style.backgroundImage = `url('${data.theme.heroImage}')`;
