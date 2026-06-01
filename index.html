@@ -201,7 +201,6 @@
                 if(blogContainer && data.blog && data.blog.length > 0) blogContainer.innerHTML = data.blog.map(post => `<div class="blog-card"><img src="${post.image || ''}" alt="${post.title}" class="blog-img"><div class="blog-content"><span class="blog-date">${post.date}</span><h3>${post.title}</h3><p>${post.excerpt}</p></div></div>`).join(''); 
                 else if (blogContainer) blogContainer.innerHTML = '<p style="text-align:center;color:#666; grid-column: 1/-1;">Статей пока нет.</p>';
 
-                // 🔄 До / После
                 const baContainer = document.getElementById('ba-container');
                 if(baContainer && data.beforeAfter?.length) {
                     baContainer.innerHTML = data.beforeAfter.map((item, i) => `
@@ -218,7 +217,6 @@
                     initBASliders();
                 }
 
-                // ❓ FAQ
                 const faqContainer = document.getElementById('faq-container');
                 if(faqContainer && data.faq?.length) {
                     faqContainer.innerHTML = data.faq.map((item, i) => `
@@ -229,17 +227,17 @@
                     `).join('');
                 }
 
-                // 📋 Инструкции
+                // 📋 Динамические инструкции
                 const careContainer = document.getElementById('care-container');
-                if(careContainer && data.careInstructions) {
-                    const renderList = (txt) => txt.split('\n').filter(l => l.trim()).map(l => `<li>${l.trim()}</li>`).join('');
-                    careContainer.innerHTML = `
-                        <div class="care-col"><h3><i class="fas fa-clock"></i> До процедуры</h3><ul>${renderList(data.careInstructions.before)}</ul></div>
-                        <div class="care-col"><h3><i class="fas fa-band-aid"></i> После процедуры</h3><ul>${renderList(data.careInstructions.after)}</ul></div>
-                    `;
+                if(careContainer && Array.isArray(data.careInstructions) && data.careInstructions.length > 0) {
+                    careContainer.innerHTML = data.careInstructions.map(item => {
+                        const listItems = item.content.split('\n').filter(l => l.trim()).map(l => `<li>${l.trim()}</li>`).join('');
+                        return `<div class="care-col"><h3><i class="fas fa-info-circle"></i> ${item.title}</h3><ul>${listItems}</ul></div>`;
+                    }).join('');
+                } else if (careContainer) {
+                    careContainer.innerHTML = '<p style="text-align:center;color:#666;">Информация скоро появится</p>';
                 }
 
-                // ➕ Доп кнопки
                 const socialButtons = document.getElementById('social-buttons');
                 if (socialButtons && data.contacts?.extraButtons?.length) {
                     document.querySelectorAll('.social-btn-extra').forEach(el => el.remove());
@@ -254,7 +252,6 @@
             } catch (error) { console.error('Ошибка загрузки данных:', error); }
         }
 
-        // 🔄 Слайдер До/После
         function initBASliders() {
             document.querySelectorAll('.ba-slider').forEach(slider => {
                 const afterImg = slider.querySelector('.ba-img-after');
@@ -275,7 +272,6 @@
             });
         }
 
-        // ❓ FAQ
         window.toggleFaq = function(idx) {
             const ans = document.getElementById(`faq-ans-${idx}`);
             const icon = ans.previousElementSibling.querySelector('i');
@@ -283,66 +279,40 @@
             else { ans.style.maxHeight = ans.scrollHeight + 'px'; ans.style.padding = '20px'; icon.style.transform = 'rotate(180deg)'; }
         };
 
-        // 📷 Лайтбокс и Pinterest
         function openLightbox(src, label) { 
-            const lb = document.getElementById('lightbox'); 
-            const lbImg = document.getElementById('lightbox-img'); 
-            lbImg.src = src; lbImg.alt = label; lb.dataset.label = label || 'Ladi Sugar'; 
-            lb.classList.add('active'); document.body.style.overflow = 'hidden'; 
+            const lb = document.getElementById('lightbox'); const lbImg = document.getElementById('lightbox-img'); lbImg.src = src; lbImg.alt = label; lb.dataset.label = label || 'Ladi Sugar'; lb.classList.add('active'); document.body.style.overflow = 'hidden'; 
         }
         function closeLightbox(e) { 
-            if (e && e.target.closest('.lightbox-pin')) return; 
-            document.getElementById('lightbox').classList.remove('active'); 
-            document.body.style.overflow = ''; 
-            setTimeout(() => { document.getElementById('lightbox-img').src = ''; }, 250); 
+            if (e && e.target.closest('.lightbox-pin')) return; document.getElementById('lightbox').classList.remove('active'); document.body.style.overflow = ''; setTimeout(() => { document.getElementById('lightbox-img').src = ''; }, 250); 
         }
         function pinToPinterest(imageUrl, description) { 
-            const pageUrl = encodeURIComponent(window.location.href); 
-            const media = encodeURIComponent(imageUrl); 
-            const desc = encodeURIComponent(description || 'Ladi Sugar Polotsk'); 
+            const pageUrl = encodeURIComponent(window.location.href); const media = encodeURIComponent(imageUrl); const desc = encodeURIComponent(description || 'Ladi Sugar Polotsk'); 
             window.open(`https://www.pinterest.com/pin/create/button/?url=${pageUrl}&media=${media}&description=${desc}`, '_blank', 'width=750,height=350'); 
         }
         function pinLightboxImage() { pinToPinterest(document.getElementById('lightbox-img').src, document.getElementById('lightbox').dataset.label); }
         
-        // 📌 Pinterest для До/После
-        window.pinBASlide = function(imageUrl, label) {
-            pinToPinterest(imageUrl, `Ladi Sugar - ${label || 'Результат'}`);
-        };
+        window.pinBASlide = function(imageUrl, label) { pinToPinterest(imageUrl, `Ladi Sugar - ${label || 'Результат'}`); };
 
         function initShareButtons() { 
-            const url = encodeURIComponent(window.location.href); 
-            const title = encodeURIComponent(document.title || 'Ladi Sugar Polotsk'); 
-            document.querySelector('.share-wa').href = `https://wa.me/?text=${title}%20${url}`; 
-            document.querySelector('.share-tg').href = `https://t.me/share/url?url=${url}&text=${title}`; 
-            document.querySelector('.share-vk').href = `https://vk.com/share.php?url=${url}&title=${title}`; 
-            document.querySelector('.share-pin').href = `https://www.pinterest.com/pin/create/button/?url=${url}&description=${title}`; 
+            const url = encodeURIComponent(window.location.href); const title = encodeURIComponent(document.title || 'Ladi Sugar Polotsk'); 
+            document.querySelector('.share-wa').href = `https://wa.me/?text=${title}%20${url}`; document.querySelector('.share-tg').href = `https://t.me/share/url?url=${url}&text=${title}`; document.querySelector('.share-vk').href = `https://vk.com/share.php?url=${url}&title=${title}`; document.querySelector('.share-pin').href = `https://www.pinterest.com/pin/create/button/?url=${url}&description=${title}`; 
         }
         
         function copyShareLink() { 
             navigator.clipboard.writeText(window.location.href).then(() => showShareToast('✅ Ссылка скопирована!')).catch(() => { 
-                const input = document.createElement('input'); input.value = window.location.href; 
-                document.body.appendChild(input); input.select(); document.execCommand('copy'); document.body.removeChild(input); 
-                showShareToast('✅ Ссылка скопирована!'); 
+                const input = document.createElement('input'); input.value = window.location.href; document.body.appendChild(input); input.select(); document.execCommand('copy'); document.body.removeChild(input); showShareToast('✅ Ссылка скопирована!'); 
             }); 
         }
         
         function showShareToast(msg) { 
-            let t = document.querySelector('.share-toast') || document.createElement('div'); 
-            t.className = 'share-toast'; t.textContent = msg; document.body.appendChild(t); 
-            setTimeout(() => t.classList.add('show'), 10); setTimeout(() => t.classList.remove('show'), 2500); 
+            let t = document.querySelector('.share-toast') || document.createElement('div'); t.className = 'share-toast'; t.textContent = msg; document.body.appendChild(t); setTimeout(() => t.classList.add('show'), 10); setTimeout(() => t.classList.remove('show'), 2500); 
         }
 
         document.getElementById('reviewForm')?.addEventListener('submit', async (e) => { 
-            e.preventDefault(); const btn = document.getElementById('rev-submit-btn'); const status = document.getElementById('rev-status'); 
-            btn.disabled = true; btn.textContent = '⏳ Отправка...'; status.textContent = ''; 
+            e.preventDefault(); const btn = document.getElementById('rev-submit-btn'); const status = document.getElementById('rev-status'); btn.disabled = true; btn.textContent = '⏳ Отправка...'; status.textContent = ''; 
             try { 
-                const res = await fetch('/api/review/submit', { 
-                    method: 'POST', headers: { 'Content-Type': 'application/json' }, 
-                    body: JSON.stringify({ name: document.getElementById('rev-name').value, text: document.getElementById('rev-text').value, rating: document.getElementById('rev-rating').value }) 
-                }); 
-                const data = await res.json(); 
-                status.style.color = res.ok ? '#22c55e' : '#ef4444'; status.textContent = data.message; 
-                if (res.ok) e.target.reset(); 
+                const res = await fetch('/api/review/submit', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ name: document.getElementById('rev-name').value, text: document.getElementById('rev-text').value, rating: document.getElementById('rev-rating').value }) }); 
+                const data = await res.json(); status.style.color = res.ok ? '#22c55e' : '#ef4444'; status.textContent = data.message; if (res.ok) e.target.reset(); 
             } catch (err) { status.style.color = '#ef4444'; status.textContent = '❌ Ошибка сети'; } 
             finally { btn.disabled = false; btn.textContent = 'Отправить на модерацию'; } 
         });
