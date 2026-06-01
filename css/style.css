@@ -196,3 +196,4 @@ footer { background: var(--text-dark); color: white; text-align: center; padding
     .ba-pin-btn { opacity: 1; width: 36px; height: 36px; font-size: 1rem; }
     .masters-grid { grid-template-columns: 1fr; }
 }
+
