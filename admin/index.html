@@ -37,6 +37,9 @@
         .list-card .delete-btn:hover { background: #fecaca; }
         .list-card .field-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 10px; }
         .list-card .field-row.full { grid-template-columns: 1fr; }
+        .upload-row { display: flex; gap: 8px; margin-top: 5px; align-items: center; }
+        .upload-row input[type="file"] { flex: 1; font-size: 12px; padding: 4px; border: 1px dashed var(--border); border-radius: 4px; background: #f8fafc; }
+        .upload-status { font-size: 11px; color: #64748b; white-space: nowrap; }
         
         .add-btn { width: 100%; padding: 12px; background: #f1f5f9; border: 2px dashed var(--border); border-radius: 8px; cursor: pointer; color: #64748b; font-weight: 500; transition: 0.2s; }
         .add-btn:hover { background: #e2e8f0; color: var(--text); border-color: #cbd5e1; }
@@ -105,7 +108,7 @@
                 <div class="section-header"><h2>🔄 До / После</h2></div>
                 <div class="dynamic-list" id="beforeAfter-list"></div>
                 <button class="add-btn" onclick="addItem('beforeAfter')">+ Добавить сравнение</button>
-                <small>Для загрузки фото используйте хостинг картинок (например, imgbb.com) и вставляйте ссылки в поля.</small>
+                <small>Можно вставить ссылку или загрузить фото с компьютера (до 5 МБ каждое).</small>
             </section>
             <section id="prices" class="section">
                 <div class="section-header"><h2>💰 Прайс-лист</h2></div>
@@ -235,6 +238,30 @@
                     if (f.type === 'textarea') input.rows = 3; else input.type = 'text';
                     input.value = item[f.name] || ''; input.oninput = e => currentData[type][index][f.name] = e.target.value;
                     wrap.appendChild(label); wrap.appendChild(input); card.appendChild(wrap);
+
+                    // 📸 Загрузчик локальных фото для До/После
+                    if (type === 'beforeAfter' && (f.name === 'before' || f.name === 'after')) {
+                        const uploadRow = document.createElement('div'); uploadRow.className = 'upload-row';
+                        const fileInput = document.createElement('input'); fileInput.type = 'file'; fileInput.accept = 'image/*';
+                        const status = document.createElement('span'); status.className = 'upload-status'; status.textContent = 'Загрузить с ПК';
+                        fileInput.onchange = async (e) => {
+                            const file = e.target.files[0]; if (!file) return;
+                            if (file.size > 5_000_000) { status.textContent = '❌ > 5 МБ'; status.style.color = '#ef4444'; fileInput.value = ''; return; }
+                            status.textContent = '⏳ Загрузка...'; status.style.color = '#3b82f6'; fileInput.disabled = true;
+                            try {
+                                const base64 = await fileToBase64(file);
+                                const res = await fetch('/api/upload', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ fileName: file.name, contentBase64: base64 }) });
+                                const data = await res.json();
+                                if (res.ok) {
+                                    input.value = data.url; currentData[type][index][f.name] = data.url;
+                                    status.textContent = '✅ Загружено'; status.style.color = '#22c55e';
+                                } else { status.textContent = '❌ ' + (data.message || 'Ошибка'); status.style.color = '#ef4444'; }
+                            } catch (err) { status.textContent = '❌ Ошибка сети'; status.style.color = '#ef4444'; }
+                            finally { fileInput.disabled = false; }
+                        };
+                        uploadRow.appendChild(fileInput); uploadRow.appendChild(status);
+                        card.appendChild(uploadRow);
+                    }
                 }); container.appendChild(card);
             });
         }
