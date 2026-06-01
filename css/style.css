@@ -44,12 +44,9 @@ section { padding: 80px 0; }
 .ba-label { position: absolute; bottom: 15px; left: 15px; background: rgba(0,0,0,0.6); color: white; padding: 6px 12px; border-radius: 20px; font-size: 0.85rem; z-index: 3; pointer-events: none; }
 
 /* 📌 КНОПКА PINTEREST НА СЛАЙДЕРЕ */
-.ba-pin-btn { 
-    position: absolute; top: 15px; right: 15px; background: #E60023; color: white; width: 40px; height: 40px; border-radius: 50%; border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 1.1rem; transition: all 0.2s; z-index: 4; opacity: 0; box-shadow: 0 2px 10px rgba(0,0,0,0.2);
-}
+.ba-pin-btn { position: absolute; top: 15px; right: 15px; background: #E60023; color: white; width: 40px; height: 40px; border-radius: 50%; border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 1.1rem; transition: all 0.2s; z-index: 4; opacity: 0; box-shadow: 0 2px 10px rgba(0,0,0,0.2); }
 .ba-slider:hover .ba-pin-btn { opacity: 1; }
 .ba-pin-btn:hover { background: #bd001c; transform: scale(1.1); }
-/* --------------------------- */
 
 /* ❓ FAQ */
 .faq-container { max-width: 800px; margin: 0 auto; }
@@ -59,8 +56,8 @@ section { padding: 80px 0; }
 .faq-question i { transition: transform 0.3s; color: var(--primary); }
 .faq-answer { max-height: 0; overflow: hidden; transition: max-height 0.3s ease, padding 0.3s ease; background: #fafafa; color: var(--text-gray); line-height: 1.6; padding: 0 20px; }
 
-/* 📋 CARE */
-.care-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 30px; max-width: 900px; margin: 0 auto; }
+/* 📋 CARE (динамический) */
+.care-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 30px; max-width: 1100px; margin: 0 auto; }
 .care-col { background: white; padding: 30px; border-radius: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); }
 .care-col h3 { margin-bottom: 20px; display: flex; align-items: center; gap: 10px; color: var(--primary); }
 .care-col ul { padding-left: 20px; }
@@ -128,7 +125,6 @@ iframe { width: 100%; height: 100%; border: 0; }
 
 footer { background: var(--text-dark); color: white; text-align: center; padding: 30px 0; }
 
-@media (max-width: 900px) { .care-grid { grid-template-columns: 1fr; } }
 @media (max-width: 768px) {
     .hero-content h1 { font-size: 2.2rem; }
     .nav-links, .btn-header { display: none; }
