@@ -35,8 +35,9 @@
         .list-card { background: var(--card); padding: 15px; border-radius: 10px; border: 1px solid var(--border); position: relative; }
         .list-card .delete-btn { position: absolute; top: 10px; right: 10px; background: #fee2e2; color: var(--danger); border: none; padding: 6px 12px; border-radius: 6px; cursor: pointer; font-weight: 500; font-size: 13px; }
         .list-card .delete-btn:hover { background: #fecaca; }
-        .list-card .field-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 10px; }
-        .list-card .field-row.full { grid-template-columns: 1fr; }
+        /* Все поля в карточке теперь на всю ширину для простоты */
+        .list-card .field-row { display: grid; grid-template-columns: 1fr; gap: 10px; margin-bottom: 10px; } 
+        
         .upload-row { display: flex; gap: 8px; margin-top: 5px; align-items: center; }
         .upload-row input[type="file"] { flex: 1; font-size: 12px; padding: 4px; border: 1px dashed var(--border); border-radius: 4px; background: #f8fafc; }
         .upload-status { font-size: 11px; color: #64748b; white-space: nowrap; }
@@ -60,7 +61,6 @@
         @media (max-width: 768px) { 
             #admin-ui { flex-direction: column; } 
             .sidebar { width: 100%; flex-direction: row; overflow-x: auto; padding: 10px; } 
-            .list-card .field-row { grid-template-columns: 1fr; }
         }
     </style>
 </head>
@@ -112,7 +112,7 @@
 
                 <hr style="margin: 30px 0; border: 0; border-top: 1px solid var(--border);">
                 <h3 style="margin-bottom: 15px; color: var(--text-dark);">📝 Текстовые блоки на баннере</h3>
-                <small style="margin-bottom: 15px; display:block;">Вы можете добавить несколько строк текста.</small>
+                <small style="margin-bottom: 15px; display:block;">Просто заполните поля. Сохраните, чтобы увидеть результат.</small>
                 
                 <div class="dynamic-list" id="hero-texts-list"></div>
                 <button class="add-btn" onclick="addItem('heroTexts')">+ Добавить текстовый блок</button>
@@ -135,7 +135,7 @@
                 </div>
             </section>
 
-            <!-- Остальные секции (SEO, Мастера и т.д.) остаются без изменений -->
+            <!-- Остальные секции без изменений -->
             <section id="seo" class="section">
                 <div class="section-header"><h2>🔍 SEO Оптимизация</h2></div>
                 <div class="form-group"><label>Заголовок страницы (Title)</label><input data-bind="seo.title"></div>
@@ -219,42 +219,39 @@
         let currentData = {};
         let sessionToken = '';
 
+        // ✅ МАКСИМАЛЬНО ПРОСТАЯ КОНФИГУРАЦИЯ ПОЛЕЙ
         const HERO_TEXT_FIELDS = [
-            { name: 'content', label: 'Текст', type: 'textarea' },
-            { name: 'font', label: 'Шрифт', type: 'select', options: [
-                "'Montserrat', sans-serif", "'Open Sans', sans-serif", "'Roboto', sans-serif", "'Poppins', sans-serif",
-                "'Playfair Display', serif", "'Merriweather', serif", "'Lora', serif",
-                "'Lobster', cursive", "'Pacifico', cursive", "'Dancing Script', cursive", "'Amatic SC', cursive"
-            ]},
-            { name: 'size', label: 'Размер (px)', type: 'number', min: 10, max: 150 },
-            { name: 'color', label: 'Цвет текста', type: 'color' }
+            { name: 'content', label: 'Текст' },
+            { name: 'font', label: 'Шрифт (например: Montserrat)' },
+            { name: 'size', label: 'Размер (только число, например: 56)' },
+            { name: 'color', label: 'Цвет (hex, например: #FFFFFF)' }
         ];
 
         const LIST_CONFIG = {
             heroTexts: HERO_TEXT_FIELDS,
-            masters: [ { name: 'role', label: 'Должность', type: 'text' }, { name: 'name', label: 'Имя', type: 'text' }, { name: 'desc', label: 'Описание', type: 'textarea' }, { name: 'photo', label: 'Фото (URL)', type: 'text' } ],
-            features: [ { name: 'icon', label: 'Иконка (класс FontAwesome)', type: 'text' }, { name: 'title', label: 'Заголовок', type: 'text' }, { name: 'desc', label: 'Описание', type: 'text' } ],
-            beforeAfter: [ { name: 'before', label: 'Фото ДО', type: 'text' }, { name: 'after', label: 'Фото ПОСЛЕ', type: 'text' }, { name: 'label', label: 'Зона', type: 'text' } ],
-            careInstructions: [ { name: 'title', label: 'Заголовок', type: 'text' }, { name: 'content', label: 'Текст (строка = пункт)', type: 'textarea' } ],
-            prices: [ { name: 'name', label: 'Услуга', type: 'text' }, { name: 'value', label: 'Цена', type: 'text' } ],
-            reviews: [ { name: 'name', label: 'Имя', type: 'text' }, { name: 'text', label: 'Текст', type: 'textarea' }, { name: 'rating', label: 'Рейтинг', type: 'number', min: 1, max: 5 } ],
-            faq: [ { name: 'question', label: 'Вопрос', type: 'text' }, { name: 'answer', label: 'Ответ', type: 'textarea' } ],
-            blog: [ { name: 'title', label: 'Заголовок', type: 'text' }, { name: 'date', label: 'Дата', type: 'text' }, { name: 'excerpt', label: 'Кратко', type: 'textarea' }, { name: 'content', label: 'Полный текст', type: 'textarea' }, { name: 'image', label: 'Обложка', type: 'text' } ]
+            masters: [ { name: 'role', label: 'Должность' }, { name: 'name', label: 'Имя' }, { name: 'desc', label: 'Описание' }, { name: 'photo', label: 'Фото (URL)' } ],
+            features: [ { name: 'icon', label: 'Иконка (класс FontAwesome)' }, { name: 'title', label: 'Заголовок' }, { name: 'desc', label: 'Описание' } ],
+            beforeAfter: [ { name: 'before', label: 'Фото ДО (URL)' }, { name: 'after', label: 'Фото ПОСЛЕ (URL)' }, { name: 'label', label: 'Зона' } ],
+            careInstructions: [ { name: 'title', label: 'Заголовок' }, { name: 'content', label: 'Текст (строка = пункт)' } ],
+            prices: [ { name: 'name', label: 'Услуга' }, { name: 'value', label: 'Цена' } ],
+            reviews: [ { name: 'name', label: 'Имя' }, { name: 'text', label: 'Текст' }, { name: 'rating', label: 'Рейтинг (1-5)' } ],
+            faq: [ { name: 'question', label: 'Вопрос' }, { name: 'answer', label: 'Ответ' } ],
+            blog: [ { name: 'title', label: 'Заголовок' }, { name: 'date', label: 'Дата' }, { name: 'excerpt', label: 'Кратко' }, { name: 'content', label: 'Полный текст' }, { name: 'image', label: 'Обложка (URL)' } ]
         };
 
         const DEFAULTS = {
-            heroTexts: { content: 'Новый текст', font: "'Montserrat', sans-serif", size: 56, color: '#FFFFFF' },
+            heroTexts: { content: 'Новый текст', font: 'Montserrat', size: '56', color: '#FFFFFF' },
             masters: { role: 'Мастер', name: 'Имя', desc: 'Описание...', photo: '' },
             features: { icon: 'fa-star', title: 'Преимущество', desc: 'Описание...' },
             beforeAfter: { before: '', after: '', label: 'Зона' },
             careInstructions: { title: 'Заголовок', content: 'Пункт 1\nПункт 2' },
             prices: { name: 'Услуга', value: '0' },
-            reviews: { name: 'Имя', text: 'Отзыв...', rating: 5 },
+            reviews: { name: 'Имя', text: 'Отзыв...', rating: '5' },
             faq: { question: 'Вопрос?', answer: 'Ответ...' },
             blog: { title: 'Статья', date: new Date().toISOString().split('T')[0], excerpt: 'Кратко...', content: 'Текст...', image: '' }
         };
 
-        const EXTRA_BTN_FIELDS = [ { name: 'icon', label: 'Иконка', type: 'text' }, { name: 'label', label: 'Название', type: 'text' }, { name: 'url', label: 'Ссылка', type: 'text' }, { name: 'color', label: 'Цвет (#hex)', type: 'text' } ];
+        const EXTRA_BTN_FIELDS = [ { name: 'icon', label: 'Иконка' }, { name: 'label', label: 'Название' }, { name: 'url', label: 'Ссылка' }, { name: 'color', label: 'Цвет (#hex)' } ];
         const DEFAULT_EXTRA_BTN = { icon: 'fa-star', label: 'Кнопка', url: '#', color: '#333333' };
 
         function getNested(obj, path) { return path.split('.').reduce((acc, part) => acc && acc[part], obj); }
@@ -317,11 +314,11 @@
                 if (!currentData.heroTexts || !Array.isArray(currentData.heroTexts)) {
                     currentData.heroTexts = [];
                     if (currentData.hero && currentData.hero.title) {
-                        currentData.heroTexts.push({ content: currentData.hero.title, font: "'Montserrat', sans-serif", size: 56, color: "#FFFFFF" });
+                        currentData.heroTexts.push({ content: currentData.hero.title, font: "Montserrat", size: "56", color: "#FFFFFF" });
                         delete currentData.hero.title;
                     }
                     if (currentData.hero && currentData.hero.subtitle) {
-                        currentData.heroTexts.push({ content: currentData.hero.subtitle.replace(/<br>/g, '\n'), font: "'Open Sans', sans-serif", size: 21, color: "#FFFFFF" });
+                        currentData.heroTexts.push({ content: currentData.hero.subtitle.replace(/<br>/g, '\n'), font: "Open Sans", size: "21", color: "#FFFFFF" });
                         delete currentData.hero.subtitle;
                     }
                     if (currentData.heroTexts.length === 0) currentData.heroTexts.push(JSON.parse(JSON.stringify(DEFAULTS.heroTexts)));
@@ -383,23 +380,20 @@
             }
         }
 
-        // ✅ ИСПРАВЛЕННАЯ ФУНКЦИЯ РЕНДЕРИНГА СПИСКОВ
+        // ✅ ПРОСТАЯ ФУНКЦИЯ РЕНДЕРИНГА (ВСЕГДА СОЗДАЕТ ОБЫЧНЫЕ INPUT)
         function renderList(type) {
             const container = document.getElementById(`${type}-list`); 
             if (!container) return; 
             
-            // Очищаем контейнер перед перерисовкой
             container.innerHTML = '';
             
             const fields = LIST_CONFIG[type];
-            // Если нет конфигурации или данных, выходим
             if (!fields || !Array.isArray(currentData[type])) return; 
             
             currentData[type].forEach((item, index) => {
                 const card = document.createElement('div'); 
                 card.className = 'list-card';
                 
-                // Кнопка удаления
                 const delBtn = document.createElement('button'); 
                 delBtn.className = 'delete-btn'; 
                 delBtn.innerHTML = '🗑'; 
@@ -409,55 +403,28 @@
                 }; 
                 card.appendChild(delBtn);
                 
-                // Генерация полей ввода
                 fields.forEach(f => {
                     const wrap = document.createElement('div'); 
-                    // Textarea и Select занимают всю ширину
-                    wrap.className = `field-row ${f.type === 'textarea' || f.type === 'select' ? 'full' : ''}`;
+                    wrap.className = `field-row`; // Всегда одна колонка
                     
                     const label = document.createElement('label'); 
                     label.textContent = f.label;
                     
+                    // ВСЕГДА создаем обычный input или textarea
                     let input;
-
-                    // Создаем правильный тип элемента в зависимости от конфига
-                    if (f.type === 'select') {
-                        input = document.createElement('select');
-                        if (f.options) {
-                            f.options.forEach(opt => {
-                                const option = document.createElement('option');
-                                option.value = opt;
-                                // Красивое отображение названия шрифта без кавычек
-                                option.textContent = opt.replace(/'/g, '').split(',')[0]; 
-                                // Выбираем текущее значение
-                                if (item[f.name] === opt) option.selected = true;
-                                input.appendChild(option);
-                            });
-                        }
-                    } else if (f.type === 'color') {
-                        input = document.createElement('input'); 
-                        input.type = 'color';
-                    } else if (f.type === 'number') {
-                        input = document.createElement('input'); 
-                        input.type = 'number';
-                        if (f.min !== undefined) input.min = f.min;
-                        if (f.max !== undefined) input.max = f.max;
+                    if (f.name === 'content' || f.name === 'desc' || f.name === 'text' || f.name === 'answer' || f.name === 'excerpt') {
+                         input = document.createElement('textarea');
+                         input.rows = 2;
                     } else {
-                        // По умолчанию text или textarea
-                        input = f.type === 'textarea' ? document.createElement('textarea') : document.createElement('input');
-                        if (f.type === 'textarea') input.rows = 2;
+                         input = document.createElement('input');
+                         input.type = 'text';
                     }
 
-                    // Устанавливаем значение из данных или дефолтное
                     const currentValue = item[f.name];
-                    input.value = (currentValue !== undefined && currentValue !== null) 
-                        ? currentValue 
-                        : (f.type === 'color' ? '#ffffff' : '');
+                    input.value = (currentValue !== undefined && currentValue !== null) ? currentValue : '';
                     
-                    // Привязываем изменение значения к данным в реальном времени
                     input.oninput = e => {
-                        const val = f.type === 'number' ? (parseInt(e.target.value) || 0) : e.target.value;
-                        currentData[type][index][f.name] = val;
+                        currentData[type][index][f.name] = e.target.value;
                     };
                     
                     wrap.appendChild(label); 
@@ -528,21 +495,15 @@
             renderList(type); 
         }
 
-        // ✅ ИСПРАВЛЕННАЯ ФУНКЦИЯ СОХРАНЕНИЯ
         async function saveData() { 
             const b = document.getElementById('saveBtn'); 
-            if(b.disabled) return; // Защита от двойного клика
+            if(b.disabled) return; 
             
             b.disabled = true; 
             b.textContent = '⏳ Сохранение...'; 
             
             try { 
-                // Отправляем ВСЕ текущие данные
-                const payload = { 
-                    content: currentData, 
-                    token: sessionToken 
-                };
-
+                const payload = { content: currentData, token: sessionToken };
                 const r = await fetch('/api/save', { 
                     method: 'POST', 
                     headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${sessionToken}` }, 
@@ -582,7 +543,6 @@
             setTimeout(() => t.classList.remove('show'), 4000); 
         }
 
-        // Загрузка файлов
         document.getElementById('banner-input').onchange = async (e) => { 
             const f = e.target.files[0]; if (!f) return; 
             if (f.size > 5_000_000) { document.getElementById('banner-status').textContent = '❌ > 5 МБ'; return; } 
@@ -612,14 +572,4 @@
                 if (res.ok) { 
                     currentData.seo.ogImage = d.url; 
                     document.getElementById('og-image-preview').src = d.url; 
-                    document.getElementById('og-image-preview').style.display = 'block'; 
-                    document.getElementById('og-image-status').textContent = '✅'; 
-                } else document.getElementById('og-image-status').textContent = '❌'; 
-            } catch { document.getElementById('og-image-status').textContent = '❌'; } 
-            finally { e.target.disabled = false; } 
-        };
-
-        document.addEventListener('DOMContentLoaded', checkSession);
-    </script>
-</body>
-</html>
+                    document.getElementById('
