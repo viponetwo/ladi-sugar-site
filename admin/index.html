@@ -35,7 +35,6 @@
         .list-card { background: var(--card); padding: 15px; border-radius: 10px; border: 1px solid var(--border); position: relative; }
         .list-card .delete-btn { position: absolute; top: 10px; right: 10px; background: #fee2e2; color: var(--danger); border: none; padding: 6px 12px; border-radius: 6px; cursor: pointer; font-weight: 500; font-size: 13px; }
         .list-card .delete-btn:hover { background: #fecaca; }
-        /* Все поля в карточке теперь на всю ширину для простоты */
         .list-card .field-row { display: grid; grid-template-columns: 1fr; gap: 10px; margin-bottom: 10px; } 
         
         .upload-row { display: flex; gap: 8px; margin-top: 5px; align-items: center; }
@@ -114,6 +113,7 @@
                 <h3 style="margin-bottom: 15px; color: var(--text-dark);">📝 Текстовые блоки на баннере</h3>
                 <small style="margin-bottom: 15px; display:block;">Просто заполните поля. Сохраните, чтобы увидеть результат.</small>
                 
+                <!-- ВАЖНО: Убедитесь, что этот ID совпадает с тем, что в JS -->
                 <div class="dynamic-list" id="hero-texts-list"></div>
                 <button class="add-btn" onclick="addItem('heroTexts')">+ Добавить текстовый блок</button>
 
@@ -383,7 +383,10 @@
         // ✅ ПРОСТАЯ ФУНКЦИЯ РЕНДЕРИНГА (ВСЕГДА СОЗДАЕТ ОБЫЧНЫЕ INPUT)
         function renderList(type) {
             const container = document.getElementById(`${type}-list`); 
-            if (!container) return; 
+            if (!container) {
+                console.warn(`Контейнер #${type}-list не найден!`);
+                return; 
+            }
             
             container.innerHTML = '';
             
