@@ -3,7 +3,6 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <!-- Мета-теги будут обновляться динамически через JS -->
     <meta name="description" content="Профессиональный шугаринг в Полоцке.">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="css/style.css">
@@ -21,14 +20,17 @@
                 <a href="#prices">Цены</a>
                 <a href="#contacts">Контакты</a>
             </nav>
-            <a href="#" id="header-dikidi-btn" target="_blank" class="btn-header">Записаться</a>
         </div>
     </header>
 
     <section class="hero">
-        <div class="container hero-content">
-            <h1 id="hero-title">Загрузка</h1>
-            <p id="hero-subtitle"></p>
+        <div class="container hero-content" id="hero-content-container">
+            <!-- Текстовые блоки будут добавлены сюда через JS -->
+            
+            <!-- Контейнер для кнопки на баннере -->
+            <div class="hero-btn-wrapper" id="hero-btn-container" style="display:none;">
+                <a href="#" id="hero-cta-btn" target="_blank" class="btn-hero">Записаться</a>
+            </div>
         </div>
     </section>
 
@@ -141,13 +143,11 @@
     </div>
 
     <script>
-        function loadGoogleFonts(fontTitle, fontSubtitle) {
-            const fonts = new Set();
-            fonts.add(fontTitle.split(',')[0].replace(/'/g, '').trim().replace(/\s+/g, '+'));
-            fonts.add(fontSubtitle.split(',')[0].replace(/'/g, '').trim().replace(/\s+/g, '+'));
-            
+        function loadGoogleFonts(fontsArray) {
+            if (!fontsArray || fontsArray.length === 0) return;
+            const uniqueFonts = [...new Set(fontsArray.map(f => f.split(',')[0].replace(/'/g, '').trim().replace(/\s+/g, '+')))];
             const link = document.createElement('link');
-            link.href = `https://fonts.googleapis.com/css2?family=${Array.from(fonts).join('&family=')}&display=swap`;
+            link.href = `https://fonts.googleapis.com/css2?family=${uniqueFonts.join('&family=')}&display=swap`;
             link.rel = 'stylesheet';
             document.head.appendChild(link);
         }
@@ -159,17 +159,13 @@
                 const data = await response.json();
                 window.siteData = data;
 
-                // 🔍 SEO OPTIMIZATION
+                // 🔍 SEO
                 if (data.seo) {
                     if (data.seo.title) document.title = data.seo.title;
                     let metaDesc = document.querySelector('meta[name="description"]');
                     if (!metaDesc) { metaDesc = document.createElement('meta'); metaDesc.name = "description"; document.head.appendChild(metaDesc); }
                     metaDesc.content = data.seo.description || '';
-                    let metaKeys = document.querySelector('meta[name="keywords"]');
-                    if (data.seo.keywords) {
-                        if (!metaKeys) { metaKeys = document.createElement('meta'); metaKeys.name = "keywords"; document.head.appendChild(metaKeys); }
-                        metaKeys.content = data.seo.keywords;
-                    }
+                    
                     const ogUrl = window.location.href;
                     const ogTitle = data.seo.title || document.title;
                     const ogDesc = data.seo.description || '';
@@ -186,53 +182,80 @@
                     setMeta('og:type', 'website');
                 }
 
+                // 🎨 Тема и шрифты
                 if (data.theme) {
                     document.documentElement.style.setProperty('--bg-light', data.theme.color_bg_light);
                     document.documentElement.style.setProperty('--bg-white', data.theme.color_bg_white);
                     document.documentElement.style.setProperty('--primary', data.theme.color_primary);
                     document.documentElement.style.setProperty('--text-dark', data.theme.color_text);
-                    
-                    const fontTitle = data.theme.font_title || "'Montserrat', sans-serif";
-                    const fontSubtitle = data.theme.font_subtitle || "'Open Sans', sans-serif";
-                    const heroColor = data.theme.hero_text_color || '#FFFFFF';
-                    
-                    // ✅ ИСПРАВЛЕНИЕ: Гарантированная установка размеров с дефолтными значениями
-                    const titleSize = (data.theme.title_size && !isNaN(data.theme.title_size)) ? data.theme.title_size : 56;
-                    const subtitleSize = (data.theme.subtitle_size && !isNaN(data.theme.subtitle_size)) ? data.theme.subtitle_size : 21;
-                    
-                    document.documentElement.style.setProperty('--hero-title-font', fontTitle);
-                    document.documentElement.style.setProperty('--hero-subtitle-font', fontSubtitle);
-                    document.documentElement.style.setProperty('--hero-text-color', heroColor);
-                    document.documentElement.style.setProperty('--hero-title-size', titleSize + 'px');
-                    document.documentElement.style.setProperty('--hero-subtitle-size', subtitleSize + 'px');
-                    
-                    loadGoogleFonts(fontTitle, fontSubtitle);
                 }
                 if (data.theme?.heroImage) {
                     document.querySelector('.hero').style.backgroundImage = `url('${data.theme.heroImage}')`;
                 }
 
+                // 📝 Рендер динамических текстовых блоков
+                const heroContainer = document.getElementById('hero-content-container');
+                const textBlocks = heroContainer.querySelectorAll('.hero-text-block');
+                textBlocks.forEach(el => el.remove());
+                
+                const fontsToLoad = [];
+                if (data.heroTexts && Array.isArray(data.heroTexts)) {
+                    data.heroTexts.forEach(block => {
+                        if (block.content && block.content.trim() !== '') {
+                            const el = document.createElement('div');
+                            el.className = 'hero-text-block';
+                            el.textContent = block.content;
+                            
+                            el.style.fontFamily = block.font || "'Montserrat', sans-serif";
+                            el.style.fontSize = (block.size || 56) + 'px';
+                            el.style.color = block.color || '#FFFFFF';
+                            el.style.marginBottom = '10px';
+                            el.style.lineHeight = '1.2';
+                            el.style.whiteSpace = 'pre-wrap';
+                            
+                            const btnWrapper = document.getElementById('hero-btn-container');
+                            heroContainer.insertBefore(el, btnWrapper);
+                            
+                            fontsToLoad.push(block.font);
+                        }
+                    });
+                }
+                loadGoogleFonts(fontsToLoad);
+
+                // 🔘 Рендер кнопки на баннере
+                const bookingText = data.hero?.btnText || 'Записаться онлайн';
+                const bookingUrl = data.hero?.dikidiUrl || data.contacts?.dikidi || '#';
+                
+                const btnContainer = document.getElementById('hero-btn-container');
+                const btnEl = document.getElementById('hero-cta-btn');
+                
+                if (bookingText && bookingText.trim() !== '') {
+                    btnContainer.style.display = 'block';
+                    btnEl.textContent = bookingText;
+                    btnEl.href = bookingUrl;
+                } else {
+                    btnContainer.style.display = 'none';
+                }
+
+                // Позиционирование всего блока
                 const heroSection = document.querySelector('.hero');
                 const alignment = (data.hero && data.hero.alignment) ? data.hero.alignment : 'center';
                 heroSection.className = 'hero';
                 heroSection.classList.add(`hero-align-${alignment}`);
 
-                document.getElementById('hero-title').textContent = data.hero.title;
-                document.getElementById('hero-subtitle').innerHTML = data.hero.subtitle.replace(/\n/g, '<br>');
+                // Обновление кнопки в подвале
+                document.getElementById('btn-dikidi-footer').innerHTML = `<i class="far fa-calendar-check"></i> ${bookingText}`; 
+                document.getElementById('btn-dikidi-footer').href = bookingUrl;
                 
-                const bookingText = data.contacts.bookingText || 'Записаться онлайн';
-                const bookingUrl = data.contacts.dikidi || '#';
-                
-                document.getElementById('header-dikidi-btn').textContent = bookingText; document.getElementById('header-dikidi-btn').href = bookingUrl;
-                document.getElementById('btn-dikidi-footer').innerHTML = `<i class="far fa-calendar-check"></i> ${bookingText}`; document.getElementById('btn-dikidi-footer').href = bookingUrl;
-                
-                document.getElementById('btn-wa').href = data.contacts.whatsapp ? `https://wa.me/${data.contacts.whatsapp}` : '#';
-                document.getElementById('btn-viber').href = data.contacts.viber ? `viber://chat?number=%2B${data.contacts.viber}` : '#';
-                document.getElementById('btn-insta').href = data.contacts.instagram || '#';
-                document.getElementById('contact-phone').textContent = data.contacts.phone || ''; 
-                document.getElementById('contact-phone').href = data.contacts.phone ? `tel:${data.contacts.phone}` : '#';
-                document.getElementById('contact-address').textContent = data.contacts.address || '';
+                // Контакты
+                document.getElementById('btn-wa').href = data.contacts?.whatsapp ? `https://wa.me/${data.contacts.whatsapp}` : '#';
+                document.getElementById('btn-viber').href = data.contacts?.viber ? `viber://chat?number=%2B${data.contacts.viber}` : '#';
+                document.getElementById('btn-insta').href = data.contacts?.instagram || '#';
+                document.getElementById('contact-phone').textContent = data.contacts?.phone || ''; 
+                document.getElementById('contact-phone').href = data.contacts?.phone ? `tel:${data.contacts.phone}` : '#';
+                document.getElementById('contact-address').textContent = data.contacts?.address || '';
 
+                // Остальные секции (Мастера, Прайс и т.д.) остаются без изменений в логике рендера
                 const mastersContainer = document.getElementById('masters-container');
                 if(mastersContainer && Array.isArray(data.masters) && data.masters.length > 0) {
                     mastersContainer.innerHTML = data.masters.map(m => `
@@ -344,4 +367,3 @@
     </script>
 </body>
 </html>
-
