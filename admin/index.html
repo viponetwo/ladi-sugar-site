@@ -572,4 +572,14 @@
                 if (res.ok) { 
                     currentData.seo.ogImage = d.url; 
                     document.getElementById('og-image-preview').src = d.url; 
-                    document.getElementById('
+                    document.getElementById('og-image-preview').style.display = 'block'; 
+                    document.getElementById('og-image-status').textContent = '✅'; 
+                } else document.getElementById('og-image-status').textContent = '❌'; 
+            } catch { document.getElementById('og-image-status').textContent = '❌'; } 
+            finally { e.target.disabled = false; } 
+        };
+
+        document.addEventListener('DOMContentLoaded', checkSession);
+    </script>
+</body>
+</html>
