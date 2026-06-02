@@ -93,12 +93,6 @@
   },
   "heroTexts": [
     {
-      "content": "Lady Sugar",
-      "font": "'Montserrat', sans-serif",
-      "size": 56,
-      "color": "#FFFFFF"
-    },
-    {
       "content": "Идеальная гладкость надолго",
       "font": "'Open Sans', sans-serif",
       "size": 21,
@@ -300,6 +294,18 @@
       "content": "Новый текст",
       "font": "'Montserrat', sans-serif",
       "size": 56,
+      "color": "#FFFFFF"
+    },
+    {
+      "content": "Новый текст",
+      "font": "Montserrat",
+      "size": "56",
+      "color": "#FFFFFF"
+    },
+    {
+      "content": "Новый текст",
+      "font": "Montserrat",
+      "size": "56",
       "color": "#FFFFFF"
     }
   ]
