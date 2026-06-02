@@ -110,7 +110,6 @@
                 </div>
 
                 <div class="form-group"><label>Текст кнопки записи</label><input data-bind="hero.btnText"></div>
-                <!-- Поле Ссылка Dikidi убрано отсюда, как просили -->
 
                 <hr style="margin: 30px 0; border: 0; border-top: 1px solid var(--border);">
                 <h3 style="margin-bottom: 15px; color: var(--text-dark);">📝 Текстовые блоки на баннере</h3>
@@ -322,9 +321,10 @@
             try {
                 const res = await fetch('/data.json'); currentData = await res.json();
                 
-                // Миграция старых данных hero.title/subtitle в новый формат heroTexts
-                if (!Array.isArray(currentData.heroTexts)) {
+                // ✅ ИСПРАВЛЕНИЕ: Гарантированная инициализация heroTexts
+                if (!currentData.heroTexts || !Array.isArray(currentData.heroTexts)) {
                     currentData.heroTexts = [];
+                    // Миграция старых данных, если они есть
                     if (currentData.hero && currentData.hero.title) {
                         currentData.heroTexts.push({ content: currentData.hero.title, font: "'Montserrat', sans-serif", size: 56, color: "#FFFFFF" });
                         delete currentData.hero.title;
@@ -333,7 +333,10 @@
                         currentData.heroTexts.push({ content: currentData.hero.subtitle.replace(/<br>/g, '\n'), font: "'Open Sans', sans-serif", size: 21, color: "#FFFFFF" });
                         delete currentData.hero.subtitle;
                     }
-                    if (currentData.heroTexts.length === 0) currentData.heroTexts.push({ ...DEFAULTS.heroTexts });
+                    // Если массив всё ещё пуст, добавляем один дефолтный блок
+                    if (currentData.heroTexts.length === 0) {
+                         currentData.heroTexts.push(JSON.parse(JSON.stringify(DEFAULTS.heroTexts)));
+                    }
                 }
 
                 if (!Array.isArray(currentData.masters)) currentData.masters = [];
@@ -424,7 +427,7 @@
         // ✅ ИСПРАВЛЕННАЯ ФУНКЦИЯ ДОБАВЛЕНИЯ
         function addItem(type) { 
             if (!Array.isArray(currentData[type])) currentData[type] = []; 
-            // Создаем глубокую копию дефолтного объекта, чтобы изменения не влияли на другие
+            // Создаем глубокую копию дефолтного объекта
             const newItem = JSON.parse(JSON.stringify(DEFAULTS[type]));
             currentData[type].push(newItem); 
             renderList(type); 
