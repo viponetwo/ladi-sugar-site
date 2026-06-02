@@ -20,17 +20,14 @@
                 <a href="#prices">Цены</a>
                 <a href="#contacts">Контакты</a>
             </nav>
+            <!-- КНОПКА В ШАПКЕ -->
+            <a href="#" id="header-dikidi-btn" target="_blank" class="btn-header btn-hero-pulse">Записаться</a>
         </div>
     </header>
 
     <section class="hero">
         <div class="container hero-content" id="hero-content-container">
             <!-- Текстовые блоки будут добавлены сюда через JS -->
-            
-            <!-- Контейнер для кнопки на баннере -->
-            <div class="hero-btn-wrapper" id="hero-btn-container" style="display:none;">
-                <a href="#" id="hero-cta-btn" target="_blank" class="btn-hero">Записаться</a>
-            </div>
         </div>
     </section>
 
@@ -213,28 +210,21 @@
                             el.style.lineHeight = '1.2';
                             el.style.whiteSpace = 'pre-wrap';
                             
-                            const btnWrapper = document.getElementById('hero-btn-container');
-                            heroContainer.insertBefore(el, btnWrapper);
-                            
+                            heroContainer.appendChild(el);
                             fontsToLoad.push(block.font);
                         }
                     });
                 }
                 loadGoogleFonts(fontsToLoad);
 
-                // 🔘 Рендер кнопки на баннере
+                // 🔘 Кнопка в шапке
                 const bookingText = data.hero?.btnText || 'Записаться онлайн';
                 const bookingUrl = data.hero?.dikidiUrl || data.contacts?.dikidi || '#';
                 
-                const btnContainer = document.getElementById('hero-btn-container');
-                const btnEl = document.getElementById('hero-cta-btn');
-                
-                if (bookingText && bookingText.trim() !== '') {
-                    btnContainer.style.display = 'block';
-                    btnEl.textContent = bookingText;
-                    btnEl.href = bookingUrl;
-                } else {
-                    btnContainer.style.display = 'none';
+                const headerBtn = document.getElementById('header-dikidi-btn');
+                if(headerBtn) {
+                    headerBtn.textContent = bookingText;
+                    headerBtn.href = bookingUrl;
                 }
 
                 // Позиционирование всего блока
@@ -255,7 +245,7 @@
                 document.getElementById('contact-phone').href = data.contacts?.phone ? `tel:${data.contacts.phone}` : '#';
                 document.getElementById('contact-address').textContent = data.contacts?.address || '';
 
-                // Остальные секции (Мастера, Прайс и т.д.) остаются без изменений в логике рендера
+                // Остальные секции
                 const mastersContainer = document.getElementById('masters-container');
                 if(mastersContainer && Array.isArray(data.masters) && data.masters.length > 0) {
                     mastersContainer.innerHTML = data.masters.map(m => `
