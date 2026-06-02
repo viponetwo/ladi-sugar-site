@@ -14,7 +14,13 @@
     "bookingText": "Записаться",
     "extraButtons": []
   },
-  "features": [],
+  "features": [
+    {
+      "icon": "fa-star",
+      "title": "Преимущество",
+      "desc": "Описание..."
+    }
+  ],
   "gallery": [],
   "prices": [],
   "reviews": [
@@ -106,6 +112,3 @@
     }
   ]
 }
-
-
-
