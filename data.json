@@ -1,6 +1,6 @@
 {
   "hero": {
-    "btnText": "ПРИВЕТ",
+    "btnText": "Записаться онлайн",
     "dikidiUrl": "",
     "alignment": "top-center"
   },
@@ -102,6 +102,24 @@
       "content": "Идеальная гладкость надолго",
       "font": "'Open Sans', sans-serif",
       "size": 21,
+      "color": "#FFFFFF"
+    },
+    {
+      "content": "Новый текст",
+      "font": "'Montserrat', sans-serif",
+      "size": 56,
+      "color": "#FFFFFF"
+    },
+    {
+      "content": "Новый текст",
+      "font": "'Montserrat', sans-serif",
+      "size": 56,
+      "color": "#FFFFFF"
+    },
+    {
+      "content": "Новый текст",
+      "font": "'Montserrat', sans-serif",
+      "size": 56,
       "color": "#FFFFFF"
     },
     {
