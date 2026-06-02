@@ -92,7 +92,6 @@
             <div class="nav-logout" onclick="logout()">🚪 Выход из админки</div>
         </aside>
         <main class="main">
-            <!-- ОБЪЕДИНЕННЫЙ РАЗДЕЛ -->
             <section id="hero" class="section active">
                 <div class="section-header"><h2>🏠 Главный экран и Дизайн</h2></div>
                 
@@ -113,7 +112,7 @@
 
                 <hr style="margin: 30px 0; border: 0; border-top: 1px solid var(--border);">
                 <h3 style="margin-bottom: 15px; color: var(--text-dark);">📝 Текстовые блоки на баннере</h3>
-                <small style="margin-bottom: 15px; display:block;">Вы можете добавить несколько строк текста. Каждая строка имеет свой шрифт, размер и цвет.</small>
+                <small style="margin-bottom: 15px; display:block;">Вы можете добавить несколько строк текста.</small>
                 
                 <div class="dynamic-list" id="hero-texts-list"></div>
                 <button class="add-btn" onclick="addItem('heroTexts')">+ Добавить текстовый блок</button>
@@ -136,20 +135,12 @@
                 </div>
             </section>
 
+            <!-- Остальные секции (SEO, Мастера и т.д.) остаются без изменений -->
             <section id="seo" class="section">
                 <div class="section-header"><h2>🔍 SEO Оптимизация</h2></div>
-                <div class="form-group">
-                    <label>Заголовок страницы (Title)</label>
-                    <input data-bind="seo.title">
-                </div>
-                <div class="form-group">
-                    <label>Описание (Description)</label>
-                    <textarea rows="3" data-bind="seo.description"></textarea>
-                </div>
-                <div class="form-group">
-                    <label>Ключевые слова (Keywords)</label>
-                    <input data-bind="seo.keywords">
-                </div>
+                <div class="form-group"><label>Заголовок страницы (Title)</label><input data-bind="seo.title"></div>
+                <div class="form-group"><label>Описание (Description)</label><textarea rows="3" data-bind="seo.description"></textarea></div>
+                <div class="form-group"><label>Ключевые слова (Keywords)</label><input data-bind="seo.keywords"></div>
                 <hr style="margin: 20px 0; border: 0; border-top: 1px solid var(--border);">
                 <div class="form-group">
                     <label>Картинка для соцсетей (OG Image)</label>
@@ -228,7 +219,6 @@
         let currentData = {};
         let sessionToken = '';
 
-        // Конфигурация для текстовых блоков на баннере
         const HERO_TEXT_FIELDS = [
             { name: 'content', label: 'Текст', type: 'textarea' },
             { name: 'font', label: 'Шрифт', type: 'select', options: [
@@ -319,12 +309,13 @@
 
         async function loadData() {
             try {
-                const res = await fetch('/data.json'); currentData = await res.json();
+                const res = await fetch('/data.json'); 
+                if (!res.ok) throw new Error('Failed to load data');
+                currentData = await res.json();
                 
-                // ✅ ИСПРАВЛЕНИЕ: Гарантированная инициализация heroTexts
+                // Инициализация массивов
                 if (!currentData.heroTexts || !Array.isArray(currentData.heroTexts)) {
                     currentData.heroTexts = [];
-                    // Миграция старых данных, если они есть
                     if (currentData.hero && currentData.hero.title) {
                         currentData.heroTexts.push({ content: currentData.hero.title, font: "'Montserrat', sans-serif", size: 56, color: "#FFFFFF" });
                         delete currentData.hero.title;
@@ -333,56 +324,76 @@
                         currentData.heroTexts.push({ content: currentData.hero.subtitle.replace(/<br>/g, '\n'), font: "'Open Sans', sans-serif", size: 21, color: "#FFFFFF" });
                         delete currentData.hero.subtitle;
                     }
-                    // Если массив всё ещё пуст, добавляем один дефолтный блок
-                    if (currentData.heroTexts.length === 0) {
-                         currentData.heroTexts.push(JSON.parse(JSON.stringify(DEFAULTS.heroTexts)));
-                    }
+                    if (currentData.heroTexts.length === 0) currentData.heroTexts.push(JSON.parse(JSON.stringify(DEFAULTS.heroTexts)));
                 }
 
-                if (!Array.isArray(currentData.masters)) currentData.masters = [];
-                if (!Array.isArray(currentData.features)) currentData.features = [];
-                if (!Array.isArray(currentData.beforeAfter)) currentData.beforeAfter = [];
-                if (!Array.isArray(currentData.prices)) currentData.prices = [];
-                if (!Array.isArray(currentData.reviews)) currentData.reviews = [];
-                if (!Array.isArray(currentData.faq)) currentData.faq = [];
-                if (!Array.isArray(currentData.blog)) currentData.blog = [];
-                if (!Array.isArray(currentData.careInstructions)) currentData.careInstructions = [];
+                ['masters','features','beforeAfter','prices','reviews','faq','blog','careInstructions'].forEach(k => {
+                    if (!Array.isArray(currentData[k])) currentData[k] = [];
+                });
                 if (!currentData.contacts) currentData.contacts = {};
                 if (!Array.isArray(currentData.contacts.extraButtons)) currentData.contacts.extraButtons = [];
-                
                 if (!currentData.seo) currentData.seo = { title: '', description: '', keywords: '', ogImage: '' };
                 if (!currentData.theme) currentData.theme = { heroImage: '', color_bg_light: '#FDEEF4', color_bg_white: '#FFFFFF', color_primary: '#B08D74', color_text: '#333333' };
 
-                document.querySelectorAll('[data-bind]').forEach(el => { const path = el.dataset.bind; el.value = getNested(currentData, path) || ''; el.addEventListener('input', e => setNested(currentData, path, e.target.value)); });
+                // Привязка полей с data-bind
+                document.querySelectorAll('[data-bind]').forEach(el => { 
+                    const path = el.dataset.bind; 
+                    el.value = getNested(currentData, path) || ''; 
+                    el.addEventListener('input', e => setNested(currentData, path, e.target.value)); 
+                });
                 
+                // Привязка цветов и превью
                 document.getElementById('color-bg-light').value = currentData.theme.color_bg_light;
                 document.getElementById('color-bg-white').value = currentData.theme.color_bg_white;
                 document.getElementById('color-primary').value = currentData.theme.color_primary;
                 document.getElementById('color-text').value = currentData.theme.color_text;
                 
-                if (currentData.theme.heroImage) { const p = document.getElementById('banner-preview'); p.src = currentData.theme.heroImage; p.style.display = 'block'; }
-                if (currentData.seo.ogImage) { const p = document.getElementById('og-image-preview'); p.src = currentData.seo.ogImage; p.style.display = 'block'; }
+                if (currentData.theme.heroImage) { 
+                    const p = document.getElementById('banner-preview'); 
+                    p.src = currentData.theme.heroImage; 
+                    p.style.display = 'block'; 
+                }
+                if (currentData.seo.ogImage) { 
+                    const p = document.getElementById('og-image-preview'); 
+                    p.src = currentData.seo.ogImage; 
+                    p.style.display = 'block'; 
+                }
                 
-                document.getElementById('color-bg-light').oninput = e => currentData.theme.color_bg_light = e.target.value;
-                document.getElementById('color-bg-white').oninput = e => currentData.theme.color_bg_white = e.target.value;
-                document.getElementById('color-primary').oninput = e => currentData.theme.color_primary = e.target.value;
-                document.getElementById('color-text').oninput = e => currentData.theme.color_text = e.target.value;
+                // Обработчики изменения цветов
+                ['color-bg-light','color-bg-white','color-primary','color-text'].forEach(id => {
+                    document.getElementById(id).oninput = e => {
+                        const map = {
+                            'color-bg-light': 'color_bg_light',
+                            'color-bg-white': 'color_bg_white',
+                            'color-primary': 'color_primary',
+                            'color-text': 'color_text'
+                        };
+                        currentData.theme[map[id]] = e.target.value;
+                    };
+                });
 
-                renderList('heroTexts');
-                renderList('masters'); renderList('features'); renderList('beforeAfter'); renderList('prices'); renderList('reviews'); renderList('faq'); renderList('blog'); 
-                renderList('careInstructions'); renderExtraButtons(); renderPending();
+                // Рендер всех списков
+                Object.keys(LIST_CONFIG).forEach(type => renderList(type));
+                renderExtraButtons(); 
+                renderPending();
                 showToast('✅ Данные загружены');
-            } catch (e) { showToast('❌ Ошибка data.json', true); }
+            } catch (e) { 
+                console.error(e);
+                showToast('❌ Ошибка загрузки data.json', true); 
+            }
         }
 
         // ✅ ИСПРАВЛЕННАЯ ФУНКЦИЯ РЕНДЕРИНГА СПИСКОВ
         function renderList(type) {
             const container = document.getElementById(`${type}-list`); 
             if (!container) return; 
+            
+            // Очищаем контейнер перед перерисовкой
             container.innerHTML = '';
             
             const fields = LIST_CONFIG[type];
-            if (!fields) return; // Защита от ошибок
+            // Если нет конфигурации или данных, выходим
+            if (!fields || !Array.isArray(currentData[type])) return; 
             
             currentData[type].forEach((item, index) => {
                 const card = document.createElement('div'); 
@@ -398,10 +409,10 @@
                 }; 
                 card.appendChild(delBtn);
                 
-                // Генерация полей
+                // Генерация полей ввода
                 fields.forEach(f => {
                     const wrap = document.createElement('div'); 
-                    // Для textarea и select делаем поле на всю ширину
+                    // Textarea и Select занимают всю ширину
                     wrap.className = `field-row ${f.type === 'textarea' || f.type === 'select' ? 'full' : ''}`;
                     
                     const label = document.createElement('label'); 
@@ -409,15 +420,16 @@
                     
                     let input;
 
-                    // Логика создания разных типов инпутов
+                    // Создаем правильный тип элемента в зависимости от конфига
                     if (f.type === 'select') {
                         input = document.createElement('select');
                         if (f.options) {
                             f.options.forEach(opt => {
                                 const option = document.createElement('option');
                                 option.value = opt;
-                                // Убираем кавычки для красивого отображения в списке
+                                // Красивое отображение названия шрифта без кавычек
                                 option.textContent = opt.replace(/'/g, '').split(',')[0]; 
+                                // Выбираем текущее значение
                                 if (item[f.name] === opt) option.selected = true;
                                 input.appendChild(option);
                             });
@@ -436,12 +448,16 @@
                         if (f.type === 'textarea') input.rows = 2;
                     }
 
-                    // Установка текущего значения
-                    input.value = item[f.name] !== undefined ? item[f.name] : (f.type === 'color' ? '#000000' : '');
+                    // Устанавливаем значение из данных или дефолтное
+                    const currentValue = item[f.name];
+                    input.value = (currentValue !== undefined && currentValue !== null) 
+                        ? currentValue 
+                        : (f.type === 'color' ? '#ffffff' : '');
                     
-                    // Привязка изменения значения к данным
+                    // Привязываем изменение значения к данным в реальном времени
                     input.oninput = e => {
-                        currentData[type][index][f.name] = (f.type === 'number' ? parseInt(e.target.value) : e.target.value);
+                        const val = f.type === 'number' ? (parseInt(e.target.value) || 0) : e.target.value;
+                        currentData[type][index][f.name] = val;
                     };
                     
                     wrap.appendChild(label); 
@@ -453,27 +469,155 @@
             });
         }
 
-        function renderExtraButtons() { const c = document.getElementById('extra-buttons-list'); if (!c) return; c.innerHTML = ''; currentData.contacts.extraButtons.forEach((item, idx) => { const card = document.createElement('div'); card.className = 'list-card'; const del = document.createElement('button'); del.className = 'delete-btn'; del.innerHTML = '🗑'; del.onclick = () => { currentData.contacts.extraButtons.splice(idx, 1); renderExtraButtons(); }; card.appendChild(del); EXTRA_BTN_FIELDS.forEach(f => { const w = document.createElement('div'); w.className = 'field-row'; const l = document.createElement('label'); l.textContent = f.label; const i = document.createElement('input'); i.type = 'text'; i.value = item[f.name] || ''; i.oninput = e => currentData.contacts.extraButtons[idx][f.name] = e.target.value; w.appendChild(l); w.appendChild(i); card.appendChild(w); }); c.appendChild(card); }); }
-        function addExtraButton() { currentData.contacts.extraButtons.push({...DEFAULT_EXTRA_BTN}); renderExtraButtons(); }
-        function renderPending() { const c = document.getElementById('pending-list'); const m = document.getElementById('no-pending'); c.innerHTML = ''; const p = (currentData.reviews || []).filter(r => r.status === 'pending'); m.style.display = p.length ? 'none' : 'block'; p.forEach((item) => { const rIdx = currentData.reviews.indexOf(item); const card = document.createElement('div'); card.className = 'list-card'; card.innerHTML = `<div class="field-row full"><label><b>${item.name}</b> (${item.rating}⭐)</label><p style="margin:8px 0; padding:10px; background:#f1f5f9; border-radius:6px;">${item.text}</p></div><div style="display:flex; gap:10px;"><button onclick="moderateReview(${rIdx}, 'approved')" style="background:#dcfce7; color:#166534; border:none; padding:6px; border-radius:6px; cursor:pointer;">✅ Принять</button><button onclick="moderateReview(${rIdx}, 'rejected')" style="background:#fee2e2; color:#991b1b; border:none; padding:6px; border-radius:6px; cursor:pointer;">❌ Удалить</button></div>`; c.appendChild(card); }); }
-        function moderateReview(idx, st) { if (st === 'approved') delete currentData.reviews[idx].status; else currentData.reviews.splice(idx, 1); renderPending(); renderList('reviews'); saveData(); }
+        function renderExtraButtons() { 
+            const c = document.getElementById('extra-buttons-list'); 
+            if (!c) return; 
+            c.innerHTML = ''; 
+            if(!Array.isArray(currentData.contacts.extraButtons)) return;
+            
+            currentData.contacts.extraButtons.forEach((item, idx) => { 
+                const card = document.createElement('div'); card.className = 'list-card'; 
+                const del = document.createElement('button'); del.className = 'delete-btn'; del.innerHTML = '🗑'; 
+                del.onclick = () => { currentData.contacts.extraButtons.splice(idx, 1); renderExtraButtons(); }; 
+                card.appendChild(del); 
+                EXTRA_BTN_FIELDS.forEach(f => { 
+                    const w = document.createElement('div'); w.className = 'field-row'; 
+                    const l = document.createElement('label'); l.textContent = f.label; 
+                    const i = document.createElement('input'); i.type = 'text'; 
+                    i.value = item[f.name] || ''; 
+                    i.oninput = e => currentData.contacts.extraButtons[idx][f.name] = e.target.value; 
+                    w.appendChild(l); w.appendChild(i); card.appendChild(w); 
+                }); 
+                c.appendChild(card); 
+            }); 
+        }
+
+        function addExtraButton() { 
+            if(!Array.isArray(currentData.contacts.extraButtons)) currentData.contacts.extraButtons = [];
+            currentData.contacts.extraButtons.push({...DEFAULT_EXTRA_BTN}); 
+            renderExtraButtons(); 
+        }
+
+        function renderPending() { 
+            const c = document.getElementById('pending-list'); 
+            const m = document.getElementById('no-pending'); 
+            if(!c || !m) return;
+            c.innerHTML = ''; 
+            const p = (currentData.reviews || []).filter(r => r.status === 'pending'); 
+            m.style.display = p.length ? 'none' : 'block'; 
+            p.forEach((item) => { 
+                const rIdx = currentData.reviews.indexOf(item); 
+                const card = document.createElement('div'); card.className = 'list-card'; 
+                card.innerHTML = `<div class="field-row full"><label><b>${item.name}</b> (${item.rating}⭐)</label><p style="margin:8px 0; padding:10px; background:#f1f5f9; border-radius:6px;">${item.text}</p></div><div style="display:flex; gap:10px;"><button onclick="moderateReview(${rIdx}, 'approved')" style="background:#dcfce7; color:#166534; border:none; padding:6px; border-radius:6px; cursor:pointer;">✅ Принять</button><button onclick="moderateReview(${rIdx}, 'rejected')" style="background:#fee2e2; color:#991b1b; border:none; padding:6px; border-radius:6px; cursor:pointer;">❌ Удалить</button></div>`; 
+                c.appendChild(card); 
+            }); 
+        }
+
+        function moderateReview(idx, st) { 
+            if (st === 'approved') delete currentData.reviews[idx].status; 
+            else currentData.reviews.splice(idx, 1); 
+            renderPending(); 
+            renderList('reviews'); 
+            saveData(); 
+        }
         
-        // ✅ ИСПРАВЛЕННАЯ ФУНКЦИЯ ДОБАВЛЕНИЯ
         function addItem(type) { 
             if (!Array.isArray(currentData[type])) currentData[type] = []; 
-            // Создаем глубокую копию дефолтного объекта
             const newItem = JSON.parse(JSON.stringify(DEFAULTS[type]));
             currentData[type].push(newItem); 
             renderList(type); 
         }
 
-        async function saveData() { const b = document.getElementById('saveBtn'); b.disabled = true; b.textContent = '⏳...'; try { const r = await fetch('/api/save', { method: 'POST', headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${sessionToken}` }, body: JSON.stringify({ content: currentData, token: sessionToken }) }); const res = await r.json(); if (r.ok) showToast('✅ Успешно!'); else showToast('❌ ' + (res.message || res.details), true); } catch { showToast('❌ Ошибка сети', true); } finally { b.disabled = false; b.textContent = '💾 Сохранить и Опубликовать'; } }
-        function show(id) { document.querySelectorAll('.section').forEach(s => s.classList.remove('active')); document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active')); document.getElementById(id).classList.add('active'); event.target.classList.add('active'); }
-        function showToast(msg, err = false) { const t = document.getElementById('toast'); t.textContent = msg; t.className = `toast ${err ? 'error' : ''} show`; setTimeout(() => t.classList.remove('show'), 4000); }
+        // ✅ ИСПРАВЛЕННАЯ ФУНКЦИЯ СОХРАНЕНИЯ
+        async function saveData() { 
+            const b = document.getElementById('saveBtn'); 
+            if(b.disabled) return; // Защита от двойного клика
+            
+            b.disabled = true; 
+            b.textContent = '⏳ Сохранение...'; 
+            
+            try { 
+                // Отправляем ВСЕ текущие данные
+                const payload = { 
+                    content: currentData, 
+                    token: sessionToken 
+                };
 
-        document.getElementById('banner-input').onchange = async (e) => { const f = e.target.files[0]; if (!f) return; if (f.size > 5_000_000) { document.getElementById('banner-status').textContent = '❌ > 5 МБ'; return; } document.getElementById('banner-status').textContent = '⏳...'; e.target.disabled = true; try { const base64 = await fileToBase64(f); const res = await fetch('/api/upload', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ fileName: f.name, contentBase64: base64 }) }); const d = await res.json(); if (res.ok) { currentData.theme.heroImage = d.url; document.getElementById('banner-preview').src = d.url; document.getElementById('banner-preview').style.display = 'block'; document.getElementById('banner-status').textContent = '✅'; } else document.getElementById('banner-status').textContent = '❌'; } catch { document.getElementById('banner-status').textContent = '❌'; } finally { e.target.disabled = false; } };
+                const r = await fetch('/api/save', { 
+                    method: 'POST', 
+                    headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${sessionToken}` }, 
+                    body: JSON.stringify(payload) 
+                }); 
+                
+                const res = await r.json(); 
+                
+                if (r.ok) {
+                    showToast('✅ Успешно сохранено!');
+                } else {
+                    showToast('❌ Ошибка: ' + (res.message || res.details || 'Неизвестная ошибка'), true);
+                }
+            } catch (err) { 
+                console.error('Save error:', err);
+                showToast('❌ Ошибка сети или сервера', true); 
+            } finally { 
+                b.disabled = false; 
+                b.textContent = '💾 Сохранить и Опубликовать'; 
+            } 
+        }
+
+        function show(id) { 
+            document.querySelectorAll('.section').forEach(s => s.classList.remove('active')); 
+            document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active')); 
+            document.getElementById(id).classList.add('active'); 
+            const items = document.querySelectorAll('.nav-item');
+            items.forEach(item => {
+                if(item.getAttribute('onclick')?.includes(`'${id}'`)) item.classList.add('active');
+            });
+        }
+
+        function showToast(msg, err = false) { 
+            const t = document.getElementById('toast'); 
+            t.textContent = msg; 
+            t.className = `toast ${err ? 'error' : ''} show`; 
+            setTimeout(() => t.classList.remove('show'), 4000); 
+        }
+
+        // Загрузка файлов
+        document.getElementById('banner-input').onchange = async (e) => { 
+            const f = e.target.files[0]; if (!f) return; 
+            if (f.size > 5_000_000) { document.getElementById('banner-status').textContent = '❌ > 5 МБ'; return; } 
+            document.getElementById('banner-status').textContent = '⏳...'; e.target.disabled = true; 
+            try { 
+                const base64 = await fileToBase64(f); 
+                const res = await fetch('/api/upload', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ fileName: f.name, contentBase64: base64 }) }); 
+                const d = await res.json(); 
+                if (res.ok) { 
+                    currentData.theme.heroImage = d.url; 
+                    document.getElementById('banner-preview').src = d.url; 
+                    document.getElementById('banner-preview').style.display = 'block'; 
+                    document.getElementById('banner-status').textContent = '✅'; 
+                } else document.getElementById('banner-status').textContent = '❌'; 
+            } catch { document.getElementById('banner-status').textContent = '❌'; } 
+            finally { e.target.disabled = false; } 
+        };
         
-        document.getElementById('og-image-input').onchange = async (e) => { const f = e.target.files[0]; if (!f) return; if (f.size > 5_000_000) { document.getElementById('og-image-status').textContent = '❌ > 5 МБ'; return; } document.getElementById('og-image-status').textContent = '⏳...'; e.target.disabled = true; try { const base64 = await fileToBase64(f); const res = await fetch('/api/upload', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ fileName: f.name, contentBase64: base64 }) }); const d = await res.json(); if (res.ok) { currentData.seo.ogImage = d.url; document.getElementById('og-image-preview').src = d.url; document.getElementById('og-image-preview').style.display = 'block'; document.getElementById('og-image-status').textContent = '✅'; } else document.getElementById('og-image-status').textContent = '❌'; } catch { document.getElementById('og-image-status').textContent = '❌'; } finally { e.target.disabled = false; } };
+        document.getElementById('og-image-input').onchange = async (e) => { 
+            const f = e.target.files[0]; if (!f) return; 
+            if (f.size > 5_000_000) { document.getElementById('og-image-status').textContent = '❌ > 5 МБ'; return; } 
+            document.getElementById('og-image-status').textContent = '⏳...'; e.target.disabled = true; 
+            try { 
+                const base64 = await fileToBase64(f); 
+                const res = await fetch('/api/upload', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ fileName: f.name, contentBase64: base64 }) }); 
+                const d = await res.json(); 
+                if (res.ok) { 
+                    currentData.seo.ogImage = d.url; 
+                    document.getElementById('og-image-preview').src = d.url; 
+                    document.getElementById('og-image-preview').style.display = 'block'; 
+                    document.getElementById('og-image-status').textContent = '✅'; 
+                } else document.getElementById('og-image-status').textContent = '❌'; 
+            } catch { document.getElementById('og-image-status').textContent = '❌'; } 
+            finally { e.target.disabled = false; } 
+        };
 
         document.addEventListener('DOMContentLoaded', checkSession);
     </script>
