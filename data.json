@@ -1,8 +1,6 @@
 {
   "hero": {
-    "title": "Lady Sugar",
-    "subtitle": "Идеальная гладкость надолго",
-    "btnText": "",
+    "btnText": "ПРИВЕТ",
     "dikidiUrl": "",
     "alignment": "top-center"
   },
@@ -92,5 +90,67 @@
     "description": "Профессиональный шугаринг в Полоцке. Глубокое бикини, ноги, подмышки, лицо. Без боли, стерильно, одноразовые материалы. Скидка новым клиентам. Запись онлайн! ",
     "keywords": "шугаринг, полоцк, эпиляция",
     "ogImage": "/images/uploads/1780337266509-671220715_18154636906415089_7085073094643845964_n.jpg"
-  }
+  },
+  "heroTexts": [
+    {
+      "content": "Lady Sugar",
+      "font": "'Montserrat', sans-serif",
+      "size": 56,
+      "color": "#FFFFFF"
+    },
+    {
+      "content": "Идеальная гладкость надолго",
+      "font": "'Open Sans', sans-serif",
+      "size": 21,
+      "color": "#FFFFFF"
+    },
+    {
+      "content": "Новый текст",
+      "font": "'Montserrat', sans-serif",
+      "size": 56,
+      "color": "#FFFFFF"
+    },
+    {
+      "content": "Новый текст",
+      "font": "'Montserrat', sans-serif",
+      "size": 56,
+      "color": "#FFFFFF"
+    },
+    {
+      "content": "Новый текст",
+      "font": "'Montserrat', sans-serif",
+      "size": 56,
+      "color": "#FFFFFF"
+    },
+    {
+      "content": "Новый текст",
+      "font": "'Montserrat', sans-serif",
+      "size": 56,
+      "color": "#FFFFFF"
+    },
+    {
+      "content": "Новый текст",
+      "font": "'Montserrat', sans-serif",
+      "size": 56,
+      "color": "#FFFFFF"
+    },
+    {
+      "content": "Новый текст",
+      "font": "'Montserrat', sans-serif",
+      "size": 56,
+      "color": "#FFFFFF"
+    },
+    {
+      "content": "Новый текст",
+      "font": "'Montserrat', sans-serif",
+      "size": 56,
+      "color": "#FFFFFF"
+    },
+    {
+      "content": "Новый текст",
+      "font": "'Montserrat', sans-serif",
+      "size": 56,
+      "color": "#FFFFFF"
+    }
+  ]
 }
