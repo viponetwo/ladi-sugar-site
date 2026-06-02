@@ -375,46 +375,80 @@
             } catch (e) { showToast('❌ Ошибка data.json', true); }
         }
 
+        // ✅ ИСПРАВЛЕННАЯ ФУНКЦИЯ РЕНДЕРИНГА СПИСКОВ
         function renderList(type) {
-            const container = document.getElementById(`${type}-list`); if (!container) return; container.innerHTML = '';
+            const container = document.getElementById(`${type}-list`); 
+            if (!container) return; 
+            container.innerHTML = '';
+            
             const fields = LIST_CONFIG[type];
+            if (!fields) return; // Защита от ошибок
             
             currentData[type].forEach((item, index) => {
-                const card = document.createElement('div'); card.className = 'list-card';
-                const delBtn = document.createElement('button'); delBtn.className = 'delete-btn'; delBtn.innerHTML = '🗑'; delBtn.onclick = () => { currentData[type].splice(index, 1); renderList(type); }; card.appendChild(delBtn);
+                const card = document.createElement('div'); 
+                card.className = 'list-card';
                 
+                // Кнопка удаления
+                const delBtn = document.createElement('button'); 
+                delBtn.className = 'delete-btn'; 
+                delBtn.innerHTML = '🗑'; 
+                delBtn.onclick = () => { 
+                    currentData[type].splice(index, 1); 
+                    renderList(type); 
+                }; 
+                card.appendChild(delBtn);
+                
+                // Генерация полей
                 fields.forEach(f => {
                     const wrap = document.createElement('div'); 
+                    // Для textarea и select делаем поле на всю ширину
                     wrap.className = `field-row ${f.type === 'textarea' || f.type === 'select' ? 'full' : ''}`;
                     
-                    const label = document.createElement('label'); label.textContent = f.label;
+                    const label = document.createElement('label'); 
+                    label.textContent = f.label;
+                    
                     let input;
 
+                    // Логика создания разных типов инпутов
                     if (f.type === 'select') {
                         input = document.createElement('select');
-                        f.options.forEach(opt => {
-                            const option = document.createElement('option');
-                            option.value = opt;
-                            option.textContent = opt.replace(/'/g, '').split(',')[0];
-                            if (item[f.name] === opt) option.selected = true;
-                            input.appendChild(option);
-                        });
+                        if (f.options) {
+                            f.options.forEach(opt => {
+                                const option = document.createElement('option');
+                                option.value = opt;
+                                // Убираем кавычки для красивого отображения в списке
+                                option.textContent = opt.replace(/'/g, '').split(',')[0]; 
+                                if (item[f.name] === opt) option.selected = true;
+                                input.appendChild(option);
+                            });
+                        }
                     } else if (f.type === 'color') {
-                        input = document.createElement('input'); input.type = 'color';
+                        input = document.createElement('input'); 
+                        input.type = 'color';
                     } else if (f.type === 'number') {
-                        input = document.createElement('input'); input.type = 'number';
+                        input = document.createElement('input'); 
+                        input.type = 'number';
                         if (f.min !== undefined) input.min = f.min;
                         if (f.max !== undefined) input.max = f.max;
                     } else {
+                        // По умолчанию text или textarea
                         input = f.type === 'textarea' ? document.createElement('textarea') : document.createElement('input');
                         if (f.type === 'textarea') input.rows = 2;
                     }
 
+                    // Установка текущего значения
                     input.value = item[f.name] !== undefined ? item[f.name] : (f.type === 'color' ? '#000000' : '');
-                    input.oninput = e => currentData[type][index][f.name] = (f.type === 'number' ? parseInt(e.target.value) : e.target.value);
                     
-                    wrap.appendChild(label); wrap.appendChild(input); card.appendChild(wrap);
+                    // Привязка изменения значения к данным
+                    input.oninput = e => {
+                        currentData[type][index][f.name] = (f.type === 'number' ? parseInt(e.target.value) : e.target.value);
+                    };
+                    
+                    wrap.appendChild(label); 
+                    wrap.appendChild(input); 
+                    card.appendChild(wrap);
                 }); 
+                
                 container.appendChild(card);
             });
         }
