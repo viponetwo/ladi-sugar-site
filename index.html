@@ -11,6 +11,7 @@
     <header>
         <div class="container nav-wrapper">
             <a href="#" class="logo-link"><img src="images/logo.png" alt="Logo" class="logo-img"></a>
+            <!-- ✅ ДОБАВЛЕН ПУНКТ "ПАМЯТКА" В МЕНЮ -->
             <nav class="nav-links">
                 <a href="#about">Преимущества</a>
                 <a href="#masters">Мастера</a>
@@ -18,6 +19,7 @@
                 <a href="#blog">Блог</a>
                 <a href="#faq">Частые вопросы</a>
                 <a href="#prices">Цены</a>
+                <a href="#care">Памятка</a>
                 <a href="#contacts">Контакты</a>
             </nav>
             <a href="#" id="header-dikidi-btn" target="_blank" class="btn-header btn-hero-pulse">Записаться</a>
@@ -228,12 +230,8 @@
                     headerBtn.href = bookingUrl;
                 }
 
-                // ✅ ИСПРАВЛЕННАЯ ЛОГИКА ПОЗИЦИОНИРОВАНИЯ
                 const heroSection = document.getElementById('hero-section');
                 const alignment = (data.hero && data.hero.alignment) ? data.hero.alignment : 'center';
-                console.log('Применяем alignment:', alignment);
-                
-                // Сбрасываем все классы позиционирования
                 heroSection.className = 'hero';
                 heroSection.classList.add(`hero-align-${alignment}`);
 
