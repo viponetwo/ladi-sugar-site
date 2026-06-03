@@ -12,7 +12,14 @@
     "instagram": "...",
     "dikidi": "...",
     "bookingText": "Записаться",
-    "extraButtons": []
+    "extraButtons": [
+      {
+        "icon": "fa-star",
+        "label": "Кнопка",
+        "url": "#",
+        "color": "#333333"
+      }
+    ]
   },
   "map": {
     "url": "https://yandex.ru/map-widget/v1/?um=constructor%3A485440b76e7ad9dd1103b8d78d9ff99cdf91b9854cb8c21e28aac992b7eb1534&amp;source=constructor",
