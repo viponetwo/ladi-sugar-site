@@ -22,7 +22,7 @@ header { background: rgba(255, 255, 255, 0.98); position: fixed; width: 100%; to
 .nav-links a { font-size: 1rem; font-weight: 600; color: var(--text-dark); }
 .nav-links a:hover { color: var(--primary); }
 
-/* ✅ АНИМАЦИЯ МИГАНИЯ — ТОЛЬКО СВЕЧЕНИЕ */
+/* ✅ АНИМАЦИЯ МИГАНИЯ КНОПОК — ТОЛЬКО СВЕЧЕНИЕ */
 @keyframes pulse {
     0% { box-shadow: 0 0 0 0 rgba(0, 158, 227, 0.7); }
     70% { box-shadow: 0 0 0 15px rgba(0, 158, 227, 0); }
@@ -31,6 +31,29 @@ header { background: rgba(255, 255, 255, 0.98); position: fixed; width: 100%; to
 
 .btn-hero-pulse {
     animation: pulse 2s infinite;
+}
+
+/* 🌈 АНИМАЦИЯ ПЕРЕЛИВАЮЩЕГОСЯ ТЕКСТА (для "Lady Sugar") */
+.text-rainbow {
+    background: linear-gradient(
+        90deg,
+        #ff6b6b, #feca57, #48dbfb, #ff9ff3, #54a0ff, #5f27cd, #01a3a4, #f368e0, #ff6b6b
+    );
+    background-size: 300% 100%;
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    color: transparent;
+    animation: rainbow-shift 4s ease infinite;
+    text-shadow: none !important;
+    font-weight: 900;
+    display: inline-block; /* Нужно для корректной работы background-clip */
+}
+
+@keyframes rainbow-shift {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
 }
 
 .btn-header { 
@@ -42,9 +65,7 @@ header { background: rgba(255, 255, 255, 0.98); position: fixed; width: 100%; to
     font-size: 0.9rem; 
     white-space: nowrap;
 }
-.btn-header:hover { 
-    background: #96765e; 
-}
+.btn-header:hover { background: #96765e; }
 
 .hero { 
     background: linear-gradient(rgba(45, 52, 54, 0.6), rgba(45, 52, 54, 0.6)), url('https://images.unsplash.com/photo-1560750588-73207b1ef5b8?w=1920'); 
@@ -76,7 +97,6 @@ header { background: rgba(255, 255, 255, 0.98); position: fixed; width: 100%; to
 
 .hero-text-block {
     margin-bottom: 15px;
-    text-shadow: 0 4px 10px rgba(0,0,0,0.5);
     word-break: break-word;
 }
 
@@ -156,14 +176,7 @@ section { padding: 80px 0; }
 .contact-item { margin-bottom: 20px; display: flex; align-items: center; gap: 15px; font-size: 1.1rem; }
 .contact-item i { color: var(--primary); width: 25px; font-size: 1.2rem; }
 
-/* ✅ КНОПКИ В БЛОКЕ КОНТАКТОВ */
-.social-buttons { 
-    margin-top: 30px; 
-    display: flex; 
-    gap: 10px; 
-    flex-wrap: wrap; 
-}
-
+.social-buttons { margin-top: 30px; display: flex; gap: 10px; flex-wrap: wrap; }
 .btn-social { 
     flex: 1; 
     min-width: 100px; 
@@ -180,14 +193,9 @@ section { padding: 80px 0; }
     line-height: 1.2;
     font-size: 0.9rem;
 }
-
 .btn-social:hover { opacity: 0.9; }
+.btn-social.btn-hero-pulse { animation: pulse 2s infinite; }
 
-.btn-social.btn-hero-pulse {
-    animation: pulse 2s infinite;
-}
-
-/* ✅ Кнопка "Записаться" — ШИРЕ, текст в две строки, иконка сверху */
 .btn-dikidi { 
     background: var(--dikidi-blue); 
     flex: 2;
@@ -200,11 +208,7 @@ section { padding: 80px 0; }
     flex-direction: column;
     justify-content: center;
 }
-
-.btn-dikidi i {
-    margin-bottom: 4px;
-    font-size: 1.2rem;
-}
+.btn-dikidi i { margin-bottom: 4px; font-size: 1.2rem; }
 
 .btn-wa { background: #25D366; } 
 .btn-viber { background: #7360f2; } 
@@ -241,22 +245,9 @@ footer { background: var(--text-dark); color: white; text-align: center; padding
     .logo-img { height: 80px; } .nav-wrapper { min-height: 90px; }
     .hero { margin-top: 100px; }
     .social-buttons { flex-direction: column; } 
-    .btn-social { 
-        width: 100%; 
-        font-size: 1rem;
-        white-space: nowrap;
-    }
-    .btn-dikidi { 
-        flex: 1; 
-        flex-direction: row;
-        white-space: nowrap;
-        min-height: auto;
-        padding: 14px;
-    }
-    .btn-dikidi i {
-        margin-bottom: 0;
-        margin-right: 8px;
-    }
+    .btn-social { width: 100%; font-size: 1rem; white-space: nowrap; }
+    .btn-dikidi { flex: 1; flex-direction: row; white-space: nowrap; min-height: auto; padding: 14px; }
+    .btn-dikidi i { margin-bottom: 0; margin-right: 8px; }
     .lightbox-pin { right: 55px; top: 18px; width: 32px; height: 32px; font-size: 0.9rem; }
     .ba-slider { height: 300px; }
     .ba-pin-btn { opacity: 1; width: 36px; height: 36px; font-size: 1rem; }
