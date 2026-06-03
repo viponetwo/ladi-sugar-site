@@ -2,7 +2,7 @@
   "hero": {
     "btnText": "Записаться онлайн",
     "dikidiUrl": "",
-    "alignment": "top-center"
+    "alignment": "center"
   },
   "contacts": {
     "address": "...",
@@ -74,11 +74,11 @@
     {
       "content": "Lady Sugar",
       "font": "'Lobster', cursive",
-      "size": "117",
+      "size": "77",
       "color": "#fcfcfc"
     },
     {
-      "content": "идеальная гладкость надолго",
+      "content": "Идеальная гладкость надолго",
       "font": "'Dancing Script', cursive",
       "size": "21",
       "color": "#fcfcfc"
