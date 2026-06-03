@@ -35,7 +35,7 @@
         .list-card { background: var(--card); padding: 15px; border-radius: 10px; border: 1px solid var(--border); position: relative; }
         .list-card .delete-btn { position: absolute; top: 10px; right: 10px; background: #fee2e2; color: var(--danger); border: none; padding: 6px 12px; border-radius: 6px; cursor: pointer; font-weight: 500; font-size: 13px; }
         .list-card .delete-btn:hover { background: #fecaca; }
-        .list-card .field-row { display: grid; grid-template-columns: 1fr; gap: 10px; margin-bottom: 10px; } 
+        .list-card .field-row { display: grid; grid-template-columns: 1fr; gap: 10px; margin-bottom: 10px; }
         
         .upload-row { display: flex; gap: 8px; margin-top: 5px; align-items: center; }
         .upload-row input[type="file"] { flex: 1; font-size: 12px; padding: 4px; border: 1px dashed var(--border); border-radius: 4px; background: #f8fafc; }
@@ -78,6 +78,7 @@
             <div style="padding: 0 20px 20px; font-weight: bold; border-bottom: 1px solid #334155;">🔧 Ladi Sugar Admin</div>
             <div class="nav-item active" onclick="show('hero')">🏠 Главный экран</div>
             <div class="nav-item" onclick="show('seo')">🔍 SEO</div>
+            <div class="nav-item" onclick="show('map')">📍 Карта</div>
             <div class="nav-item" onclick="show('masters')">👤 Мастера</div>
             <div class="nav-item" onclick="show('features')">✨ Преимущества</div>
             <div class="nav-item" onclick="show('beforeAfter')">🔄 До/После</div>
@@ -111,30 +112,9 @@
 
                 <hr style="margin: 30px 0; border: 0; border-top: 1px solid var(--border);">
                 <h3 style="margin-bottom: 15px; color: var(--text-dark);">📝 Текстовые блоки на баннере</h3>
-                <small style="margin-bottom: 15px; display:block;">Первое поле заполнено автоматически. Вы можете добавить еще.</small>
+                <small style="margin-bottom: 15px; display:block;">Просто заполните поля. Сохраните, чтобы увидеть результат.</small>
                 
-                <!-- ЖЕСТКО ПРОПИСАННЫЕ ПОЛЯ ДЛЯ ПЕРВОГО БЛОКА -->
-                <div class="dynamic-list" id="hero-texts-list">
-                    <div class="list-card">
-                        <button class="delete-btn" onclick="removeFirstHeroBlock()" title="Удалить этот блок">🗑</button>
-                        <div class="field-row">
-                            <label>Текст</label>
-                            <textarea rows="2" data-bind="heroTexts[0].content"></textarea>
-                        </div>
-                        <div class="field-row">
-                            <label>Шрифт (например: Montserrat)</label>
-                            <input type="text" data-bind="heroTexts[0].font">
-                        </div>
-                        <div class="field-row">
-                            <label>Размер (только число, например: 56)</label>
-                            <input type="text" data-bind="heroTexts[0].size">
-                        </div>
-                        <div class="field-row">
-                            <label>Цвет (hex, например: #FFFFFF)</label>
-                            <input type="text" data-bind="heroTexts[0].color">
-                        </div>
-                    </div>
-                </div>
+                <div class="dynamic-list" id="hero-texts-list"></div>
                 <button class="add-btn" onclick="addItem('heroTexts')">+ Добавить текстовый блок</button>
 
                 <hr style="margin: 30px 0; border: 0; border-top: 1px solid var(--border);">
@@ -155,7 +135,6 @@
                 </div>
             </section>
 
-            <!-- Остальные секции без изменений -->
             <section id="seo" class="section">
                 <div class="section-header"><h2>🔍 SEO Оптимизация</h2></div>
                 <div class="form-group"><label>Заголовок страницы (Title)</label><input data-bind="seo.title"></div>
@@ -166,6 +145,30 @@
                     <label>Картинка для соцсетей (OG Image)</label>
                     <div class="upload-row"><input type="file" id="og-image-input" accept="image/*"><span class="upload-status" id="og-image-status"></span></div>
                     <img id="og-image-preview" class="img-preview" style="margin-top:10px; width:100%; max-height:200px; object-fit:cover; display:none;">
+                </div>
+            </section>
+
+            <section id="map" class="section">
+                <div class="section-header"><h2>📍 Карта</h2></div>
+                <div class="form-group">
+                    <label>URL карты (из конструктора Яндекс.Карт)</label>
+                    <input type="url" data-bind="map.url" placeholder="https://yandex.ru/map-widget/v1/...">
+                    <small>
+                        1. Откройте <a href="https://yandex.ru/map-constructor/" target="_blank">Конструктор карт Яндекс</a><br>
+                        2. Создайте карту с вашей меткой<br>
+                        3. Нажмите "Получить код" → iframe<br>
+                        4. Скопируйте URL из src="..."
+                    </small>
+                </div>
+                <div class="form-group">
+                    <label>Высота карты (px)</label>
+                    <input type="number" data-bind="map.height" min="200" max="800" step="50">
+                </div>
+                <div class="form-group">
+                    <label>Предпросмотр</label>
+                    <div id="map-preview" style="border-radius:15px; overflow:hidden; border:5px solid var(--bg-light);">
+                        <iframe id="map-preview-frame" src="" width="100%" height="400" frameborder="0"></iframe>
+                    </div>
                 </div>
             </section>
 
@@ -239,10 +242,15 @@
         let currentData = {};
         let sessionToken = '';
 
-        // Простая конфигурация для добавления новых блоков
-        const DEFAULT_HERO_TEXT = { content: 'Новый текст', font: 'Montserrat', size: '56', color: '#FFFFFF' };
+        const HERO_TEXT_FIELDS = [
+            { name: 'content', label: 'Текст' },
+            { name: 'font', label: 'Шрифт (например: Montserrat)' },
+            { name: 'size', label: 'Размер (только число, например: 56)' },
+            { name: 'color', label: 'Цвет (hex, например: #FFFFFF)' }
+        ];
 
         const LIST_CONFIG = {
+            heroTexts: HERO_TEXT_FIELDS,
             masters: [ { name: 'role', label: 'Должность' }, { name: 'name', label: 'Имя' }, { name: 'desc', label: 'Описание' }, { name: 'photo', label: 'Фото (URL)' } ],
             features: [ { name: 'icon', label: 'Иконка (класс FontAwesome)' }, { name: 'title', label: 'Заголовок' }, { name: 'desc', label: 'Описание' } ],
             beforeAfter: [ { name: 'before', label: 'Фото ДО (URL)' }, { name: 'after', label: 'Фото ПОСЛЕ (URL)' }, { name: 'label', label: 'Зона' } ],
@@ -254,6 +262,7 @@
         };
 
         const DEFAULTS = {
+            heroTexts: { content: 'Новый текст', font: 'Montserrat', size: '56', color: '#FFFFFF' },
             masters: { role: 'Мастер', name: 'Имя', desc: 'Описание...', photo: '' },
             features: { icon: 'fa-star', title: 'Преимущество', desc: 'Описание...' },
             beforeAfter: { before: '', after: '', label: 'Зона' },
@@ -323,7 +332,6 @@
                 if (!res.ok) throw new Error('Failed to load data');
                 currentData = await res.json();
                 
-                // Инициализация массивов
                 if (!currentData.heroTexts || !Array.isArray(currentData.heroTexts)) {
                     currentData.heroTexts = [];
                     if (currentData.hero && currentData.hero.title) {
@@ -334,7 +342,7 @@
                         currentData.heroTexts.push({ content: currentData.hero.subtitle.replace(/<br>/g, '\n'), font: "Open Sans", size: "21", color: "#FFFFFF" });
                         delete currentData.hero.subtitle;
                     }
-                    if (currentData.heroTexts.length === 0) currentData.heroTexts.push(JSON.parse(JSON.stringify(DEFAULT_HERO_TEXT)));
+                    if (currentData.heroTexts.length === 0) currentData.heroTexts.push(JSON.parse(JSON.stringify(DEFAULTS.heroTexts)));
                 }
 
                 ['masters','features','beforeAfter','prices','reviews','faq','blog','careInstructions'].forEach(k => {
@@ -344,15 +352,14 @@
                 if (!Array.isArray(currentData.contacts.extraButtons)) currentData.contacts.extraButtons = [];
                 if (!currentData.seo) currentData.seo = { title: '', description: '', keywords: '', ogImage: '' };
                 if (!currentData.theme) currentData.theme = { heroImage: '', color_bg_light: '#FDEEF4', color_bg_white: '#FFFFFF', color_primary: '#B08D74', color_text: '#333333' };
+                if (!currentData.map) currentData.map = { url: '', height: '400' };
 
-                // Привязка полей с data-bind
                 document.querySelectorAll('[data-bind]').forEach(el => { 
                     const path = el.dataset.bind; 
                     el.value = getNested(currentData, path) || ''; 
                     el.addEventListener('input', e => setNested(currentData, path, e.target.value)); 
                 });
                 
-                // Привязка цветов и превью
                 document.getElementById('color-bg-light').value = currentData.theme.color_bg_light;
                 document.getElementById('color-bg-white').value = currentData.theme.color_bg_white;
                 document.getElementById('color-primary').value = currentData.theme.color_primary;
@@ -368,8 +375,14 @@
                     p.src = currentData.seo.ogImage; 
                     p.style.display = 'block'; 
                 }
+                if (currentData.map.url) {
+                    const previewFrame = document.getElementById('map-preview-frame');
+                    if (previewFrame) {
+                        previewFrame.src = currentData.map.url;
+                        previewFrame.style.height = (currentData.map.height || '400') + 'px';
+                    }
+                }
                 
-                // Обработчики изменения цветов
                 ['color-bg-light','color-bg-white','color-primary','color-text'].forEach(id => {
                     document.getElementById(id).oninput = e => {
                         const map = {
@@ -382,7 +395,6 @@
                     };
                 });
 
-                // Рендер остальных списков (кроме heroTexts, так как он жесткий)
                 Object.keys(LIST_CONFIG).forEach(type => renderList(type));
                 renderExtraButtons(); 
                 renderPending();
@@ -393,74 +405,10 @@
             }
         }
 
-        // ✅ ФУНКЦИЯ ДЛЯ ДОБАВЛЕНИЯ НОВЫХ БЛОКОВ (ГЕНЕРИРУЕТ HTML)
-        function addItem(type) { 
-            if (type === 'heroTexts') {
-                if (!Array.isArray(currentData.heroTexts)) currentData.heroTexts = [];
-                const newIndex = currentData.heroTexts.length;
-                currentData.heroTexts.push(JSON.parse(JSON.stringify(DEFAULT_HERO_TEXT)));
-                
-                const container = document.getElementById('hero-texts-list');
-                const card = document.createElement('div'); 
-                card.className = 'list-card';
-                card.innerHTML = `
-                    <button class="delete-btn" onclick="removeHeroBlock(${newIndex})" title="Удалить этот блок">🗑</button>
-                    <div class="field-row">
-                        <label>Текст</label>
-                        <textarea rows="2" data-bind="heroTexts[${newIndex}].content"></textarea>
-                    </div>
-                    <div class="field-row">
-                        <label>Шрифт (например: Montserrat)</label>
-                        <input type="text" data-bind="heroTexts[${newIndex}].font">
-                    </div>
-                    <div class="field-row">
-                        <label>Размер (только число, например: 56)</label>
-                        <input type="text" data-bind="heroTexts[${newIndex}].size">
-                    </div>
-                    <div class="field-row">
-                        <label>Цвет (hex, например: #FFFFFF)</label>
-                        <input type="text" data-bind="heroTexts[${newIndex}].color">
-                    </div>
-                `;
-                container.appendChild(card);
-                
-                // Активируем привязку данных для новых полей
-                card.querySelectorAll('[data-bind]').forEach(el => { 
-                    const path = el.dataset.bind; 
-                    el.value = getNested(currentData, path) || ''; 
-                    el.addEventListener('input', e => setNested(currentData, path, e.target.value)); 
-                });
-            } else {
-                // Стандартная логика для остальных типов
-                if (!Array.isArray(currentData[type])) currentData[type] = []; 
-                const newItem = JSON.parse(JSON.stringify(DEFAULTS[type]));
-                currentData[type].push(newItem); 
-                renderList(type); 
-            }
-        }
-
-        // Функция удаления первого (жесткого) блока
-        function removeFirstHeroBlock() {
-            if (currentData.heroTexts && currentData.heroTexts.length > 0) {
-                currentData.heroTexts.splice(0, 1);
-                // Перезагружаем страницу, чтобы перестроить DOM (самый надежный способ для жестких полей)
-                saveData().then(() => window.location.reload());
-            }
-        }
-
-        // Функция удаления динамически добавленных блоков
-        function removeHeroBlock(index) {
-            if (currentData.heroTexts && currentData.heroTexts[index]) {
-                currentData.heroTexts.splice(index, 1);
-                // Перезагружаем страницу для обновления индексов в data-bind
-                saveData().then(() => window.location.reload());
-            }
-        }
-
-        // Стандартный рендер для остальных списков
         function renderList(type) {
             const container = document.getElementById(`${type}-list`); 
             if (!container) return; 
+            
             container.innerHTML = '';
             
             const fields = LIST_CONFIG[type];
@@ -562,6 +510,13 @@
             renderList('reviews'); 
             saveData(); 
         }
+        
+        function addItem(type) { 
+            if (!Array.isArray(currentData[type])) currentData[type] = []; 
+            const newItem = JSON.parse(JSON.stringify(DEFAULTS[type]));
+            currentData[type].push(newItem); 
+            renderList(type); 
+        }
 
         async function saveData() { 
             const b = document.getElementById('saveBtn'); 
@@ -582,15 +537,12 @@
                 
                 if (r.ok) {
                     showToast('✅ Успешно сохранено!');
-                    return Promise.resolve();
                 } else {
                     showToast('❌ Ошибка: ' + (res.message || res.details || 'Неизвестная ошибка'), true);
-                    return Promise.reject();
                 }
             } catch (err) { 
                 console.error('Save error:', err);
                 showToast('❌ Ошибка сети или сервера', true); 
-                return Promise.reject();
             } finally { 
                 b.disabled = false; 
                 b.textContent = '💾 Сохранить и Опубликовать'; 
@@ -649,6 +601,25 @@
             } catch { document.getElementById('og-image-status').textContent = '❌'; } 
             finally { e.target.disabled = false; } 
         };
+
+        // Обновление превью карты в админке
+        document.addEventListener('DOMContentLoaded', () => {
+            const mapUrlInput = document.querySelector('[data-bind="map.url"]');
+            const mapHeightInput = document.querySelector('[data-bind="map.height"]');
+            const mapPreviewFrame = document.getElementById('map-preview-frame');
+
+            if (mapUrlInput && mapPreviewFrame) {
+                mapUrlInput.addEventListener('input', (e) => {
+                    mapPreviewFrame.src = e.target.value;
+                });
+            }
+
+            if (mapHeightInput && mapPreviewFrame) {
+                mapHeightInput.addEventListener('input', (e) => {
+                    mapPreviewFrame.style.height = e.target.value + 'px';
+                });
+            }
+        });
 
         document.addEventListener('DOMContentLoaded', checkSession);
     </script>
