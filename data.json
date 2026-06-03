@@ -21,13 +21,7 @@
   "features": [],
   "gallery": [],
   "prices": [],
-  "reviews": [
-    {
-      "name": "Имя",
-      "text": "Отзыв...",
-      "rating": 5
-    }
-  ],
+  "reviews": [],
   "blog": [],
   "customFields": [],
   "beforeAfter": [],
@@ -74,13 +68,13 @@
     {
       "content": "Lady Sugar",
       "font": "'Lobster', cursive",
-      "size": "137",
+      "size": "77",
       "color": "#fcfcfc"
     },
     {
-      "content": "идеальная гладкость надолго",
+      "content": "Идеальная гладкость надолго",
       "font": "'Dancing Script', cursive",
-      "size": "61",
+      "size": "21",
       "color": "#fcfcfc"
     }
   ]
