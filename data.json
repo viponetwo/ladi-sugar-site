@@ -48,13 +48,7 @@
   ],
   "gallery": [],
   "prices": [],
-  "reviews": [
-    {
-      "name": "Имя",
-      "text": "Отзыв...",
-      "rating": 5
-    }
-  ],
+  "reviews": [],
   "blog": [],
   "customFields": [],
   "beforeAfter": [],
