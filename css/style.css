@@ -37,7 +37,7 @@ header {
 
 /* ✅ УВЕЛИЧЕННЫЙ ЛОГОТИП */
 .logo-img { 
-    height: 80px; /* Было 50px, стало 80px */
+    height: 120px; /* Было 50px, стало 80px */
     width: auto; 
     flex-shrink: 0;
     transition: transform 0.3s ease;
