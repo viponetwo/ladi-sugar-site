@@ -24,7 +24,7 @@
         </div>
     </header>
 
-    <section class="hero">
+    <section class="hero" id="hero-section">
         <div class="container hero-content" id="hero-content-container">
             <!-- Текстовые блоки будут добавлены сюда через JS -->
         </div>
@@ -228,8 +228,12 @@
                     headerBtn.href = bookingUrl;
                 }
 
-                const heroSection = document.querySelector('.hero');
+                // ✅ ИСПРАВЛЕННАЯ ЛОГИКА ПОЗИЦИОНИРОВАНИЯ
+                const heroSection = document.getElementById('hero-section');
                 const alignment = (data.hero && data.hero.alignment) ? data.hero.alignment : 'center';
+                console.log('Применяем alignment:', alignment);
+                
+                // Сбрасываем все классы позиционирования
                 heroSection.className = 'hero';
                 heroSection.classList.add(`hero-align-${alignment}`);
 
@@ -243,7 +247,6 @@
                 document.getElementById('contact-phone').href = data.contacts?.phone ? `tel:${data.contacts.phone}` : '#';
                 document.getElementById('contact-address').textContent = data.contacts?.address || '';
 
-                // 📍 Загрузка карты
                 if (data.map) {
                     const mapFrame = document.getElementById('map-frame');
                     const mapContainer = document.getElementById('map-container');
