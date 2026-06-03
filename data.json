@@ -15,7 +15,7 @@
     "extraButtons": []
   },
   "map": {
-    "url": "https://yandex.ru/map-widget/v1/?um=constructor%3Ab893ccbe0c115b6b91c8b5b6581a5e81d06ace6875cc4528a08ba8fecfff3da5&source=constructor",
+    "url": "https://yandex.ru/map-widget/v1/?um=constructor%3A485440b76e7ad9dd1103b8d78d9ff99cdf91b9854cb8c21e28aac992b7eb1534&amp;source=constructor",
     "height": "400"
   },
   "features": [],
