@@ -14,7 +14,7 @@
     "bookingText": "Записаться",
     "extraButtons": [
       {
-        "icon": "fa-telegram",
+        "icon": "fa-telegram-plane",
         "label": "",
         "url": "#",
         "color": "#333333"
