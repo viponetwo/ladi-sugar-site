@@ -83,7 +83,7 @@
             <div class="nav-item" onclick="show('features')">✨ Преимущества</div>
             <div class="nav-item" onclick="show('beforeAfter')">🔄 До/После</div>
             <div class="nav-item" onclick="show('prices')">💰 Прайс</div>
-            <div class="nav-item" onclick="show('reviews')">💬 Отзывы</div>
+            <div class="nav-item" onclick="show('reviews')"> Отзывы</div>
             <div class="nav-item" onclick="show('faq')">❓ FAQ</div>
             <div class="nav-item" onclick="show('care')">📋 Инструкции</div>
             <div class="nav-item" onclick="show('moderation')">🕒 Модерация</div>
@@ -96,8 +96,8 @@
                 <div class="section-header"><h2>🏠 Главный экран и Дизайн</h2></div>
                 
                 <div class="form-group">
-                    <label>📍 Расположение всего блока текста</label>
-                    <select data-bind="hero.alignment">
+                    <label> Расположение текста на баннере</label>
+                    <select id="hero-alignment-select" onchange="currentData.hero.alignment = this.value">
                         <option value="center">По центру (стандарт)</option>
                         <option value="top-left">Слева вверху</option>
                         <option value="top-center">По центру вверху</option>
@@ -106,6 +106,7 @@
                         <option value="bottom-center">По центру внизу</option>
                         <option value="bottom-right">Справа внизу</option>
                     </select>
+                    <small>Выберите, где должен находиться текст на баннере</small>
                 </div>
 
                 <div class="form-group"><label>Текст кнопки записи</label><input data-bind="hero.btnText"></div>
@@ -136,7 +137,7 @@
             </section>
 
             <section id="seo" class="section">
-                <div class="section-header"><h2>🔍 SEO Оптимизация</h2></div>
+                <div class="section-header"><h2> SEO Оптимизация</h2></div>
                 <div class="form-group"><label>Заголовок страницы (Title)</label><input data-bind="seo.title"></div>
                 <div class="form-group"><label>Описание (Description)</label><textarea rows="3" data-bind="seo.description"></textarea></div>
                 <div class="form-group"><label>Ключевые слова (Keywords)</label><input data-bind="seo.keywords"></div>
@@ -149,7 +150,7 @@
             </section>
 
             <section id="map" class="section">
-                <div class="section-header"><h2>📍 Карта</h2></div>
+                <div class="section-header"><h2> Карта</h2></div>
                 <div class="form-group">
                     <label>URL карты (из конструктора Яндекс.Карт)</label>
                     <input type="url" data-bind="map.url" placeholder="https://yandex.ru/map-widget/v1/...">
@@ -183,7 +184,7 @@
                 <button class="add-btn" onclick="addItem('features')">+ Добавить преимущество</button>
             </section>
             <section id="beforeAfter" class="section">
-                <div class="section-header"><h2>🔄 До / После</h2></div>
+                <div class="section-header"><h2> До / После</h2></div>
                 <div class="dynamic-list" id="beforeAfter-list"></div>
                 <button class="add-btn" onclick="addItem('beforeAfter')">+ Добавить сравнение</button>
             </section>
@@ -218,7 +219,7 @@
                 <button class="add-btn" onclick="addItem('blog')">+ Добавить статью</button>
             </section>
             <section id="contacts" class="section">
-                <div class="section-header"><h2>📞 Контакты и кнопки связи</h2></div>
+                <div class="section-header"><h2> Контакты и кнопки связи</h2></div>
                 <div class="form-group"><label>Адрес</label><input data-bind="contacts.address"></div>
                 <div class="form-group"><label>Телефон</label><input data-bind="contacts.phone"></div>
                 <div class="form-group"><label>WhatsApp (цифры без +)</label><input data-bind="contacts.whatsapp"></div>
@@ -332,13 +333,23 @@
                 if (!res.ok) throw new Error('Failed to load data');
                 currentData = await res.json();
                 
+                // ✅ ИНИЦИАЛИЗАЦИЯ hero.alignment (ОБЯЗАТЕЛЬНО!)
+                if (!currentData.hero) currentData.hero = {};
+                if (!currentData.hero.alignment) currentData.hero.alignment = 'center';
+                
+                // ✅ Устанавливаем значение в select вручную
+                const alignmentSelect = document.getElementById('hero-alignment-select');
+                if (alignmentSelect) {
+                    alignmentSelect.value = currentData.hero.alignment;
+                }
+                
                 if (!currentData.heroTexts || !Array.isArray(currentData.heroTexts)) {
                     currentData.heroTexts = [];
-                    if (currentData.hero && currentData.hero.title) {
+                    if (currentData.hero.title) {
                         currentData.heroTexts.push({ content: currentData.hero.title, font: "Montserrat", size: "56", color: "#FFFFFF" });
                         delete currentData.hero.title;
                     }
-                    if (currentData.hero && currentData.hero.subtitle) {
+                    if (currentData.hero.subtitle) {
                         currentData.heroTexts.push({ content: currentData.hero.subtitle.replace(/<br>/g, '\n'), font: "Open Sans", size: "21", color: "#FFFFFF" });
                         delete currentData.hero.subtitle;
                     }
@@ -527,6 +538,7 @@
             
             try { 
                 const payload = { content: currentData, token: sessionToken };
+                console.log('Отправляем данные:', JSON.stringify(payload.content.hero, null, 2)); // Для отладки
                 const r = await fetch('/api/save', { 
                     method: 'POST', 
                     headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${sessionToken}` }, 
@@ -536,7 +548,7 @@
                 const res = await r.json(); 
                 
                 if (r.ok) {
-                    showToast('✅ Успешно сохранено!');
+                    showToast('✅ Успешно сохранено! Alignment: ' + currentData.hero.alignment);
                 } else {
                     showToast('❌ Ошибка: ' + (res.message || res.details || 'Неизвестная ошибка'), true);
                 }
@@ -568,7 +580,7 @@
 
         document.getElementById('banner-input').onchange = async (e) => { 
             const f = e.target.files[0]; if (!f) return; 
-            if (f.size > 5_000_000) { document.getElementById('banner-status').textContent = '❌ > 5 МБ'; return; } 
+            if (f.size > 5_000_000) { document.getElementById('banner-status').textContent = ' > 5 МБ'; return; } 
             document.getElementById('banner-status').textContent = '⏳...'; e.target.disabled = true; 
             try { 
                 const base64 = await fileToBase64(f); 
@@ -587,7 +599,7 @@
         document.getElementById('og-image-input').onchange = async (e) => { 
             const f = e.target.files[0]; if (!f) return; 
             if (f.size > 5_000_000) { document.getElementById('og-image-status').textContent = '❌ > 5 МБ'; return; } 
-            document.getElementById('og-image-status').textContent = '⏳...'; e.target.disabled = true; 
+            document.getElementById('og-image-status').textContent = '...'; e.target.disabled = true; 
             try { 
                 const base64 = await fileToBase64(f); 
                 const res = await fetch('/api/upload', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ fileName: f.name, contentBase64: base64 }) }); 
@@ -601,25 +613,6 @@
             } catch { document.getElementById('og-image-status').textContent = '❌'; } 
             finally { e.target.disabled = false; } 
         };
-
-        // Обновление превью карты в админке
-        document.addEventListener('DOMContentLoaded', () => {
-            const mapUrlInput = document.querySelector('[data-bind="map.url"]');
-            const mapHeightInput = document.querySelector('[data-bind="map.height"]');
-            const mapPreviewFrame = document.getElementById('map-preview-frame');
-
-            if (mapUrlInput && mapPreviewFrame) {
-                mapUrlInput.addEventListener('input', (e) => {
-                    mapPreviewFrame.src = e.target.value;
-                });
-            }
-
-            if (mapHeightInput && mapPreviewFrame) {
-                mapHeightInput.addEventListener('input', (e) => {
-                    mapPreviewFrame.style.height = e.target.value + 'px';
-                });
-            }
-        });
 
         document.addEventListener('DOMContentLoaded', checkSession);
     </script>
