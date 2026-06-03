@@ -22,11 +22,24 @@ header { background: rgba(255, 255, 255, 0.98); position: fixed; width: 100%; to
 .nav-links a { font-size: 1rem; font-weight: 600; color: var(--text-dark); }
 .nav-links a:hover { color: var(--primary); }
 
-/* ✨ АНИМАЦИЯ ПУЛЬСАЦИИ ДЛЯ КНОПКИ В ШАПКЕ */
+/* ✅ УНИВЕРСАЛЬНЫЙ КЛАСС ДЛЯ МИГАНИЯ */
+.btn-hero-pulse {
+    animation: pulse 2s infinite;
+}
+
 @keyframes pulse {
-    0% { box-shadow: 0 0 0 0 rgba(176, 141, 116, 0.7); transform: scale(1); }
-    70% { box-shadow: 0 0 0 10px rgba(176, 141, 116, 0); transform: scale(1.05); }
-    100% { box-shadow: 0 0 0 0 rgba(176, 141, 116, 0); transform: scale(1); }
+    0% { 
+        box-shadow: 0 0 0 0 rgba(176, 141, 116, 0.7); 
+        transform: scale(1); 
+    }
+    70% { 
+        box-shadow: 0 0 0 10px rgba(176, 141, 116, 0); 
+        transform: scale(1.05); 
+    }
+    100% { 
+        box-shadow: 0 0 0 0 rgba(176, 141, 116, 0); 
+        transform: scale(1); 
+    }
 }
 
 .btn-header { 
@@ -36,7 +49,6 @@ header { background: rgba(255, 255, 255, 0.98); position: fixed; width: 100%; to
     border-radius: 25px; 
     font-weight: 600; 
     font-size: 0.9rem; 
-    animation: pulse 2s infinite; /* Мигание */
 }
 .btn-header:hover { 
     background: #96765e; 
@@ -54,7 +66,6 @@ header { background: rgba(255, 255, 255, 0.98); position: fixed; width: 100%; to
 }
 .hero::before, .hero::after { content: none !important; }
 
-/* --- КЛАССЫ ПОЗИЦИОНИРОВАНИЯ --- */
 .hero-align-top-left { align-items: flex-start; justify-content: flex-start; text-align: left; }
 .hero-align-top-center { align-items: flex-start; justify-content: center; text-align: center; }
 .hero-align-top-right { align-items: flex-start; justify-content: flex-end; text-align: right; }
@@ -91,7 +102,6 @@ section { padding: 80px 0; }
 .feature-card:hover { transform: translateY(-5px); }
 .feature-icon { font-size: 2.5rem; color: var(--primary); margin-bottom: 20px; }
 
-/* 🔄 DO / POSLE */
 .ba-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)); gap: 30px; }
 .ba-slider { position: relative; width: 100%; height: 400px; border-radius: 15px; overflow: hidden; cursor: ew-resize; box-shadow: 0 5px 20px rgba(0,0,0,0.1); }
 .ba-img-before, .ba-img-after { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background-size: cover; background-position: center; }
@@ -106,7 +116,6 @@ section { padding: 80px 0; }
 .ba-slider:hover .ba-pin-btn { opacity: 1; }
 .ba-pin-btn:hover { background: #bd001c; transform: scale(1.1); }
 
-/* ❓ FAQ */
 .faq-container { max-width: 800px; margin: 0 auto; }
 .faq-item { background: white; border-radius: 12px; margin-bottom: 15px; overflow: hidden; box-shadow: 0 2px 10px rgba(0,0,0,0.05); }
 .faq-question { padding: 20px; font-weight: 600; cursor: pointer; display: flex; justify-content: space-between; align-items: center; transition: background 0.2s; }
@@ -114,14 +123,12 @@ section { padding: 80px 0; }
 .faq-question i { transition: transform 0.3s; color: var(--primary); }
 .faq-answer { max-height: 0; overflow: hidden; transition: max-height 0.3s ease, padding 0.3s ease; background: #fafafa; color: var(--text-gray); line-height: 1.6; padding: 0 20px; }
 
-/* 📋 CARE */
 .care-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 30px; max-width: 1100px; margin: 0 auto; }
 .care-col { background: white; padding: 30px; border-radius: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); }
 .care-col h3 { margin-bottom: 20px; display: flex; align-items: center; gap: 10px; color: var(--primary); }
 .care-col ul { padding-left: 20px; }
 .care-col li { margin-bottom: 12px; list-style-type: disc; color: var(--text-gray); }
 
-/* 👤 МАСТЕРА */
 .masters-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 40px; max-width: 1000px; margin: 0 auto; }
 .master-card { text-align: center; background: white; padding: 30px 20px; border-radius: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); transition: transform 0.3s; }
 .master-card:hover { transform: translateY(-5px); }
@@ -157,9 +164,29 @@ section { padding: 80px 0; }
 .contact-info h3 { margin-bottom: 25px; font-size: 1.8rem; }
 .contact-item { margin-bottom: 20px; display: flex; align-items: center; gap: 15px; font-size: 1.1rem; }
 .contact-item i { color: var(--primary); width: 25px; font-size: 1.2rem; }
+
 .social-buttons { margin-top: 30px; display: flex; gap: 10px; flex-wrap: wrap; }
-.btn-social { flex: 1; min-width: 120px; text-align: center; padding: 12px; border-radius: 10px; color: white; font-weight: 600; display: flex; align-items: center; justify-content: center; gap: 8px; transition: all 0.3s ease; }
+.btn-social { 
+    flex: 1; 
+    min-width: 120px; 
+    text-align: center; 
+    padding: 12px; 
+    border-radius: 10px; 
+    color: white; 
+    font-weight: 600; 
+    display: flex; 
+    align-items: center; 
+    justify-content: center; 
+    gap: 8px; 
+    transition: all 0.3s ease; 
+}
 .btn-social:hover { opacity: 0.9; transform: translateY(-2px); }
+
+/* ✅ ДОБАВЛЕНО: Анимация pulse работает и для btn-social */
+.btn-social.btn-hero-pulse {
+    animation: pulse 2s infinite;
+}
+
 .btn-dikidi { background: var(--dikidi-blue); flex: 2; font-size: 1.1rem; }
 .btn-wa { background: #25D366; } .btn-viber { background: #7360f2; } .btn-insta { background: #E1306C; }
 
