@@ -15,7 +15,7 @@
     "extraButtons": [
       {
         "icon": "fa-star",
-        "label": "Кнопка",
+        "label": "",
         "url": "#",
         "color": "#333333"
       }
