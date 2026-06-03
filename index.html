@@ -16,7 +16,7 @@
                 <a href="#masters">Мастера</a>
                 <a href="#before-after">До/После</a>
                 <a href="#blog">Блог</a>
-                <a href="#faq">Частые вопросы</a> <!-- ✅ Изменено название ссылки -->
+                <a href="#faq">Частые вопросы</a>
                 <a href="#prices">Цены</a>
                 <a href="#contacts">Контакты</a>
             </nav>
@@ -65,7 +65,6 @@
         </div>
     </section>
 
-    <!-- ✅ ИЗМЕНЕН ЗАГОЛОВОК РАЗДЕЛА -->
     <section id="faq" class="bg-white">
         <div class="container">
             <h2 class="section-title">Частые вопросы</h2>
@@ -109,7 +108,6 @@
                     <div class="contact-item"><i class="fas fa-map-marker-alt"></i><span id="contact-address">...</span></div>
                     <div class="contact-item"><i class="fas fa-phone-alt"></i><a id="contact-phone" href="#">...</a></div>
                     <div class="social-buttons" id="social-buttons">
-                        <!-- ✅ ДОБАВЛЕН КЛАСС btn-hero-pulse ДЛЯ МИГАНИЯ -->
                         <a href="#" id="btn-dikidi-footer" target="_blank" class="btn-social btn-dikidi btn-hero-pulse"><i class="far fa-calendar-check"></i> Записаться</a>
                         <a href="#" id="btn-wa" target="_blank" class="btn-social btn-wa"><i class="fab fa-whatsapp"></i></a>
                         <a href="#" id="btn-viber" target="_blank" class="btn-social btn-viber"><i class="fab fa-viber"></i></a>
@@ -157,7 +155,6 @@
                 const data = await response.json();
                 window.siteData = data;
 
-                // 🔍 SEO
                 if (data.seo) {
                     if (data.seo.title) document.title = data.seo.title;
                     let metaDesc = document.querySelector('meta[name="description"]');
@@ -180,7 +177,6 @@
                     setMeta('og:type', 'website');
                 }
 
-                // 🎨 Тема и шрифты
                 if (data.theme) {
                     document.documentElement.style.setProperty('--bg-light', data.theme.color_bg_light);
                     document.documentElement.style.setProperty('--bg-white', data.theme.color_bg_white);
@@ -191,18 +187,23 @@
                     document.querySelector('.hero').style.backgroundImage = `url('${data.theme.heroImage}')`;
                 }
 
-                // 📝 Рендер динамических текстовых блоков
+                // 📝 Рендер динамических текстовых блоков с эффектом переливания для первого блока
                 const heroContainer = document.getElementById('hero-content-container');
                 const textBlocks = heroContainer.querySelectorAll('.hero-text-block');
                 textBlocks.forEach(el => el.remove());
                 
                 const fontsToLoad = [];
                 if (data.heroTexts && Array.isArray(data.heroTexts)) {
-                    data.heroTexts.forEach(block => {
+                    data.heroTexts.forEach((block, index) => {
                         if (block.content && block.content.trim() !== '') {
                             const el = document.createElement('div');
                             el.className = 'hero-text-block';
                             el.textContent = block.content;
+                            
+                            // 🌈 Эффект переливания для первого большого блока (название)
+                            if (index === 0 && parseInt(block.size || 56) > 40) {
+                                el.classList.add('text-rainbow');
+                            }
                             
                             el.style.fontFamily = block.font || "'Montserrat', sans-serif";
                             el.style.fontSize = (block.size || 56) + 'px';
@@ -218,7 +219,6 @@
                 }
                 loadGoogleFonts(fontsToLoad);
 
-                // 🔘 Кнопка в шапке
                 const bookingText = data.hero?.btnText || 'Записаться онлайн';
                 const bookingUrl = data.hero?.dikidiUrl || data.contacts?.dikidi || '#';
                 
@@ -228,17 +228,14 @@
                     headerBtn.href = bookingUrl;
                 }
 
-                // Позиционирование всего блока
                 const heroSection = document.querySelector('.hero');
                 const alignment = (data.hero && data.hero.alignment) ? data.hero.alignment : 'center';
                 heroSection.className = 'hero';
                 heroSection.classList.add(`hero-align-${alignment}`);
 
-                // Обновление кнопки в подвале
                 document.getElementById('btn-dikidi-footer').innerHTML = `<i class="far fa-calendar-check"></i> ${bookingText}`; 
                 document.getElementById('btn-dikidi-footer').href = bookingUrl;
                 
-                // Контакты
                 document.getElementById('btn-wa').href = data.contacts?.whatsapp ? `https://wa.me/${data.contacts.whatsapp}` : '#';
                 document.getElementById('btn-viber').href = data.contacts?.viber ? `viber://chat?number=%2B${data.contacts.viber}` : '#';
                 document.getElementById('btn-insta').href = data.contacts?.instagram || '#';
@@ -246,7 +243,6 @@
                 document.getElementById('contact-phone').href = data.contacts?.phone ? `tel:${data.contacts.phone}` : '#';
                 document.getElementById('contact-address').textContent = data.contacts?.address || '';
 
-                // Остальные секции
                 const mastersContainer = document.getElementById('masters-container');
                 if(mastersContainer && Array.isArray(data.masters) && data.masters.length > 0) {
                     mastersContainer.innerHTML = data.masters.map(m => `
