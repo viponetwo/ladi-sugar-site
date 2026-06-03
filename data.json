@@ -2,7 +2,7 @@
   "hero": {
     "btnText": "Записаться онлайн",
     "dikidiUrl": "",
-    "alignment": "top-center"
+    "alignment": "center"
   },
   "contacts": {
     "address": "...",
