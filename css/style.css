@@ -15,7 +15,7 @@ ul { list-style: none; }
 img { max-width: 100%; display: block; }
 .container { max-width: 1100px; margin: 0 auto; padding: 0 20px; }
 
-/* ✅ КОМПАКТНАЯ ШАПКА */
+/* ✅ КОМПАКТНАЯ ШАПКА С УВЕЛИЧЕННЫМ ЛОГОТИПОМ */
 header { 
     background: rgba(255, 255, 255, 0.98); 
     position: fixed; 
@@ -30,14 +30,21 @@ header {
     display: flex; 
     justify-content: space-between; 
     align-items: center; 
-    min-height: 70px;
-    gap: 15px;
+    min-height: 100px; /* Увеличена высота под большой логотип */
+    gap: 20px;
+    padding: 5px 0;
 }
 
+/* ✅ УВЕЛИЧЕННЫЙ ЛОГОТИП */
 .logo-img { 
-    height: 50px; 
+    height: 80px; /* Было 50px, стало 80px */
     width: auto; 
     flex-shrink: 0;
+    transition: transform 0.3s ease;
+}
+
+.logo-img:hover {
+    transform: scale(1.05); /* Легкое увеличение при наведении */
 }
 
 .nav-links { 
@@ -69,10 +76,10 @@ header {
 .btn-header { 
     background: var(--primary); 
     color: white; 
-    padding: 8px 18px; 
-    border-radius: 20px; 
+    padding: 10px 22px; 
+    border-radius: 25px; 
     font-weight: 600; 
-    font-size: 0.8rem; 
+    font-size: 0.85rem; 
     white-space: nowrap;
     flex-shrink: 0;
 }
@@ -121,7 +128,7 @@ header {
     align-items: center; 
     justify-content: center; 
     text-align: center;
-    margin-top: 70px; 
+    margin-top: 100px; /* Отступ равен высоте шапки */
     padding: 40px 0;
 }
 .hero::before, .hero::after { content: none !important; }
@@ -304,6 +311,8 @@ section { padding: 80px 0; }
 footer { background: var(--text-dark); color: white; text-align: center; padding: 30px 0; }
 
 @media (max-width: 1024px) {
+    .logo-img { height: 65px; }
+    .nav-wrapper { min-height: 80px; }
     .nav-links { gap: 10px; }
     .nav-links a { font-size: 0.8rem; }
     .btn-header { padding: 8px 15px; font-size: 0.75rem; }
@@ -315,7 +324,7 @@ footer { background: var(--text-dark); color: white; text-align: center; padding
     .btn-header { display: none; }
     .contacts-wrapper { grid-template-columns: 1fr; }
     .map-container { height: 300px; }
-    .logo-img { height: 40px; }
+    .logo-img { height: 50px; }
     .nav-wrapper { min-height: 60px; }
     .hero { margin-top: 60px; }
     .social-buttons { flex-direction: column; } 
