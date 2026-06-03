@@ -22,7 +22,6 @@ header { background: rgba(255, 255, 255, 0.98); position: fixed; width: 100%; to
 .nav-links a { font-size: 1rem; font-weight: 600; color: var(--text-dark); }
 .nav-links a:hover { color: var(--primary); }
 
-/* ✅ АНИМАЦИЯ МИГАНИЯ КНОПОК — ТОЛЬКО СВЕЧЕНИЕ */
 @keyframes pulse {
     0% { box-shadow: 0 0 0 0 rgba(0, 158, 227, 0.7); }
     70% { box-shadow: 0 0 0 15px rgba(0, 158, 227, 0); }
@@ -33,7 +32,6 @@ header { background: rgba(255, 255, 255, 0.98); position: fixed; width: 100%; to
     animation: pulse 2s infinite;
 }
 
-/* 🌈 АНИМАЦИЯ ПЕРЕЛИВАЮЩЕГОСЯ ТЕКСТА (для "Lady Sugar") */
 .text-rainbow {
     background: linear-gradient(
         90deg,
@@ -47,7 +45,7 @@ header { background: rgba(255, 255, 255, 0.98); position: fixed; width: 100%; to
     animation: rainbow-shift 4s ease infinite;
     text-shadow: none !important;
     font-weight: 900;
-    display: inline-block; /* Нужно для корректной работы background-clip */
+    display: inline-block;
 }
 
 @keyframes rainbow-shift {
@@ -214,8 +212,19 @@ section { padding: 80px 0; }
 .btn-viber { background: #7360f2; } 
 .btn-insta { background: #E1306C; }
 
-.map-container { width: 100%; height: 400px; border-radius: 15px; overflow: hidden; box-shadow: 0 5px 15px rgba(0,0,0,0.1); border: 5px solid var(--bg-light); }
-iframe { width: 100%; height: 100%; border: 0; }
+.map-container { 
+    width: 100%; 
+    border-radius: 15px; 
+    overflow: hidden; 
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1); 
+    border: 5px solid var(--bg-light);
+    height: 400px;
+}
+.map-container iframe {
+    width: 100%;
+    height: 100%;
+    border: 0;
+}
 
 .share-section { text-align: center; padding: 40px 20px; background: var(--bg-white); border-top: 1px solid var(--border); }
 .share-section h3 { font-size: 1.2rem; margin-bottom: 20px; color: var(--text-gray); }
