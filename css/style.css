@@ -302,6 +302,59 @@ footer { background: var(--text-dark); color: white; text-align: center; padding
 .messenger-tg { background: linear-gradient(135deg, #0088cc 0%, #005f8f 100%); }
 .messenger-insta { background: linear-gradient(135deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%); }
 
+/* ========== ПЛАВАЮЩЕЕ ВЕРТИКАЛЬНОЕ МЕНЮ ДЛЯ МОБИЛЬНЫХ ========== */
+.mobile-floating-nav {
+    display: none; /* Скрыто на десктопе */
+    position: fixed;
+    top: 100px; /* Сразу под шапкой */
+    right: 10px;
+    z-index: 998;
+    flex-direction: column;
+    gap: 6px;
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(10px);
+    padding: 8px;
+    border-radius: 16px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+    max-height: calc(100vh - 120px);
+    overflow-y: auto;
+    scrollbar-width: none;
+}
+
+.mobile-floating-nav::-webkit-scrollbar {
+    display: none;
+}
+
+.mobile-nav-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 12px;
+    border-radius: 12px;
+    background: #f5f5f5;
+    color: var(--text-dark);
+    font-size: 0.75rem;
+    font-weight: 600;
+    white-space: nowrap;
+    transition: all 0.2s ease;
+    border: 1px solid #e0e0e0;
+}
+
+.mobile-nav-item:hover,
+.mobile-nav-item:active {
+    background: rgba(176, 141, 116, 0.15);
+    border-color: var(--primary);
+    color: var(--primary);
+    transform: translateX(-3px);
+}
+
+.mobile-nav-item i {
+    font-size: 0.9rem;
+    width: 16px;
+    text-align: center;
+    color: var(--primary);
+}
+
 /* ========== АДАПТИВНОСТЬ ========== */
 @media (max-width: 1024px) {
     .logo-img { height: 65px; }
@@ -314,26 +367,12 @@ footer { background: var(--text-dark); color: white; text-align: center; padding
 @media (max-width: 768px) {
     .hero-text-block { font-size: 0.7em !important; }
     
-    /* ✅ МЕНЮ НЕ СКРЫВАЕТСЯ, А СТАНОВИТСЯ ПРОКРУЧИВАЕМЫМ */
-    .nav-links { 
-        display: flex !important; 
-        gap: 4px;
-        font-size: 0.7rem;
-        padding: 3px 0;
-    }
+    /* Скрываем обычное меню на мобильных */
+    .nav-links { display: none; }
     
-    .nav-links a { 
-        font-size: 0.7rem; 
-        padding: 6px 10px; 
-        border-radius: 15px;
-    }
-    
-    /* Кнопка "Записаться" остаётся видимой, но компактнее */
-    .btn-header { 
-        display: inline-block !important;
-        padding: 6px 12px; 
-        font-size: 0.7rem; 
-        margin-left: 5px;
+    /* Показываем плавающее вертикальное меню */
+    .mobile-floating-nav {
+        display: flex;
     }
     
     .contacts-wrapper { grid-template-columns: 1fr; }
@@ -359,7 +398,7 @@ footer { background: var(--text-dark); color: white; text-align: center; padding
 }
 
 @media (max-width: 480px) {
-    .nav-links a { font-size: 0.65rem; padding: 5px 8px; }
-    .btn-header { font-size: 0.65rem; padding: 5px 10px; }
-    .logo-img { height: 45px; }
+    .mobile-nav-item { font-size: 0.7rem; padding: 6px 10px; }
+    .mobile-nav-item i { font-size: 0.8rem; }
+    .mobile-floating-nav { right: 5px; top: 80px; padding: 6px; gap: 4px; }
 }
