@@ -3,7 +3,15 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Профессиональный шугаринг в Полоцке.">
+    <!-- ✅ РЕАЛЬНЫЙ ЗАГОЛОВОК ПО УМОЛЧАНИЮ (если JS не загрузится) -->
+    <title>Шугаринг Полоцк | Ladi Sugar | Эпиляция сахаром и воском</title>
+    <meta name="description" content="Профессиональный шугаринг в Полоцке. Глубокое бикини, ноги, подмышки. Запись онлайн.">
+    <meta name="keywords" content="шугаринг, полоцк, эпиляция">
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="">
+    <meta property="og:description" content="">
+    <meta property="og:image" content="">
+    <meta property="og:url" content="">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="css/style.css">
 </head>
@@ -26,12 +34,9 @@
     </header>
 
     <section class="hero" id="hero-section">
-        <div class="container hero-content" id="hero-content-container">
-            <!-- Текстовые блоки будут добавлены сюда через JS -->
-        </div>
+        <div class="container hero-content" id="hero-content-container"></div>
     </section>
 
-    <!-- 1. Преимущества -->
     <section id="about" class="bg-light">
         <div class="container">
             <h2 class="section-title">Почему выбирают меня</h2>
@@ -39,7 +44,6 @@
         </div>
     </section>
 
-    <!-- 2. Мастера -->
     <section id="masters" class="bg-white">
         <div class="container">
             <h2 class="section-title">Наша команда</h2>
@@ -47,7 +51,6 @@
         </div>
     </section>
 
-    <!-- 3. До/После -->
     <section id="before-after" class="bg-light">
         <div class="container">
             <h2 class="section-title">Результат работ</h2>
@@ -55,7 +58,6 @@
         </div>
     </section>
 
-    <!-- 4. Блог -->
     <section id="blog" class="bg-white">
         <div class="container">
             <h2 class="section-title">Полезные статьи</h2>
@@ -63,7 +65,6 @@
         </div>
     </section>
 
-    <!-- 5. Частые вопросы -->
     <section id="faq" class="bg-light">
         <div class="container">
             <h2 class="section-title">Частые вопросы</h2>
@@ -71,7 +72,6 @@
         </div>
     </section>
 
-    <!-- 6. Цены -->
     <section id="prices" class="bg-white">
         <div class="container">
             <h2 class="section-title" style="text-align:center;">Прайс-лист</h2>
@@ -79,7 +79,6 @@
         </div>
     </section>
 
-    <!-- 7. Памятка -->
     <section id="care" class="bg-light">
         <div class="container">
             <h2 class="section-title">Памятка клиенту</h2>
@@ -87,7 +86,6 @@
         </div>
     </section>
 
-    <!-- Отзывы (вне меню, но логично перед контактами) -->
     <section id="reviews" class="bg-white">
         <div class="container">
             <h2 class="section-title">Отзывы клиентов</h2>
@@ -98,10 +96,15 @@
                     <input type="text" id="rev-name" placeholder="Ваше имя" required>
                     <div class="rating-input">
                         <span>Оценка:</span>
-                        <select id="rev-rating"><option value="5">⭐⭐⭐⭐⭐ (5)</option><option value="4">⭐⭐⭐⭐ (4)</option><option value="3">⭐⭐⭐ (3)</option><option value="2">⭐⭐ (2)</option><option value="1">⭐ (1)</option></select>
+                        <select id="rev-rating">
+                            <option value="5">⭐⭐⭐⭐⭐ (5)</option>
+                            <option value="4">⭐⭐⭐⭐ (4)</option>
+                            <option value="3">⭐⭐⭐ (3)</option>
+                            <option value="2">⭐⭐ (2)</option>
+                            <option value="1">⭐ (1)</option>
+                        </select>
                     </div>
                     <textarea id="rev-text" placeholder="Расскажите о вашем опыте..." rows="4" required></textarea>
-                    <!-- ✅ ИЗМЕНЕН ТЕКСТ КНОПКИ -->
                     <button type="submit" id="rev-submit-btn" class="btn-hero" style="padding:12px 30px; font-size:1rem; width:100%;">Отправить отзыв</button>
                     <div id="rev-status" style="text-align:center; margin-top:10px; font-size:0.9rem;"></div>
                 </form>
@@ -109,7 +112,6 @@
         </div>
     </section>
 
-    <!-- 8. Контакты -->
     <section id="contacts" class="bg-light">
         <div class="container">
             <h2 class="section-title" style="text-align:center;">Контакты</h2>
@@ -152,6 +154,18 @@
     </div>
 
     <script>
+        // ✅ ВСПОМОГАТЕЛЬНАЯ ФУНКЦИЯ УСТАНОВКИ МЕТА-ТЕГОВ
+        function setMetaTag(nameOrProperty, content, isProperty = false) {
+            const attr = isProperty ? 'property' : 'name';
+            let meta = document.querySelector(`meta[${attr}="${nameOrProperty}"]`);
+            if (!meta) {
+                meta = document.createElement('meta');
+                meta.setAttribute(attr, nameOrProperty);
+                document.head.appendChild(meta);
+            }
+            meta.content = content;
+        }
+
         function loadGoogleFonts(fontsArray) {
             if (!fontsArray || fontsArray.length === 0) return;
             const uniqueFonts = [...new Set(fontsArray.map(f => f.split(',')[0].replace(/'/g, '').trim().replace(/\s+/g, '+')))];
@@ -163,46 +177,52 @@
 
         async function loadData() {
             try {
+                // ⚠️ Если сайт лежит в подпапке, уберите первый слэш: fetch('data.json')
                 const response = await fetch('/data.json');
-                if (!response.ok) throw new Error('Не удалось загрузить data.json');
+                if (!response.ok) throw new Error('Не удалось загрузить data.json (статус ' + response.status + ')');
                 const data = await response.json();
                 window.siteData = data;
 
+                // ✅ 1. СРАЗУ УСТАНАВЛИВАЕМ TITLE (самое важное!)
+                if (data.seo && data.seo.title) {
+                    document.title = data.seo.title;
+                    console.log('✅ SEO Title установлен:', data.seo.title);
+                }
+
+                // ✅ 2. Description и Keywords
                 if (data.seo) {
-                    if (data.seo.title) document.title = data.seo.title;
-                    let metaDesc = document.querySelector('meta[name="description"]');
-                    if (!metaDesc) { metaDesc = document.createElement('meta'); metaDesc.name = "description"; document.head.appendChild(metaDesc); }
-                    metaDesc.content = data.seo.description || '';
+                    if (data.seo.description) setMetaTag('description', data.seo.description);
+                    if (data.seo.keywords) setMetaTag('keywords', data.seo.keywords);
                     
+                    // ✅ 3. Open Graph теги для соцсетей
                     const ogUrl = window.location.href;
                     const ogTitle = data.seo.title || document.title;
                     const ogDesc = data.seo.description || '';
-                    const ogImage = data.seo.ogImage || (data.theme?.heroImage) || '';
-                    const setMeta = (property, content) => {
-                        let tag = document.querySelector(`meta[property="${property}"]`) || document.querySelector(`meta[name="${property}"]`);
-                        if (!tag) { tag = document.createElement('meta'); tag.setAttribute(property.startsWith('og:') ? 'property' : 'name', property); document.head.appendChild(tag); }
-                        tag.content = content;
-                    };
-                    setMeta('og:title', ogTitle);
-                    setMeta('og:description', ogDesc);
-                    setMeta('og:image', ogImage);
-                    setMeta('og:url', ogUrl);
-                    setMeta('og:type', 'website');
+                    const ogImage = data.seo.ogImage || (data.theme && data.theme.heroImage) || '';
+                    
+                    setMetaTag('og:title', ogTitle, true);
+                    setMetaTag('og:description', ogDesc, true);
+                    setMetaTag('og:image', ogImage, true);
+                    setMetaTag('og:url', ogUrl, true);
+                    setMetaTag('og:type', 'website', true);
                 }
 
+                // ✅ 4. Тема и цвета
                 if (data.theme) {
-                    document.documentElement.style.setProperty('--bg-light', data.theme.color_bg_light);
-                    document.documentElement.style.setProperty('--bg-white', data.theme.color_bg_white);
-                    document.documentElement.style.setProperty('--primary', data.theme.color_primary);
-                    document.documentElement.style.setProperty('--text-dark', data.theme.color_text);
-                }
-                if (data.theme?.heroImage) {
-                    document.querySelector('.hero').style.backgroundImage = `url('${data.theme.heroImage}')`;
+                    if (data.theme.color_bg_light) document.documentElement.style.setProperty('--bg-light', data.theme.color_bg_light);
+                    if (data.theme.color_bg_white) document.documentElement.style.setProperty('--bg-white', data.theme.color_bg_white);
+                    if (data.theme.color_primary) document.documentElement.style.setProperty('--primary', data.theme.color_primary);
+                    if (data.theme.color_text) document.documentElement.style.setProperty('--text-dark', data.theme.color_text);
+                    if (data.theme.heroImage) {
+                        document.querySelector('.hero').style.backgroundImage = `url('${data.theme.heroImage}')`;
+                    }
                 }
 
+                // ✅ 5. Баннер и тексты
                 const heroContainer = document.getElementById('hero-content-container');
-                const textBlocks = heroContainer.querySelectorAll('.hero-text-block');
-                textBlocks.forEach(el => el.remove());
+                if (heroContainer) {
+                    heroContainer.querySelectorAll('.hero-text-block').forEach(el => el.remove());
+                }
                 
                 const fontsToLoad = [];
                 if (data.heroTexts && Array.isArray(data.heroTexts)) {
@@ -212,6 +232,7 @@
                             el.className = 'hero-text-block';
                             el.textContent = block.content;
                             
+                            // Переливающийся эффект для первого большого блока
                             if (index === 0 && parseInt(block.size || 56) > 40) {
                                 el.classList.add('text-rainbow');
                             }
@@ -230,48 +251,81 @@
                 }
                 loadGoogleFonts(fontsToLoad);
 
-                const bookingText = data.hero?.btnText || 'Записаться онлайн';
-                const bookingUrl = data.hero?.dikidiUrl || data.contacts?.dikidi || '#';
+                // ✅ 6. Позиционирование баннера
+                const heroSection = document.getElementById('hero-section');
+                const alignment = (data.hero && data.hero.alignment) ? data.hero.alignment : 'center';
+                if (heroSection) {
+                    heroSection.className = 'hero';
+                    heroSection.classList.add(`hero-align-${alignment}`);
+                }
+
+                // ✅ 7. Кнопка записи в шапке
+                const bookingText = (data.hero && data.hero.btnText) || 'Записаться онлайн';
+                const bookingUrl = (data.hero && data.hero.dikidiUrl) || (data.contacts && data.contacts.dikidi) || '#';
                 
                 const headerBtn = document.getElementById('header-dikidi-btn');
-                if(headerBtn) {
+                if (headerBtn) {
                     headerBtn.textContent = bookingText;
                     headerBtn.href = bookingUrl;
                 }
 
-                const heroSection = document.getElementById('hero-section');
-                const alignment = (data.hero && data.hero.alignment) ? data.hero.alignment : 'center';
-                heroSection.className = 'hero';
-                heroSection.classList.add(`hero-align-${alignment}`);
-
-                document.getElementById('btn-dikidi-footer').innerHTML = `<i class="far fa-calendar-check"></i> ${bookingText}`; 
-                document.getElementById('btn-dikidi-footer').href = bookingUrl;
+                // ✅ 8. Контакты и соцсети
+                const dikidiFooter = document.getElementById('btn-dikidi-footer');
+                if (dikidiFooter) {
+                    dikidiFooter.innerHTML = `<i class="far fa-calendar-check"></i> ${bookingText}`;
+                    dikidiFooter.href = bookingUrl;
+                }
                 
-                document.getElementById('btn-wa').href = data.contacts?.whatsapp ? `https://wa.me/${data.contacts.whatsapp}` : '#';
-                document.getElementById('btn-viber').href = data.contacts?.viber ? `viber://chat?number=%2B${data.contacts.viber}` : '#';
-                document.getElementById('btn-insta').href = data.contacts?.instagram || '#';
-                document.getElementById('contact-phone').textContent = data.contacts?.phone || ''; 
-                document.getElementById('contact-phone').href = data.contacts?.phone ? `tel:${data.contacts.phone}` : '#';
-                document.getElementById('contact-address').textContent = data.contacts?.address || '';
+                if (data.contacts) {
+                    const btnWa = document.getElementById('btn-wa');
+                    const btnViber = document.getElementById('btn-viber');
+                    const btnInsta = document.getElementById('btn-insta');
+                    const contactPhone = document.getElementById('contact-phone');
+                    const contactAddress = document.getElementById('contact-address');
+                    
+                    if (btnWa) btnWa.href = data.contacts.whatsapp ? `https://wa.me/${data.contacts.whatsapp}` : '#';
+                    if (btnViber) btnViber.href = data.contacts.viber ? `viber://chat?number=%2B${data.contacts.viber}` : '#';
+                    if (btnInsta) btnInsta.href = data.contacts.instagram || '#';
+                    if (contactPhone) {
+                        contactPhone.textContent = data.contacts.phone || '';
+                        contactPhone.href = data.contacts.phone ? `tel:${data.contacts.phone}` : '#';
+                    }
+                    if (contactAddress) contactAddress.textContent = data.contacts.address || '';
 
+                    // Дополнительные кнопки
+                    const socialButtons = document.getElementById('social-buttons');
+                    if (socialButtons && data.contacts.extraButtons && data.contacts.extraButtons.length) {
+                        document.querySelectorAll('.social-btn-extra').forEach(el => el.remove());
+                        data.contacts.extraButtons.forEach(btn => {
+                            const a = document.createElement('a');
+                            a.href = btn.url || '#';
+                            a.target = '_blank';
+                            a.rel = 'noopener noreferrer';
+                            a.className = 'btn-social social-btn-extra';
+                            a.style.background = btn.color || '#333333';
+                            a.innerHTML = `<i class="fas ${btn.icon || 'fa-star'}"></i> ${btn.label || ''}`;
+                            socialButtons.appendChild(a);
+                        });
+                    }
+                }
+
+                // ✅ 9. Карта
                 if (data.map) {
                     const mapFrame = document.getElementById('map-frame');
                     const mapContainer = document.getElementById('map-container');
-                    
-                    if (mapFrame && data.map.url) {
-                        mapFrame.src = data.map.url;
-                    }
+                    if (mapFrame && data.map.url) mapFrame.src = data.map.url;
                     if (mapContainer && data.map.height) {
                         mapContainer.style.height = data.map.height + 'px';
                         if (mapFrame) mapFrame.style.height = data.map.height + 'px';
                     }
                 }
 
+                // ✅ 10. Мастера
                 const mastersContainer = document.getElementById('masters-container');
-                if(mastersContainer && Array.isArray(data.masters) && data.masters.length > 0) {
+                if (mastersContainer && Array.isArray(data.masters) && data.masters.length > 0) {
                     mastersContainer.innerHTML = data.masters.map(m => `
                         <div class="master-card">
-                            <img src="${m.photo || ''}" alt="${m.name}" class="master-photo" style="display:${m.photo ? 'block' : 'none'}">
+                            <img src="${m.photo || ''}" alt="${m.name || ''}" class="master-photo" style="display:${m.photo ? 'block' : 'none'}">
                             <div class="master-text">
                                 <span class="master-role">${m.role || ''}</span>
                                 <h3>${m.name || 'Мастер'}</h3>
@@ -281,72 +335,83 @@
                     `).join('');
                 }
 
+                // ✅ 11. Преимущества
                 const featuresContainer = document.getElementById('features-container');
-                if(featuresContainer && data.features) featuresContainer.innerHTML = data.features.map(f => `<div class="feature-card"><i class="fas ${f.icon} feature-icon"></i><h3>${f.title}</h3><p>${f.desc}</p></div>`).join('');
-
-                const priceContainer = document.getElementById('price-list-container');
-                if(priceContainer && data.prices) priceContainer.innerHTML = data.prices.map(p => `<div class="price-item"><span class="zone-name">${p.name}</span><span class="zone-price">${p.value} BYN</span></div>`).join('');
-
-                const reviewContainer = document.getElementById('reviews-container');
-                if(reviewContainer && data.reviews) { 
-                    const visible = data.reviews.filter(r => r.status !== 'pending'); 
-                    reviewContainer.innerHTML = visible.map(r => `<div class="review-card"><div class="review-stars">${'<i class="fas fa-star"></i>'.repeat(r.rating)}</div><p class="review-text">«${r.text}»</p><div class="review-author"><i class="fas fa-user-circle"></i> ${r.name} <span style="color:#888; font-weight:400; font-size:0.8rem;">${r.date || ''}</span></div></div>`).join(''); 
+                if (featuresContainer && Array.isArray(data.features) && data.features.length) {
+                    featuresContainer.innerHTML = data.features.map(f => `<div class="feature-card"><i class="fas ${f.icon || 'fa-star'} feature-icon"></i><h3>${f.title || ''}</h3><p>${f.desc || ''}</p></div>`).join('');
                 }
 
-                const blogContainer = document.getElementById('blog-container');
-                if(blogContainer && data.blog && data.blog.length > 0) blogContainer.innerHTML = data.blog.map(post => `<div class="blog-card"><img src="${post.image || ''}" alt="${post.title}" class="blog-img"><div class="blog-content"><span class="blog-date">${post.date}</span><h3>${post.title}</h3><p>${post.excerpt}</p></div></div>`).join(''); 
-                else if (blogContainer) blogContainer.innerHTML = '<p style="text-align:center;color:#666; grid-column: 1/-1;">Статей пока нет.</p>';
+                // ✅ 12. Прайс
+                const priceContainer = document.getElementById('price-list-container');
+                if (priceContainer && Array.isArray(data.prices) && data.prices.length) {
+                    priceContainer.innerHTML = data.prices.map(p => `<div class="price-item"><span class="zone-name">${p.name || ''}</span><span class="zone-price">${p.value || ''} BYN</span></div>`).join('');
+                }
 
+                // ✅ 13. Отзывы (только одобренные)
+                const reviewContainer = document.getElementById('reviews-container');
+                if (reviewContainer && Array.isArray(data.reviews)) {
+                    const visible = data.reviews.filter(r => r.status !== 'pending');
+                    reviewContainer.innerHTML = visible.map(r => `<div class="review-card"><div class="review-stars">${'<i class="fas fa-star"></i>'.repeat(r.rating || 5)}</div><p class="review-text">«${r.text || ''}»</p><div class="review-author"><i class="fas fa-user-circle"></i> ${r.name || ''} <span style="color:#888; font-weight:400; font-size:0.8rem;">${r.date || ''}</span></div></div>`).join('');
+                }
+
+                // ✅ 14. Блог
+                const blogContainer = document.getElementById('blog-container');
+                if (blogContainer) {
+                    if (Array.isArray(data.blog) && data.blog.length > 0) {
+                        blogContainer.innerHTML = data.blog.map(post => `<div class="blog-card"><img src="${post.image || ''}" alt="${post.title || ''}" class="blog-img"><div class="blog-content"><span class="blog-date">${post.date || ''}</span><h3>${post.title || ''}</h3><p>${post.excerpt || ''}</p></div></div>`).join('');
+                    } else {
+                        blogContainer.innerHTML = '<p style="text-align:center;color:#666; grid-column: 1/-1;">Статей пока нет.</p>';
+                    }
+                }
+
+                // ✅ 15. До/После
                 const baContainer = document.getElementById('ba-container');
-                if(baContainer && data.beforeAfter?.length) {
+                if (baContainer && Array.isArray(data.beforeAfter) && data.beforeAfter.length) {
                     baContainer.innerHTML = data.beforeAfter.map((item, i) => `
                         <div class="ba-slider" id="ba-${i}">
-                            <div class="ba-img-before" style="background-image:url('${item.before}')"></div>
-                            <div class="ba-img-after" style="background-image:url('${item.after}'); width:50%;"></div>
+                            <div class="ba-img-before" style="background-image:url('${item.before || ''}')"></div>
+                            <div class="ba-img-after" style="background-image:url('${item.after || ''}'); width:50%;"></div>
                             <div class="ba-divider" style="left:50%;"><div class="ba-handle"></div></div>
-                            <div class="ba-label">${item.label}</div>
-                            <button class="ba-pin-btn" onclick="window.pinBASlide('${item.after.replace(/'/g, "\\'")}', '${item.label.replace(/'/g, "\\'")}')" title="Сохранить в Pinterest"><i class="fab fa-pinterest-p"></i></button>
+                            <div class="ba-label">${item.label || ''}</div>
+                            <button class="ba-pin-btn" onclick="window.pinBASlide('${(item.after || '').replace(/'/g, "\\'")}', '${(item.label || '').replace(/'/g, "\\'")}')" title="Сохранить в Pinterest"><i class="fab fa-pinterest-p"></i></button>
                         </div>
                     `).join('');
                     initBASliders();
                 }
 
+                // ✅ 16. FAQ
                 const faqContainer = document.getElementById('faq-container');
-                if(faqContainer && data.faq?.length) {
+                if (faqContainer && Array.isArray(data.faq) && data.faq.length) {
                     faqContainer.innerHTML = data.faq.map((item, i) => `
-                        <div class="faq-item"><div class="faq-question" onclick="window.toggleFaq(${i})">${item.question}<i class="fas fa-chevron-down"></i></div><div class="faq-answer" id="faq-ans-${i}">${item.answer}</div></div>
+                        <div class="faq-item"><div class="faq-question" onclick="window.toggleFaq(${i})">${item.question || ''}<i class="fas fa-chevron-down"></i></div><div class="faq-answer" id="faq-ans-${i}">${item.answer || ''}</div></div>
                     `).join('');
                 }
 
+                // ✅ 17. Инструкции (Памятка)
                 const careContainer = document.getElementById('care-container');
-                if(careContainer && Array.isArray(data.careInstructions) && data.careInstructions.length > 0) {
+                if (careContainer && Array.isArray(data.careInstructions) && data.careInstructions.length > 0) {
                     careContainer.innerHTML = data.careInstructions.map(item => {
-                        const listItems = item.content.split('\n').filter(l => l.trim()).map(l => `<li>${l.trim()}</li>`).join('');
-                        return `<div class="care-col"><h3><i class="fas fa-info-circle"></i> ${item.title}</h3><ul>${listItems}</ul></div>`;
+                        const listItems = (item.content || '').split('\n').filter(l => l.trim()).map(l => `<li>${l.trim()}</li>`).join('');
+                        return `<div class="care-col"><h3><i class="fas fa-info-circle"></i> ${item.title || ''}</h3><ul>${listItems}</ul></div>`;
                     }).join('');
                 }
 
-                const socialButtons = document.getElementById('social-buttons');
-                if (socialButtons && data.contacts?.extraButtons?.length) {
-                    document.querySelectorAll('.social-btn-extra').forEach(el => el.remove());
-                    data.contacts.extraButtons.forEach(btn => {
-                        const a = document.createElement('a'); a.href = btn.url; a.target = '_blank'; a.rel = 'noopener noreferrer'; 
-                        a.className = 'btn-social social-btn-extra'; a.style.background = btn.color || '#333333'; 
-                        a.innerHTML = `<i class="fas ${btn.icon}"></i> ${btn.label}`; 
-                        socialButtons.appendChild(a);
-                    });
-                }
-
-            } catch (error) { console.error('Ошибка загрузки данных:', error); }
+            } catch (error) {
+                console.error('❌ Ошибка загрузки данных:', error);
+            }
         }
 
         function initBASliders() {
             document.querySelectorAll('.ba-slider').forEach(slider => {
-                const afterImg = slider.querySelector('.ba-img-after'); const divider = slider.querySelector('.ba-divider');
+                const afterImg = slider.querySelector('.ba-img-after');
+                const divider = slider.querySelector('.ba-divider');
                 let isDragging = false;
                 const update = (x) => {
-                    const rect = slider.getBoundingClientRect(); let pos = ((x - rect.left) / rect.width) * 100;
-                    pos = Math.max(0, Math.min(100, pos)); afterImg.style.width = `${pos}%`; divider.style.left = `${pos}%`;
+                    const rect = slider.getBoundingClientRect();
+                    let pos = ((x - rect.left) / rect.width) * 100;
+                    pos = Math.max(0, Math.min(100, pos));
+                    afterImg.style.width = `${pos}%`;
+                    divider.style.left = `${pos}%`;
                 };
                 slider.addEventListener('mousedown', () => isDragging = true);
                 window.addEventListener('mouseup', () => isDragging = false);
@@ -358,54 +423,134 @@
         }
 
         window.toggleFaq = function(idx) {
-            const ans = document.getElementById(`faq-ans-${idx}`); const icon = ans.previousElementSibling.querySelector('i');
-            if (ans.style.maxHeight) { ans.style.maxHeight = null; ans.style.padding = '0 20px'; icon.style.transform = 'rotate(0deg)'; }
-            else { ans.style.maxHeight = ans.scrollHeight + 'px'; ans.style.padding = '20px'; icon.style.transform = 'rotate(180deg)'; }
+            const ans = document.getElementById(`faq-ans-${idx}`);
+            if (!ans) return;
+            const icon = ans.previousElementSibling.querySelector('i');
+            if (ans.style.maxHeight) {
+                ans.style.maxHeight = null;
+                ans.style.padding = '0 20px';
+                if (icon) icon.style.transform = 'rotate(0deg)';
+            } else {
+                ans.style.maxHeight = ans.scrollHeight + 'px';
+                ans.style.padding = '20px';
+                if (icon) icon.style.transform = 'rotate(180deg)';
+            }
         };
 
-        function openLightbox(src, label) { const lb = document.getElementById('lightbox'); const lbImg = document.getElementById('lightbox-img'); lbImg.src = src; lbImg.alt = label; lb.dataset.label = label || 'Ladi Sugar'; lb.classList.add('active'); document.body.style.overflow = 'hidden'; }
-        function closeLightbox(e) { if (e && e.target.closest('.lightbox-pin')) return; document.getElementById('lightbox').classList.remove('active'); document.body.style.overflow = ''; setTimeout(() => { document.getElementById('lightbox-img').src = ''; }, 250); }
-        function pinToPinterest(imageUrl, description) { const pageUrl = encodeURIComponent(window.location.href); const media = encodeURIComponent(imageUrl); const desc = encodeURIComponent(description || 'Ladi Sugar Polotsk'); window.open(`https://www.pinterest.com/pin/create/button/?url=${pageUrl}&media=${media}&description=${desc}`, '_blank', 'width=750,height=350'); }
-        function pinLightboxImage() { pinToPinterest(document.getElementById('lightbox-img').src, document.getElementById('lightbox').dataset.label); }
-        window.pinBASlide = function(imageUrl, label) { pinToPinterest(imageUrl, `Ladi Sugar - ${label || 'Результат'}`); };
+        function openLightbox(src, label) {
+            const lb = document.getElementById('lightbox');
+            const lbImg = document.getElementById('lightbox-img');
+            if (lb && lbImg) {
+                lbImg.src = src;
+                lbImg.alt = label;
+                lb.dataset.label = label || 'Ladi Sugar';
+                lb.classList.add('active');
+                document.body.style.overflow = 'hidden';
+            }
+        }
 
-        function initShareButtons() { const url = encodeURIComponent(window.location.href); const title = encodeURIComponent(document.title || 'Ladi Sugar Polotsk'); document.querySelector('.share-wa').href = `https://wa.me/?text=${title}%20${url}`; document.querySelector('.share-tg').href = `https://t.me/share/url?url=${url}&text=${title}`; document.querySelector('.share-vk').href = `https://vk.com/share.php?url=${url}&title=${title}`; document.querySelector('.share-pin').href = `https://www.pinterest.com/pin/create/button/?url=${url}&description=${title}`; }
-        function copyShareLink() { navigator.clipboard.writeText(window.location.href).then(() => showShareToast('✅ Ссылка скопирована!')).catch(() => { const input = document.createElement('input'); input.value = window.location.href; document.body.appendChild(input); input.select(); document.execCommand('copy'); document.body.removeChild(input); showShareToast('✅ Ссылка скопирована!'); }); }
-        function showShareToast(msg) { let t = document.querySelector('.share-toast') || document.createElement('div'); t.className = 'share-toast'; t.textContent = msg; document.body.appendChild(t); setTimeout(() => t.classList.add('show'), 10; setTimeout(() => t.classList.remove('show'), 2500); }
+        function closeLightbox(e) {
+            if (e && e.target.closest('.lightbox-pin')) return;
+            const lb = document.getElementById('lightbox');
+            if (lb) lb.classList.remove('active');
+            document.body.style.overflow = '';
+            setTimeout(() => {
+                const lbImg = document.getElementById('lightbox-img');
+                if (lbImg) lbImg.src = '';
+            }, 250);
+        }
 
-        // ✅ ИЗМЕНЕН ТЕКСТ КНОПКИ В JS (было: "Отправить на модерацию")
-        document.getElementById('reviewForm')?.addEventListener('submit', async (e) => { 
-            e.preventDefault(); 
-            const btn = document.getElementById('rev-submit-btn'); 
-            const status = document.getElementById('rev-status'); 
-            btn.disabled = true; 
-            btn.textContent = '⏳ Отправка...'; 
-            status.textContent = ''; 
+        function pinToPinterest(imageUrl, description) {
+            const pageUrl = encodeURIComponent(window.location.href);
+            const media = encodeURIComponent(imageUrl);
+            const desc = encodeURIComponent(description || 'Ladi Sugar Polotsk');
+            window.open(`https://www.pinterest.com/pin/create/button/?url=${pageUrl}&media=${media}&description=${desc}`, '_blank', 'width=750,height=350');
+        }
+
+        function pinLightboxImage() {
+            const lbImg = document.getElementById('lightbox-img');
+            const lb = document.getElementById('lightbox');
+            if (lbImg && lb) pinToPinterest(lbImg.src, lb.dataset.label);
+        }
+
+        window.pinBASlide = function(imageUrl, label) {
+            pinToPinterest(imageUrl, `Ladi Sugar - ${label || 'Результат'}`);
+        };
+
+        function initShareButtons() {
+            const url = encodeURIComponent(window.location.href);
+            const title = encodeURIComponent(document.title || 'Ladi Sugar Polotsk');
+            const shareWa = document.querySelector('.share-wa');
+            const shareTg = document.querySelector('.share-tg');
+            const shareVk = document.querySelector('.share-vk');
+            const sharePin = document.querySelector('.share-pin');
+            if (shareWa) shareWa.href = `https://wa.me/?text=${title}%20${url}`;
+            if (shareTg) shareTg.href = `https://t.me/share/url?url=${url}&text=${title}`;
+            if (shareVk) shareVk.href = `https://vk.com/share.php?url=${url}&title=${title}`;
+            if (sharePin) sharePin.href = `https://www.pinterest.com/pin/create/button/?url=${url}&description=${title}`;
+        }
+
+        function copyShareLink() {
+            navigator.clipboard.writeText(window.location.href).then(() => {
+                showShareToast('✅ Ссылка скопирована!');
+            }).catch(() => {
+                const input = document.createElement('input');
+                input.value = window.location.href;
+                document.body.appendChild(input);
+                input.select();
+                document.execCommand('copy');
+                document.body.removeChild(input);
+                showShareToast('✅ Ссылка скопирована!');
+            });
+        }
+
+        function showShareToast(msg) {
+            let t = document.querySelector('.share-toast');
+            if (!t) {
+                t = document.createElement('div');
+                t.className = 'share-toast';
+                document.body.appendChild(t);
+            }
+            t.textContent = msg;
+            setTimeout(() => t.classList.add('show'), 10);
+            setTimeout(() => t.classList.remove('show'), 2500);
+        }
+
+        document.getElementById('reviewForm')?.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const btn = document.getElementById('rev-submit-btn');
+            const status = document.getElementById('rev-status');
+            btn.disabled = true;
+            btn.textContent = '⏳ Отправка...';
+            status.textContent = '';
             
-            try { 
-                const res = await fetch('/api/review/submit', { 
-                    method: 'POST', 
-                    headers: { 'Content-Type': 'application/json' }, 
-                    body: JSON.stringify({ 
-                        name: document.getElementById('rev-name').value, 
-                        text: document.getElementById('rev-text').value, 
-                        rating: document.getElementById('rev-rating').value 
-                    }) 
-                }); 
-                const data = await res.json(); 
-                status.style.color = res.ok ? '#22c55e' : '#ef4444'; 
-                status.textContent = data.message; 
-                if (res.ok) e.target.reset(); 
-            } catch (err) { 
-                status.style.color = '#ef4444'; 
-                status.textContent = '❌ Ошибка сети'; 
-            } finally { 
-                btn.disabled = false; 
-                btn.textContent = 'Отправить отзыв'; // ✅ Здесь тоже изменено
-            } 
+            try {
+                const res = await fetch('/api/review/submit', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        name: document.getElementById('rev-name').value,
+                        text: document.getElementById('rev-text').value,
+                        rating: document.getElementById('rev-rating').value
+                    })
+                });
+                const data = await res.json();
+                status.style.color = res.ok ? '#22c55e' : '#ef4444';
+                status.textContent = data.message || (res.ok ? '✅ Отзыв отправлен!' : '❌ Ошибка');
+                if (res.ok) e.target.reset();
+            } catch (err) {
+                status.style.color = '#ef4444';
+                status.textContent = '❌ Ошибка сети';
+            } finally {
+                btn.disabled = false;
+                btn.textContent = 'Отправить отзыв';
+            }
         });
-        
-        document.addEventListener('DOMContentLoaded', () => { loadData(); initShareButtons(); });
+
+        document.addEventListener('DOMContentLoaded', () => {
+            loadData();
+            initShareButtons();
+        });
     </script>
 </body>
 </html>
