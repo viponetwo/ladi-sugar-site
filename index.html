@@ -3,7 +3,6 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <!-- ✅ FALLBACK: если JS не загрузится, будет этот заголовок -->
     <title>Ladi Sugar - Шугаринг в Полоцке</title>
     <meta name="description" content="Профессиональный шугаринг в Полоцке.">
     <meta name="keywords" content="шугаринг, полоцк, эпиляция">
@@ -126,6 +125,16 @@
                         <a href="#" id="btn-viber" target="_blank" class="btn-social btn-viber"><i class="fab fa-viber"></i></a>
                         <a href="#" id="btn-insta" target="_blank" class="btn-social btn-insta"><i class="fab fa-instagram"></i></a>
                     </div>
+                    
+                    <!-- ✅ КНОПКИ "КАК ДОБРАТЬСЯ" -->
+                    <div class="route-buttons" style="margin-top:25px; display:flex; gap:10px; flex-wrap:wrap;">
+                        <a href="#" id="btn-yandex-route" target="_blank" class="btn-route btn-yandex">
+                            <i class="fas fa-route"></i> Построить маршрут (Яндекс)
+                        </a>
+                        <a href="#" id="btn-2gis-route" target="_blank" class="btn-route btn-2gis">
+                            <i class="fas fa-map-marked-alt"></i> 2GIS Навигатор
+                        </a>
+                    </div>
                 </div>
                 <div class="map-container" id="map-container">
                     <iframe id="map-frame" src="" width="100%" height="400" frameborder="0"></iframe>
@@ -147,6 +156,33 @@
 
     <footer><div class="container"><p>&copy; 2026 Ladi Sugar Polotsk. Все права защищены.</p></div></footer>
 
+    <!-- ✅ ПЛАВАЮЩАЯ КНОПКА МЕССЕНДЖЕРОВ -->
+    <div class="floating-messenger" id="floating-messenger">
+        <!-- Раскрывающееся меню мессенджеров -->
+        <div class="messenger-menu" id="messenger-menu">
+            <a href="#" id="float-wa" target="_blank" class="messenger-btn messenger-wa" title="WhatsApp">
+                <i class="fab fa-whatsapp"></i>
+                <span class="messenger-label">WhatsApp</span>
+            </a>
+            <a href="#" id="float-viber" target="_blank" class="messenger-btn messenger-viber" title="Viber">
+                <i class="fab fa-viber"></i>
+                <span class="messenger-label">Viber</span>
+            </a>
+            <a href="#" id="float-tg" target="_blank" class="messenger-btn messenger-tg" title="Telegram">
+                <i class="fab fa-telegram-plane"></i>
+                <span class="messenger-label">Telegram</span>
+            </a>
+            <a href="#" id="float-insta" target="_blank" class="messenger-btn messenger-insta" title="Instagram">
+                <i class="fab fa-instagram"></i>
+                <span class="messenger-label">Instagram</span>
+            </a>
+        </div>
+        <!-- Главная кнопка -->
+        <button class="messenger-main-btn" id="messenger-main-btn" aria-label="Написать нам">
+            <i class="fas fa-comment-dots" id="messenger-icon"></i>
+        </button>
+    </div>
+
     <div id="lightbox" class="lightbox" onclick="closeLightbox(event)">
         <a href="#" class="lightbox-pin" onclick="pinLightboxImage(); return false;" title="Сохранить в Pinterest"><i class="fab fa-pinterest-p"></i></a>
         <span class="lightbox-close">&times;</span>
@@ -154,7 +190,6 @@
     </div>
 
     <script>
-        // ✅ ФУНКЦИЯ УСТАНОВКИ МЕТА-ТЕГОВ
         function setMetaTag(nameOrProperty, content, isProperty = false) {
             const attr = isProperty ? 'property' : 'name';
             let meta = document.querySelector(`meta[${attr}="${nameOrProperty}"]`);
@@ -177,32 +212,18 @@
 
         async function loadData() {
             try {
-                // ⚠️ Если сайт в подпапке, уберите первый слэш: fetch('data.json')
                 const response = await fetch('/data.json');
-                if (!response.ok) throw new Error('Не удалось загрузить data.json (статус ' + response.status + ')');
+                if (!response.ok) throw new Error('Не удалось загрузить data.json');
                 const data = await response.json();
                 window.siteData = data;
 
-                // ✅ 1. СРАЗУ УСТАНАВЛИВАЕМ SEO (Title, Description, Keywords, OG)
                 if (data.seo) {
-                    // Title вкладки браузера
                     if (data.seo.title) {
                         document.title = data.seo.title;
-                        console.log('✅ SEO Title установлен:', data.seo.title);
                     }
+                    if (data.seo.description) setMetaTag('description', data.seo.description);
+                    if (data.seo.keywords) setMetaTag('keywords', data.seo.keywords);
                     
-                    // Description
-                    if (data.seo.description) {
-                        setMetaTag('description', data.seo.description);
-                        console.log('✅ Description установлен');
-                    }
-                    
-                    // Keywords
-                    if (data.seo.keywords) {
-                        setMetaTag('keywords', data.seo.keywords);
-                    }
-                    
-                    // Open Graph для соцсетей
                     const ogUrl = window.location.href;
                     const ogTitle = data.seo.title || document.title;
                     const ogDesc = data.seo.description || '';
@@ -213,11 +234,8 @@
                     setMetaTag('og:image', ogImage, true);
                     setMetaTag('og:url', ogUrl, true);
                     setMetaTag('og:type', 'website', true);
-                } else {
-                    console.warn('⚠️ Поле seo не найдено в data.json');
                 }
 
-                // ✅ 2. Тема и цвета
                 if (data.theme) {
                     if (data.theme.color_bg_light) document.documentElement.style.setProperty('--bg-light', data.theme.color_bg_light);
                     if (data.theme.color_bg_white) document.documentElement.style.setProperty('--bg-white', data.theme.color_bg_white);
@@ -228,11 +246,8 @@
                     }
                 }
 
-                // ✅ 3. Баннер и тексты
                 const heroContainer = document.getElementById('hero-content-container');
-                if (heroContainer) {
-                    heroContainer.querySelectorAll('.hero-text-block').forEach(el => el.remove());
-                }
+                if (heroContainer) heroContainer.querySelectorAll('.hero-text-block').forEach(el => el.remove());
                 
                 const fontsToLoad = [];
                 if (data.heroTexts && Array.isArray(data.heroTexts)) {
@@ -241,18 +256,13 @@
                             const el = document.createElement('div');
                             el.className = 'hero-text-block';
                             el.textContent = block.content;
-                            
-                            if (index === 0 && parseInt(block.size || 56) > 40) {
-                                el.classList.add('text-rainbow');
-                            }
-                            
+                            if (index === 0 && parseInt(block.size || 56) > 40) el.classList.add('text-rainbow');
                             el.style.fontFamily = block.font || "'Montserrat', sans-serif";
                             el.style.fontSize = (block.size || 56) + 'px';
                             el.style.color = block.color || '#FFFFFF';
                             el.style.marginBottom = '10px';
                             el.style.lineHeight = '1.2';
                             el.style.whiteSpace = 'pre-wrap';
-                            
                             heroContainer.appendChild(el);
                             fontsToLoad.push(block.font);
                         }
@@ -260,7 +270,6 @@
                 }
                 loadGoogleFonts(fontsToLoad);
 
-                // ✅ 4. Позиционирование баннера
                 const heroSection = document.getElementById('hero-section');
                 const alignment = (data.hero && data.hero.alignment) ? data.hero.alignment : 'center';
                 if (heroSection) {
@@ -268,7 +277,6 @@
                     heroSection.classList.add(`hero-align-${alignment}`);
                 }
 
-                // ✅ 5. Кнопка записи в шапке
                 const bookingText = (data.hero && data.hero.btnText) || 'Записаться онлайн';
                 const bookingUrl = (data.hero && data.hero.dikidiUrl) || (data.contacts && data.contacts.dikidi) || '#';
                 
@@ -278,7 +286,6 @@
                     headerBtn.href = bookingUrl;
                 }
 
-                // ✅ 6. Контакты и соцсети
                 const dikidiFooter = document.getElementById('btn-dikidi-footer');
                 if (dikidiFooter) {
                     dikidiFooter.innerHTML = `<i class="far fa-calendar-check"></i> ${bookingText}`;
@@ -301,7 +308,33 @@
                     }
                     if (contactAddress) contactAddress.textContent = data.contacts.address || '';
 
-                    // Дополнительные кнопки
+                    // ✅ ОБНОВЛЯЕМ ПЛАВАЮЩИЕ КНОПКИ МЕССЕНДЖЕРОВ
+                    const floatWa = document.getElementById('float-wa');
+                    const floatViber = document.getElementById('float-viber');
+                    const floatTg = document.getElementById('float-tg');
+                    const floatInsta = document.getElementById('float-insta');
+                    
+                    if (floatWa) floatWa.href = data.contacts.whatsapp ? `https://wa.me/${data.contacts.whatsapp}` : '#';
+                    if (floatViber) floatViber.href = data.contacts.viber ? `viber://chat?number=%2B${data.contacts.viber}` : '#';
+                    if (floatTg) floatTg.href = data.contacts.telegram ? `https://t.me/${data.contacts.telegram}` : '#';
+                    if (floatInsta) floatInsta.href = data.contacts.instagram || '#';
+
+                    // ✅ КНОПКИ МАРШРУТА
+                    const address = data.contacts.address || 'Полоцк, улица Успенская';
+                    const encodedAddress = encodeURIComponent(address);
+                    
+                    const btnYandex = document.getElementById('btn-yandex-route');
+                    const btn2gis = document.getElementById('btn-2gis-route');
+                    
+                    if (btnYandex) {
+                        // Яндекс.Карты: маршрут от текущего местоположения до адреса
+                        btnYandex.href = `https://yandex.ru/maps/?rtext=~${encodedAddress}&rtt=auto`;
+                    }
+                    if (btn2gis) {
+                        // 2GIS: поиск адреса
+                        btn2gis.href = `https://2gis.ru/search/${encodedAddress}`;
+                    }
+
                     const socialButtons = document.getElementById('social-buttons');
                     if (socialButtons && data.contacts.extraButtons && data.contacts.extraButtons.length) {
                         document.querySelectorAll('.social-btn-extra').forEach(el => el.remove());
@@ -318,7 +351,6 @@
                     }
                 }
 
-                // ✅ 7. Карта
                 if (data.map) {
                     const mapFrame = document.getElementById('map-frame');
                     const mapContainer = document.getElementById('map-container');
@@ -329,7 +361,6 @@
                     }
                 }
 
-                // ✅ 8. Мастера
                 const mastersContainer = document.getElementById('masters-container');
                 if (mastersContainer && Array.isArray(data.masters) && data.masters.length > 0) {
                     mastersContainer.innerHTML = data.masters.map(m => `
@@ -344,26 +375,22 @@
                     `).join('');
                 }
 
-                // ✅ 9. Преимущества
                 const featuresContainer = document.getElementById('features-container');
                 if (featuresContainer && Array.isArray(data.features) && data.features.length) {
                     featuresContainer.innerHTML = data.features.map(f => `<div class="feature-card"><i class="fas ${f.icon || 'fa-star'} feature-icon"></i><h3>${f.title || ''}</h3><p>${f.desc || ''}</p></div>`).join('');
                 }
 
-                // ✅ 10. Прайс
                 const priceContainer = document.getElementById('price-list-container');
                 if (priceContainer && Array.isArray(data.prices) && data.prices.length) {
                     priceContainer.innerHTML = data.prices.map(p => `<div class="price-item"><span class="zone-name">${p.name || ''}</span><span class="zone-price">${p.value || ''} BYN</span></div>`).join('');
                 }
 
-                // ✅ 11. Отзывы (только одобренные)
                 const reviewContainer = document.getElementById('reviews-container');
                 if (reviewContainer && Array.isArray(data.reviews)) {
                     const visible = data.reviews.filter(r => r.status !== 'pending');
                     reviewContainer.innerHTML = visible.map(r => `<div class="review-card"><div class="review-stars">${'<i class="fas fa-star"></i>'.repeat(r.rating || 5)}</div><p class="review-text">«${r.text || ''}»</p><div class="review-author"><i class="fas fa-user-circle"></i> ${r.name || ''} <span style="color:#888; font-weight:400; font-size:0.8rem;">${r.date || ''}</span></div></div>`).join('');
                 }
 
-                // ✅ 12. Блог
                 const blogContainer = document.getElementById('blog-container');
                 if (blogContainer) {
                     if (Array.isArray(data.blog) && data.blog.length > 0) {
@@ -373,7 +400,6 @@
                     }
                 }
 
-                // ✅ 13. До/После
                 const baContainer = document.getElementById('ba-container');
                 if (baContainer && Array.isArray(data.beforeAfter) && data.beforeAfter.length) {
                     baContainer.innerHTML = data.beforeAfter.map((item, i) => `
@@ -388,7 +414,6 @@
                     initBASliders();
                 }
 
-                // ✅ 14. FAQ
                 const faqContainer = document.getElementById('faq-container');
                 if (faqContainer && Array.isArray(data.faq) && data.faq.length) {
                     faqContainer.innerHTML = data.faq.map((item, i) => `
@@ -396,7 +421,6 @@
                     `).join('');
                 }
 
-                // ✅ 15. Инструкции (Памятка)
                 const careContainer = document.getElementById('care-container');
                 if (careContainer && Array.isArray(data.careInstructions) && data.careInstructions.length > 0) {
                     careContainer.innerHTML = data.careInstructions.map(item => {
@@ -406,7 +430,7 @@
                 }
 
             } catch (error) {
-                console.error('❌ Ошибка загрузки данных:', error);
+                console.error('Ошибка загрузки данных:', error);
             }
         }
 
@@ -525,12 +549,43 @@
             setTimeout(() => t.classList.remove('show'), 2500);
         }
 
+        // ✅ ЛОГИКА ПЛАВАЮЩЕЙ КНОПКИ МЕССЕНДЖЕРОВ
+        document.addEventListener('DOMContentLoaded', () => {
+            const mainBtn = document.getElementById('messenger-main-btn');
+            const menu = document.getElementById('messenger-menu');
+            const icon = document.getElementById('messenger-icon');
+            let isOpen = false;
+
+            if (mainBtn && menu) {
+                mainBtn.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    isOpen = !isOpen;
+                    menu.classList.toggle('active', isOpen);
+                    mainBtn.classList.toggle('active', isOpen);
+                    // Меняем иконку
+                    if (icon) {
+                        icon.className = isOpen ? 'fas fa-times' : 'fas fa-comment-dots';
+                    }
+                });
+
+                // Закрытие при клике вне меню
+                document.addEventListener('click', (e) => {
+                    if (!menu.contains(e.target) && e.target !== mainBtn) {
+                        isOpen = false;
+                        menu.classList.remove('active');
+                        mainBtn.classList.remove('active');
+                        if (icon) icon.className = 'fas fa-comment-dots';
+                    }
+                });
+            }
+        });
+
         document.getElementById('reviewForm')?.addEventListener('submit', async (e) => {
             e.preventDefault();
             const btn = document.getElementById('rev-submit-btn');
             const status = document.getElementById('rev-status');
             btn.disabled = true;
-            btn.textContent = ' Отправка...';
+            btn.textContent = '⏳ Отправка...';
             status.textContent = '';
             
             try {
