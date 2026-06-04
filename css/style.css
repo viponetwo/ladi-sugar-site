@@ -15,19 +15,29 @@ ul { list-style: none; }
 img { max-width: 100%; display: block; }
 .container { max-width: 1100px; margin: 0 auto; padding: 0 20px; }
 
-header { background: rgba(255, 255, 255, 0.98); position: fixed; width: 100%; top: 0; z-index: 1000; box-shadow: 0 2px 10px rgba(0,0,0,0.05); padding: 10px 0; }
+header { 
+    background: rgba(255, 255, 255, 0.98); 
+    position: fixed; 
+    width: 100%; 
+    top: 0; 
+    z-index: 1000; 
+    box-shadow: 0 2px 10px rgba(0,0,0,0.05); 
+    padding: 10px 0; 
+}
 
-/* ✅ РАЗНЕСЁННЫЕ ЭЛЕМЕНТЫ ШАПКИ */
+/* ✅ GRID-ШАБЛОН ШАПКИ: ЛОГО | МЕНЮ | КНОПКА */
 .nav-wrapper { 
-    display: flex; 
-    justify-content: space-between; 
-    align-items: center; 
+    display: grid;
+    grid-template-columns: auto 1fr auto;
+    align-items: center;
     min-height: 100px; 
+    gap: 15px;
     padding: 5px 0;
 }
 
 .logo-link {
     flex-shrink: 0;
+    z-index: 2;
 }
 
 .logo-img { 
@@ -38,19 +48,19 @@ header { background: rgba(255, 255, 255, 0.98); position: fixed; width: 100%; to
 
 .logo-img:hover { transform: scale(1.05); }
 
-/* ✅ МЕНЮ ЗАНИМАЕТ ВСЁ СВОБОДНОЕ ПРОСТРАНСТВО */
+/* ✅ МЕНЮ В ЦЕНТРАЛЬНОЙ ЯЧЕЙКЕ — НЕ НАЕЗЖАЕТ */
 .nav-links { 
     display: flex; 
-    gap: 8px; 
+    gap: 6px; 
     flex-wrap: nowrap; 
     overflow-x: auto; 
+    overflow-y: hidden;
     scrollbar-width: none; 
     -ms-overflow-style: none; 
     align-items: center; 
-    padding: 5px 15px;
-    flex: 1;
     justify-content: center;
-    max-width: 100%;
+    padding: 5px 10px;
+    min-width: 0; /* ВАЖНО: позволяет сжиматься */
 }
 
 .nav-links::-webkit-scrollbar { display: none; }
@@ -68,6 +78,7 @@ header { background: rgba(255, 255, 255, 0.98); position: fixed; width: 100%; to
     display: flex;
     align-items: center;
     gap: 6px;
+    flex-shrink: 0; /* Пункты не сжимаются */
 }
 
 .nav-links a i {
@@ -82,6 +93,7 @@ header { background: rgba(255, 255, 255, 0.98); position: fixed; width: 100%; to
     transform: translateY(-1px);
 }
 
+/* Кнопка справа — не сжимается */
 .btn-header { 
     background: var(--primary); 
     color: white; 
@@ -92,6 +104,7 @@ header { background: rgba(255, 255, 255, 0.98); position: fixed; width: 100%; to
     white-space: nowrap; 
     flex-shrink: 0; 
     border: none;
+    z-index: 2;
 }
 
 .btn-header:hover { 
@@ -428,8 +441,8 @@ footer { background: var(--text-dark); color: white; text-align: center; padding
 /* АДАПТИВНОСТЬ */
 @media (max-width: 1024px) {
     .logo-img { height: 65px; }
-    .nav-wrapper { min-height: 80px; }
-    .nav-links { gap: 4px; padding: 5px 8px; }
+    .nav-wrapper { min-height: 80px; gap: 10px; }
+    .nav-links { gap: 4px; padding: 5px 5px; }
     .nav-links a { font-size: 0.75rem; padding: 6px 10px; }
     .nav-links a i { font-size: 0.75rem; }
     .btn-header { padding: 8px 15px; font-size: 0.75rem; }
