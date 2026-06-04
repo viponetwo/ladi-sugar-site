@@ -20,10 +20,36 @@ header { background: rgba(255, 255, 255, 0.98); position: fixed; width: 100%; to
 .logo-img { height: 80px; width: auto; flex-shrink: 0; transition: transform 0.3s ease; }
 .logo-img:hover { transform: scale(1.05); }
 
+/* ✅ МЕНЮ С ИКОНКАМИ */
 .nav-links { display: flex; gap: 6px; flex-wrap: nowrap; overflow-x: auto; scrollbar-width: none; -ms-overflow-style: none; align-items: center; padding: 5px 0; }
 .nav-links::-webkit-scrollbar { display: none; }
-.nav-links a { font-size: 0.8rem; font-weight: 600; color: var(--text-dark); white-space: nowrap; padding: 8px 14px; border-radius: 20px; background: #f5f5f5; border: 1px solid #e0e0e0; transition: all 0.2s ease; }
-.nav-links a:hover { color: var(--primary); background: rgba(176, 141, 116, 0.15); border-color: var(--primary); transform: translateY(-1px); }
+.nav-links a { 
+    font-size: 0.8rem; 
+    font-weight: 600; 
+    color: var(--text-dark); 
+    white-space: nowrap;
+    padding: 8px 14px; 
+    border-radius: 20px; 
+    background: #f5f5f5; 
+    border: 1px solid #e0e0e0;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+.nav-links a i {
+    font-size: 0.85rem;
+    color: var(--primary);
+}
+.nav-links a:hover { 
+    color: var(--primary); 
+    background: rgba(176, 141, 116, 0.15); 
+    border-color: var(--primary);
+    transform: translateY(-1px);
+}
+.nav-links a:hover i {
+    color: var(--primary);
+}
 
 .btn-header { background: var(--primary); color: white; padding: 10px 22px; border-radius: 25px; font-weight: 600; font-size: 0.85rem; white-space: nowrap; flex-shrink: 0; margin-left: 10px; border: none; }
 .btn-header:hover { background: #96765e; transform: translateY(-2px); box-shadow: 0 4px 10px rgba(176, 141, 116, 0.3); }
@@ -196,7 +222,7 @@ section { padding: 80px 0; }
 
 footer { background: var(--text-dark); color: white; text-align: center; padding: 30px 0; }
 
-/* ========== ПЛАВАЮЩАЯ КНОПКА МЕССЕНДЖЕРОВ ========== */
+/* ПЛАВАЮЩАЯ КНОПКА МЕССЕНДЖЕРОВ */
 .floating-messenger {
     position: fixed;
     bottom: 30px;
@@ -302,7 +328,7 @@ footer { background: var(--text-dark); color: white; text-align: center; padding
 .messenger-tg { background: linear-gradient(135deg, #0088cc 0%, #005f8f 100%); }
 .messenger-insta { background: linear-gradient(135deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%); }
 
-/* ========== ПЛАВАЮЩЕЕ ВЕРТИКАЛЬНОЕ МЕНЮ ДЛЯ МОБИЛЬНЫХ ========== */
+/* ПЛАВАЮЩЕЕ ВЕРТИКАЛЬНОЕ МЕНЮ ДЛЯ МОБИЛЬНЫХ */
 .mobile-floating-nav {
     display: none;
     position: fixed;
@@ -355,17 +381,17 @@ footer { background: var(--text-dark); color: white; text-align: center; padding
     color: var(--primary);
 }
 
-/* ========== АДАПТИВНОСТЬ ========== */
+/* АДАПТИВНОСТЬ */
 @media (max-width: 1024px) {
     .logo-img { height: 65px; }
     .nav-wrapper { min-height: 80px; }
     .nav-links { gap: 4px; }
     .nav-links a { font-size: 0.75rem; padding: 6px 10px; }
+    .nav-links a i { font-size: 0.75rem; }
     .btn-header { padding: 8px 15px; font-size: 0.75rem; }
 }
 
 @media (max-width: 768px) {
-    /* ✅ УВЕЛИЧЕННЫЙ ТЕКСТ НА БАННЕРЕ ДЛЯ МОБИЛЬНЫХ */
     .hero-text-block { 
         font-size: 1.4em !important;
         line-height: 1.3 !important;
@@ -376,10 +402,8 @@ footer { background: var(--text-dark); color: white; text-align: center; padding
         font-size: 1.6em !important;
     }
     
-    /* Скрываем обычное меню на мобильных */
     .nav-links { display: none; }
     
-    /* Показываем плавающее вертикальное меню */
     .mobile-floating-nav {
         display: flex;
     }
@@ -407,7 +431,6 @@ footer { background: var(--text-dark); color: white; text-align: center; padding
 }
 
 @media (max-width: 480px) {
-    /* ✅ ЕЩЁ БОЛЬШЕ УВЕЛИЧИВАЕМ ДЛЯ ОЧЕНЬ МАЛЕНЬКИХ ЭКРАНОВ */
     .hero-text-block { 
         font-size: 1.3em !important; 
         line-height: 1.35 !important;
