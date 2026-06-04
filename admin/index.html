@@ -79,11 +79,11 @@
             <div class="nav-item active" onclick="show('hero')">🏠 Главный экран</div>
             <div class="nav-item" onclick="show('seo')">🔍 SEO</div>
             <div class="nav-item" onclick="show('map')">📍 Карта</div>
-            <div class="nav-item" onclick="show('masters')">👤 Мастера</div>
+            <div class="nav-item" onclick="show('masters')"> Мастера</div>
             <div class="nav-item" onclick="show('features')">✨ Преимущества</div>
             <div class="nav-item" onclick="show('beforeAfter')">🔄 До/После</div>
             <div class="nav-item" onclick="show('prices')">💰 Прайс</div>
-            <div class="nav-item" onclick="show('reviews')"> Отзывы</div>
+            <div class="nav-item" onclick="show('reviews')">💬 Отзывы</div>
             <div class="nav-item" onclick="show('faq')">❓ FAQ</div>
             <div class="nav-item" onclick="show('care')">📋 Инструкции</div>
             <div class="nav-item" onclick="show('moderation')">🕒 Модерация</div>
@@ -96,7 +96,7 @@
                 <div class="section-header"><h2>🏠 Главный экран и Дизайн</h2></div>
                 
                 <div class="form-group">
-                    <label> Расположение текста на баннере</label>
+                    <label>📍 Расположение текста на баннере</label>
                     <select id="hero-alignment-select" onchange="currentData.hero.alignment = this.value">
                         <option value="center">По центру (стандарт)</option>
                         <option value="top-left">Слева вверху</option>
@@ -106,25 +106,24 @@
                         <option value="bottom-center">По центру внизу</option>
                         <option value="bottom-right">Справа внизу</option>
                     </select>
-                    <small>Выберите, где должен находиться текст на баннере</small>
                 </div>
 
                 <div class="form-group"><label>Текст кнопки записи</label><input data-bind="hero.btnText"></div>
 
                 <hr style="margin: 30px 0; border: 0; border-top: 1px solid var(--border);">
-                <h3 style="margin-bottom: 15px; color: var(--text-dark);">📝 Текстовые блоки на баннере</h3>
+                <h3 style="margin-bottom: 15px;">📝 Текстовые блоки на баннере</h3>
                 <small style="margin-bottom: 15px; display:block;">Просто заполните поля. Сохраните, чтобы увидеть результат.</small>
                 
                 <div class="dynamic-list" id="hero-texts-list"></div>
                 <button class="add-btn" onclick="addItem('heroTexts')">+ Добавить текстовый блок</button>
 
                 <hr style="margin: 30px 0; border: 0; border-top: 1px solid var(--border);">
-                <h3 style="margin-bottom: 15px; color: var(--text-dark);">🎨 Фон и общие цвета</h3>
+                <h3 style="margin-bottom: 15px;">🎨 Фон и общие цвета</h3>
 
                 <div class="form-group">
                     <label>Фоновое изображение (Баннер)</label>
                     <div class="upload-row"><input type="file" id="banner-input" accept="image/*"><span class="upload-status" id="banner-status"></span></div>
-                    <img id="banner-preview" class="img-preview" style="margin-top:10px; width:100%; max-height:200px; object-fit:cover; display:none;">
+                    <img id="banner-preview" style="margin-top:10px; width:100%; max-height:200px; object-fit:cover; display:none;">
                 </div>
 
                 <div class="form-group">
@@ -136,21 +135,35 @@
                 </div>
             </section>
 
+            <!-- ✅ СЕКЦИЯ SEO -->
             <section id="seo" class="section">
-                <div class="section-header"><h2> SEO Оптимизация</h2></div>
-                <div class="form-group"><label>Заголовок страницы (Title)</label><input data-bind="seo.title"></div>
-                <div class="form-group"><label>Описание (Description)</label><textarea rows="3" data-bind="seo.description"></textarea></div>
-                <div class="form-group"><label>Ключевые слова (Keywords)</label><input data-bind="seo.keywords"></div>
+                <div class="section-header"><h2>🔍 SEO Оптимизация</h2></div>
+                <div class="form-group">
+                    <label>Заголовок страницы (Title)</label>
+                    <input data-bind="seo.title" placeholder="Шугаринг Полоцк | Ladi Sugar">
+                    <small>Отображается во вкладке браузера и в результатах поиска. Рекомендуемая длина: 50-60 символов.</small>
+                </div>
+                <div class="form-group">
+                    <label>Описание (Description)</label>
+                    <textarea rows="3" data-bind="seo.description" placeholder="Профессиональный шугаринг в Полоцке..."></textarea>
+                    <small>Краткое описание сайта для поисковиков. Рекомендуемая длина: 150-160 символов.</small>
+                </div>
+                <div class="form-group">
+                    <label>Ключевые слова (Keywords)</label>
+                    <input data-bind="seo.keywords" placeholder="шугаринг, полоцк, эпиляция">
+                    <small>Слова через запятую, по которым вас могут найти.</small>
+                </div>
                 <hr style="margin: 20px 0; border: 0; border-top: 1px solid var(--border);">
                 <div class="form-group">
                     <label>Картинка для соцсетей (OG Image)</label>
                     <div class="upload-row"><input type="file" id="og-image-input" accept="image/*"><span class="upload-status" id="og-image-status"></span></div>
-                    <img id="og-image-preview" class="img-preview" style="margin-top:10px; width:100%; max-height:200px; object-fit:cover; display:none;">
+                    <img id="og-image-preview" style="margin-top:10px; width:100%; max-height:200px; object-fit:cover; display:none;">
+                    <small>Изображение, которое будет показываться при отправке ссылки в соцсети (VK, Telegram, WhatsApp). Рекомендуемый размер: 1200x630 px.</small>
                 </div>
             </section>
 
             <section id="map" class="section">
-                <div class="section-header"><h2> Карта</h2></div>
+                <div class="section-header"><h2>📍 Карта</h2></div>
                 <div class="form-group">
                     <label>URL карты (из конструктора Яндекс.Карт)</label>
                     <input type="url" data-bind="map.url" placeholder="https://yandex.ru/map-widget/v1/...">
@@ -167,7 +180,7 @@
                 </div>
                 <div class="form-group">
                     <label>Предпросмотр</label>
-                    <div id="map-preview" style="border-radius:15px; overflow:hidden; border:5px solid var(--bg-light);">
+                    <div style="border-radius:15px; overflow:hidden; border:5px solid var(--bg-light);">
                         <iframe id="map-preview-frame" src="" width="100%" height="400" frameborder="0"></iframe>
                     </div>
                 </div>
@@ -184,12 +197,12 @@
                 <button class="add-btn" onclick="addItem('features')">+ Добавить преимущество</button>
             </section>
             <section id="beforeAfter" class="section">
-                <div class="section-header"><h2> До / После</h2></div>
+                <div class="section-header"><h2>🔄 До / После</h2></div>
                 <div class="dynamic-list" id="beforeAfter-list"></div>
                 <button class="add-btn" onclick="addItem('beforeAfter')">+ Добавить сравнение</button>
             </section>
             <section id="prices" class="section">
-                <div class="section-header"><h2>💰 Прайс-лист</h2></div>
+                <div class="section-header"><h2> Прайс-лист</h2></div>
                 <div class="dynamic-list" id="prices-list"></div>
                 <button class="add-btn" onclick="addItem('prices')">+ Добавить услугу</button>
             </section>
@@ -219,7 +232,7 @@
                 <button class="add-btn" onclick="addItem('blog')">+ Добавить статью</button>
             </section>
             <section id="contacts" class="section">
-                <div class="section-header"><h2> Контакты и кнопки связи</h2></div>
+                <div class="section-header"><h2>📞 Контакты и кнопки связи</h2></div>
                 <div class="form-group"><label>Адрес</label><input data-bind="contacts.address"></div>
                 <div class="form-group"><label>Телефон</label><input data-bind="contacts.phone"></div>
                 <div class="form-group"><label>WhatsApp (цифры без +)</label><input data-bind="contacts.whatsapp"></div>
@@ -333,11 +346,10 @@
                 if (!res.ok) throw new Error('Failed to load data');
                 currentData = await res.json();
                 
-                // ✅ ИНИЦИАЛИЗАЦИЯ hero.alignment (ОБЯЗАТЕЛЬНО!)
+                // Инициализация hero.alignment
                 if (!currentData.hero) currentData.hero = {};
                 if (!currentData.hero.alignment) currentData.hero.alignment = 'center';
                 
-                // ✅ Устанавливаем значение в select вручную
                 const alignmentSelect = document.getElementById('hero-alignment-select');
                 if (alignmentSelect) {
                     alignmentSelect.value = currentData.hero.alignment;
@@ -361,10 +373,21 @@
                 });
                 if (!currentData.contacts) currentData.contacts = {};
                 if (!Array.isArray(currentData.contacts.extraButtons)) currentData.contacts.extraButtons = [];
-                if (!currentData.seo) currentData.seo = { title: '', description: '', keywords: '', ogImage: '' };
+                
+                // ✅ ИНИЦИАЛИЗАЦИЯ SEO
+                if (!currentData.seo) {
+                    currentData.seo = { 
+                        title: 'Шугаринг Полоцк | Ladi Sugar', 
+                        description: 'Профессиональный шугаринг в Полоцке.', 
+                        keywords: 'шугаринг, полоцк, эпиляция', 
+                        ogImage: '' 
+                    };
+                }
+                
                 if (!currentData.theme) currentData.theme = { heroImage: '', color_bg_light: '#FDEEF4', color_bg_white: '#FFFFFF', color_primary: '#B08D74', color_text: '#333333' };
                 if (!currentData.map) currentData.map = { url: '', height: '400' };
 
+                // Привязка полей с data-bind
                 document.querySelectorAll('[data-bind]').forEach(el => { 
                     const path = el.dataset.bind; 
                     el.value = getNested(currentData, path) || ''; 
@@ -538,7 +561,7 @@
             
             try { 
                 const payload = { content: currentData, token: sessionToken };
-                console.log('Отправляем данные:', JSON.stringify(payload.content.hero, null, 2)); // Для отладки
+                console.log('Отправляем SEO данные:', currentData.seo);
                 const r = await fetch('/api/save', { 
                     method: 'POST', 
                     headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${sessionToken}` }, 
@@ -548,7 +571,7 @@
                 const res = await r.json(); 
                 
                 if (r.ok) {
-                    showToast('✅ Успешно сохранено! Alignment: ' + currentData.hero.alignment);
+                    showToast('✅ Успешно сохранено! Title: ' + (currentData.seo?.title || 'не задан'));
                 } else {
                     showToast('❌ Ошибка: ' + (res.message || res.details || 'Неизвестная ошибка'), true);
                 }
@@ -557,7 +580,7 @@
                 showToast('❌ Ошибка сети или сервера', true); 
             } finally { 
                 b.disabled = false; 
-                b.textContent = '💾 Сохранить и Опубликовать'; 
+                b.textContent = ' Сохранить и Опубликовать'; 
             } 
         }
 
@@ -580,7 +603,7 @@
 
         document.getElementById('banner-input').onchange = async (e) => { 
             const f = e.target.files[0]; if (!f) return; 
-            if (f.size > 5_000_000) { document.getElementById('banner-status').textContent = ' > 5 МБ'; return; } 
+            if (f.size > 5_000_000) { document.getElementById('banner-status').textContent = '❌ > 5 МБ'; return; } 
             document.getElementById('banner-status').textContent = '⏳...'; e.target.disabled = true; 
             try { 
                 const base64 = await fileToBase64(f); 
@@ -599,7 +622,7 @@
         document.getElementById('og-image-input').onchange = async (e) => { 
             const f = e.target.files[0]; if (!f) return; 
             if (f.size > 5_000_000) { document.getElementById('og-image-status').textContent = '❌ > 5 МБ'; return; } 
-            document.getElementById('og-image-status').textContent = '...'; e.target.disabled = true; 
+            document.getElementById('og-image-status').textContent = '⏳...'; e.target.disabled = true; 
             try { 
                 const base64 = await fileToBase64(f); 
                 const res = await fetch('/api/upload', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ fileName: f.name, contentBase64: base64 }) }); 
