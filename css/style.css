@@ -304,9 +304,9 @@ footer { background: var(--text-dark); color: white; text-align: center; padding
 
 /* ========== ПЛАВАЮЩЕЕ ВЕРТИКАЛЬНОЕ МЕНЮ ДЛЯ МОБИЛЬНЫХ ========== */
 .mobile-floating-nav {
-    display: none; /* Скрыто на десктопе */
+    display: none;
     position: fixed;
-    top: 100px; /* Сразу под шапкой */
+    top: 100px;
     right: 10px;
     z-index: 998;
     flex-direction: column;
@@ -365,7 +365,16 @@ footer { background: var(--text-dark); color: white; text-align: center; padding
 }
 
 @media (max-width: 768px) {
-    .hero-text-block { font-size: 0.7em !important; }
+    /* ✅ УВЕЛИЧЕННЫЙ ТЕКСТ НА БАННЕРЕ ДЛЯ МОБИЛЬНЫХ */
+    .hero-text-block { 
+        font-size: 1.4em !important;
+        line-height: 1.3 !important;
+        margin-bottom: 12px !important;
+    }
+    
+    .hero-text-block:first-child {
+        font-size: 1.6em !important;
+    }
     
     /* Скрываем обычное меню на мобильных */
     .nav-links { display: none; }
@@ -379,7 +388,7 @@ footer { background: var(--text-dark); color: white; text-align: center; padding
     .map-container { height: 300px; }
     .logo-img { height: 50px; }
     .nav-wrapper { min-height: 70px; gap: 8px; }
-    .hero { margin-top: 70px; }
+    .hero { margin-top: 70px; min-height: 80vh; }
     
     .social-buttons { flex-direction: column; }
     .btn-social { width: 100%; font-size: 1rem; white-space: nowrap; }
@@ -398,6 +407,16 @@ footer { background: var(--text-dark); color: white; text-align: center; padding
 }
 
 @media (max-width: 480px) {
+    /* ✅ ЕЩЁ БОЛЬШЕ УВЕЛИЧИВАЕМ ДЛЯ ОЧЕНЬ МАЛЕНЬКИХ ЭКРАНОВ */
+    .hero-text-block { 
+        font-size: 1.3em !important; 
+        line-height: 1.35 !important;
+    }
+    
+    .hero-text-block:first-child {
+        font-size: 1.5em !important;
+    }
+    
     .mobile-nav-item { font-size: 0.7rem; padding: 6px 10px; }
     .mobile-nav-item i { font-size: 0.8rem; }
     .mobile-floating-nav { right: 5px; top: 80px; padding: 6px; gap: 4px; }
