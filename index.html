@@ -13,7 +13,6 @@
     <header>
         <div class="container nav-wrapper">
             <a href="#" class="logo-link"><img src="images/logo.png" alt="Logo" class="logo-img"></a>
-            <!-- ✅ ДОБАВЛЕНЫ ИКОНКИ В МЕНЮ -->
             <nav class="nav-links">
                 <a href="#about"><i class="fas fa-star"></i> Преимущества</a>
                 <a href="#masters"><i class="fas fa-user-friends"></i> Мастера</a>
@@ -155,7 +154,6 @@
         </div>
     </footer>
 
-    <!-- ПЛАВАЮЩАЯ КНОПКА МЕССЕНДЖЕРОВ -->
     <div class="floating-messenger" id="floating-messenger">
         <div class="messenger-menu" id="messenger-menu">
             <a href="#" id="float-wa" target="_blank" class="messenger-btn messenger-wa">
@@ -180,7 +178,6 @@
         </button>
     </div>
 
-    <!-- ПЛАВАЮЩЕЕ ВЕРТИКАЛЬНОЕ МЕНЮ ДЛЯ МОБИЛЬНЫХ -->
     <nav class="mobile-floating-nav" id="mobile-floating-nav">
         <a href="#about" class="mobile-nav-item">
             <i class="fas fa-star"></i>
@@ -560,7 +557,7 @@
                 });
                 const data = await res.json();
                 status.style.color = res.ok ? '#22c55e' : '#ef4444';
-                status.textContent = data.message || (res.ok ? '✅ Отзыв отправлен!' : ' Ошибка');
+                status.textContent = data.message || (res.ok ? '✅ Отзыв отправлен!' : '❌ Ошибка');
                 if (res.ok) e.target.reset();
             } catch (err) {
                 status.style.color = '#ef4444';
