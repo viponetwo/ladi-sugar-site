@@ -6,7 +6,6 @@
     <meta name="description" content="Профессиональный шугаринг в Полоцке.">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="css/style.css">
-<meta name="google-site-verification" content="DQKcwR4OD8b_oGQ-MXQnj1rQuqIUTmB5XC2fz5pU8gM" />
 </head>
 <body>
     <header>
@@ -102,7 +101,8 @@
                         <select id="rev-rating"><option value="5">⭐⭐⭐⭐⭐ (5)</option><option value="4">⭐⭐⭐⭐ (4)</option><option value="3">⭐⭐⭐ (3)</option><option value="2">⭐⭐ (2)</option><option value="1">⭐ (1)</option></select>
                     </div>
                     <textarea id="rev-text" placeholder="Расскажите о вашем опыте..." rows="4" required></textarea>
-                    <button type="submit" id="rev-submit-btn" class="btn-hero" style="padding:12px 30px; font-size:1rem; width:100%;">Отправить на модерацию</button>
+                    <!-- ✅ ИЗМЕНЕН ТЕКСТ КНОПКИ -->
+                    <button type="submit" id="rev-submit-btn" class="btn-hero" style="padding:12px 30px; font-size:1rem; width:100%;">Отправить отзыв</button>
                     <div id="rev-status" style="text-align:center; margin-top:10px; font-size:0.9rem;"></div>
                 </form>
             </div>
@@ -371,9 +371,40 @@
 
         function initShareButtons() { const url = encodeURIComponent(window.location.href); const title = encodeURIComponent(document.title || 'Ladi Sugar Polotsk'); document.querySelector('.share-wa').href = `https://wa.me/?text=${title}%20${url}`; document.querySelector('.share-tg').href = `https://t.me/share/url?url=${url}&text=${title}`; document.querySelector('.share-vk').href = `https://vk.com/share.php?url=${url}&title=${title}`; document.querySelector('.share-pin').href = `https://www.pinterest.com/pin/create/button/?url=${url}&description=${title}`; }
         function copyShareLink() { navigator.clipboard.writeText(window.location.href).then(() => showShareToast('✅ Ссылка скопирована!')).catch(() => { const input = document.createElement('input'); input.value = window.location.href; document.body.appendChild(input); input.select(); document.execCommand('copy'); document.body.removeChild(input); showShareToast('✅ Ссылка скопирована!'); }); }
-        function showShareToast(msg) { let t = document.querySelector('.share-toast') || document.createElement('div'); t.className = 'share-toast'; t.textContent = msg; document.body.appendChild(t); setTimeout(() => t.classList.add('show'), 10); setTimeout(() => t.classList.remove('show'), 2500); }
+        function showShareToast(msg) { let t = document.querySelector('.share-toast') || document.createElement('div'); t.className = 'share-toast'; t.textContent = msg; document.body.appendChild(t); setTimeout(() => t.classList.add('show'), 10; setTimeout(() => t.classList.remove('show'), 2500); }
 
-        document.getElementById('reviewForm')?.addEventListener('submit', async (e) => { e.preventDefault(); const btn = document.getElementById('rev-submit-btn'); const status = document.getElementById('rev-status'); btn.disabled = true; btn.textContent = '⏳ Отправка...'; status.textContent = ''; try { const res = await fetch('/api/review/submit', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ name: document.getElementById('rev-name').value, text: document.getElementById('rev-text').value, rating: document.getElementById('rev-rating').value }) }); const data = await res.json(); status.style.color = res.ok ? '#22c55e' : '#ef4444'; status.textContent = data.message; if (res.ok) e.target.reset(); } catch (err) { status.style.color = '#ef4444'; status.textContent = '❌ Ошибка сети'; } finally { btn.disabled = false; btn.textContent = 'Отправить на модерацию'; } });
+        // ✅ ИЗМЕНЕН ТЕКСТ КНОПКИ В JS (было: "Отправить на модерацию")
+        document.getElementById('reviewForm')?.addEventListener('submit', async (e) => { 
+            e.preventDefault(); 
+            const btn = document.getElementById('rev-submit-btn'); 
+            const status = document.getElementById('rev-status'); 
+            btn.disabled = true; 
+            btn.textContent = '⏳ Отправка...'; 
+            status.textContent = ''; 
+            
+            try { 
+                const res = await fetch('/api/review/submit', { 
+                    method: 'POST', 
+                    headers: { 'Content-Type': 'application/json' }, 
+                    body: JSON.stringify({ 
+                        name: document.getElementById('rev-name').value, 
+                        text: document.getElementById('rev-text').value, 
+                        rating: document.getElementById('rev-rating').value 
+                    }) 
+                }); 
+                const data = await res.json(); 
+                status.style.color = res.ok ? '#22c55e' : '#ef4444'; 
+                status.textContent = data.message; 
+                if (res.ok) e.target.reset(); 
+            } catch (err) { 
+                status.style.color = '#ef4444'; 
+                status.textContent = '❌ Ошибка сети'; 
+            } finally { 
+                btn.disabled = false; 
+                btn.textContent = 'Отправить отзыв'; // ✅ Здесь тоже изменено
+            } 
+        });
+        
         document.addEventListener('DOMContentLoaded', () => { loadData(); initShareButtons(); });
     </script>
 </body>
