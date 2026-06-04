@@ -13,15 +13,16 @@
     <header>
         <div class="container nav-wrapper">
             <a href="#" class="logo-link"><img src="images/logo.png" alt="Logo" class="logo-img"></a>
+            <!-- ✅ ДОБАВЛЕНЫ ИКОНКИ В МЕНЮ -->
             <nav class="nav-links">
-                <a href="#about">Преимущества</a>
-                <a href="#masters">Мастера</a>
-                <a href="#before-after">До/После</a>
-                <a href="#blog">Блог</a>
-                <a href="#faq">Частые вопросы</a>
-                <a href="#prices">Цены</a>
-                <a href="#care">Памятка</a>
-                <a href="#contacts">Контакты</a>
+                <a href="#about"><i class="fas fa-star"></i> Преимущества</a>
+                <a href="#masters"><i class="fas fa-user-friends"></i> Мастера</a>
+                <a href="#before-after"><i class="fas fa-exchange-alt"></i> До/После</a>
+                <a href="#blog"><i class="fas fa-book-open"></i> Блог</a>
+                <a href="#faq"><i class="fas fa-question-circle"></i> Вопросы</a>
+                <a href="#prices"><i class="fas fa-tag"></i> Цены</a>
+                <a href="#care"><i class="fas fa-clipboard-list"></i> Памятка</a>
+                <a href="#contacts"><i class="fas fa-phone-alt"></i> Контакты</a>
             </nav>
             <a href="#" id="header-dikidi-btn" target="_blank" class="btn-header btn-hero-pulse">Записаться</a>
         </div>
@@ -154,7 +155,7 @@
         </div>
     </footer>
 
-    <!-- ✅ ПЛАВАЮЩАЯ КНОПКА МЕССЕНДЖЕРОВ -->
+    <!-- ПЛАВАЮЩАЯ КНОПКА МЕССЕНДЖЕРОВ -->
     <div class="floating-messenger" id="floating-messenger">
         <div class="messenger-menu" id="messenger-menu">
             <a href="#" id="float-wa" target="_blank" class="messenger-btn messenger-wa">
@@ -179,7 +180,7 @@
         </button>
     </div>
 
-    <!-- ✅ ПЛАВАЮЩЕЕ ВЕРТИКАЛЬНОЕ МЕНЮ ДЛЯ МОБИЛЬНЫХ -->
+    <!-- ПЛАВАЮЩЕЕ ВЕРТИКАЛЬНОЕ МЕНЮ ДЛЯ МОБИЛЬНЫХ -->
     <nav class="mobile-floating-nav" id="mobile-floating-nav">
         <a href="#about" class="mobile-nav-item">
             <i class="fas fa-star"></i>
@@ -559,7 +560,7 @@
                 });
                 const data = await res.json();
                 status.style.color = res.ok ? '#22c55e' : '#ef4444';
-                status.textContent = data.message || (res.ok ? '✅ Отзыв отправлен!' : '❌ Ошибка');
+                status.textContent = data.message || (res.ok ? '✅ Отзыв отправлен!' : ' Ошибка');
                 if (res.ok) e.target.reset();
             } catch (err) {
                 status.style.color = '#ef4444';
