@@ -313,17 +313,40 @@ footer { background: var(--text-dark); color: white; text-align: center; padding
 
 @media (max-width: 768px) {
     .hero-text-block { font-size: 0.7em !important; }
-    .nav-links { display: none; }
-    .btn-header { display: none; }
+    
+    /* ✅ МЕНЮ НЕ СКРЫВАЕТСЯ, А СТАНОВИТСЯ ПРОКРУЧИВАЕМЫМ */
+    .nav-links { 
+        display: flex !important; 
+        gap: 4px;
+        font-size: 0.7rem;
+        padding: 3px 0;
+    }
+    
+    .nav-links a { 
+        font-size: 0.7rem; 
+        padding: 6px 10px; 
+        border-radius: 15px;
+    }
+    
+    /* Кнопка "Записаться" остаётся видимой, но компактнее */
+    .btn-header { 
+        display: inline-block !important;
+        padding: 6px 12px; 
+        font-size: 0.7rem; 
+        margin-left: 5px;
+    }
+    
     .contacts-wrapper { grid-template-columns: 1fr; }
     .map-container { height: 300px; }
     .logo-img { height: 50px; }
-    .nav-wrapper { min-height: 60px; }
-    .hero { margin-top: 60px; }
+    .nav-wrapper { min-height: 70px; gap: 8px; }
+    .hero { margin-top: 70px; }
+    
     .social-buttons { flex-direction: column; }
     .btn-social { width: 100%; font-size: 1rem; white-space: nowrap; }
     .btn-dikidi { flex: 1; flex-direction: row; white-space: nowrap; min-height: auto; padding: 14px; }
     .btn-dikidi i { margin-bottom: 0; margin-right: 8px; }
+    
     .lightbox-pin { right: 55px; top: 18px; width: 32px; height: 32px; font-size: 0.9rem; }
     .ba-slider { height: 300px; }
     .ba-pin-btn { opacity: 1; width: 36px; height: 36px; font-size: 1rem; }
@@ -333,4 +356,10 @@ footer { background: var(--text-dark); color: white; text-align: center; padding
     .messenger-main-btn { width: 60px; height: 60px; font-size: 24px; }
     .messenger-btn { min-width: 160px; padding: 10px 16px; font-size: 0.9rem; }
     .btn-route { min-width: 100%; font-size: 0.9rem; padding: 12px 16px; }
+}
+
+@media (max-width: 480px) {
+    .nav-links a { font-size: 0.65rem; padding: 5px 8px; }
+    .btn-header { font-size: 0.65rem; padding: 5px 10px; }
+    .logo-img { height: 45px; }
 }
