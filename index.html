@@ -179,6 +179,42 @@
         </button>
     </div>
 
+    <!-- ✅ ПЛАВАЮЩЕЕ ВЕРТИКАЛЬНОЕ МЕНЮ ДЛЯ МОБИЛЬНЫХ -->
+    <nav class="mobile-floating-nav" id="mobile-floating-nav">
+        <a href="#about" class="mobile-nav-item">
+            <i class="fas fa-star"></i>
+            <span>Преимущества</span>
+        </a>
+        <a href="#masters" class="mobile-nav-item">
+            <i class="fas fa-user-friends"></i>
+            <span>Мастера</span>
+        </a>
+        <a href="#before-after" class="mobile-nav-item">
+            <i class="fas fa-exchange-alt"></i>
+            <span>До/После</span>
+        </a>
+        <a href="#blog" class="mobile-nav-item">
+            <i class="fas fa-book-open"></i>
+            <span>Блог</span>
+        </a>
+        <a href="#faq" class="mobile-nav-item">
+            <i class="fas fa-question-circle"></i>
+            <span>Вопросы</span>
+        </a>
+        <a href="#prices" class="mobile-nav-item">
+            <i class="fas fa-tag"></i>
+            <span>Цены</span>
+        </a>
+        <a href="#care" class="mobile-nav-item">
+            <i class="fas fa-clipboard-list"></i>
+            <span>Памятка</span>
+        </a>
+        <a href="#contacts" class="mobile-nav-item">
+            <i class="fas fa-phone-alt"></i>
+            <span>Контакты</span>
+        </a>
+    </nav>
+
     <div id="lightbox" class="lightbox" onclick="closeLightbox(event)">
         <a href="#" class="lightbox-pin" onclick="pinLightboxImage(); return false;" title="Сохранить в Pinterest"><i class="fab fa-pinterest-p"></i></a>
         <span class="lightbox-close">&times;</span>
@@ -264,7 +300,6 @@
                     }
                     if (contactAddress) contactAddress.textContent = data.contacts.address || '';
 
-                    // Плавающие кнопки мессенджеров
                     const floatWa = document.getElementById('float-wa');
                     const floatViber = document.getElementById('float-viber');
                     const floatTg = document.getElementById('float-tg');
@@ -275,7 +310,6 @@
                     if (floatTg && data.contacts.telegram) floatTg.href = `https://t.me/${data.contacts.telegram}`;
                     if (floatInsta) floatInsta.href = data.contacts.instagram || '#';
 
-                    // Кнопки маршрута
                     const address = data.contacts.address || 'Полоцк, улица Успенская';
                     const encodedAddress = encodeURIComponent(address);
                     
@@ -471,16 +505,12 @@
             setTimeout(() => t.classList.remove('show'), 2500);
         }
 
-        // ✅ ЛОГИКА ПЛАВАЮЩЕЙ КНОПКИ
         function initFloatingMessenger() {
             const mainBtn = document.getElementById('messenger-main-btn');
             const menu = document.getElementById('messenger-menu');
             const icon = document.getElementById('messenger-icon');
             
-            if (!mainBtn || !menu) {
-                console.error('Плавающая кнопка не найдена в HTML');
-                return;
-            }
+            if (!mainBtn || !menu) return;
 
             let isOpen = false;
 
@@ -499,7 +529,6 @@
                 }
             });
 
-            // Закрытие при клике вне меню
             document.addEventListener('click', (e) => {
                 if (!menu.contains(e.target) && e.target !== mainBtn && isOpen) {
                     isOpen = false;
@@ -508,8 +537,6 @@
                     if (icon) icon.className = 'fas fa-comment-dots';
                 }
             });
-
-            console.log('✅ Плавающая кнопка инициализирована');
         }
 
         document.getElementById('reviewForm')?.addEventListener('submit', async (e) => {
