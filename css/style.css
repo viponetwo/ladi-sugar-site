@@ -26,19 +26,17 @@ header {
     padding: 10px 0; 
 }
 
-/* ✅ GRID: ЛОГО | МЕНЮ | КНОПКА — НЕ НАЕЗЖАЮТ */
 .nav-wrapper { 
     display: grid;
-    grid-template-columns: auto 1fr auto;
+    grid-template-columns: auto minmax(0, 1fr) auto;
     align-items: center;
     min-height: 120px;
-    gap: 15px;
-    padding: 0 20px;
+    gap: 10px;
+    padding: 0 15px;
 }
 
 .logo-link {
     flex-shrink: 0;
-    min-width: 150px;
     justify-self: start;
 }
 
@@ -52,7 +50,7 @@ header {
 
 .nav-links { 
     display: flex; 
-    gap: 6px; 
+    gap: 4px; 
     flex-wrap: nowrap; 
     overflow-x: auto; 
     overflow-y: hidden;
@@ -61,30 +59,30 @@ header {
     align-items: center; 
     justify-content: center;
     min-width: 0;
-    padding: 5px 10px;
+    padding: 5px 5px;
     justify-self: stretch;
 }
 
 .nav-links::-webkit-scrollbar { display: none; }
 
 .nav-links a { 
-    font-size: 0.75rem; 
+    font-size: 0.7rem; 
     font-weight: 600; 
     color: var(--text-dark); 
     white-space: nowrap;
-    padding: 6px 10px; 
+    padding: 5px 8px; 
     border-radius: 15px; 
     background: #f5f5f5; 
     border: 1px solid #e0e0e0;
     transition: all 0.2s ease;
     display: flex;
     align-items: center;
-    gap: 4px;
+    gap: 3px;
     flex-shrink: 0;
 }
 
 .nav-links a i {
-    font-size: 0.75rem;
+    font-size: 0.7rem;
     color: var(--primary);
 }
 
@@ -98,14 +96,14 @@ header {
 .btn-header { 
     background: var(--primary); 
     color: white; 
-    padding: 10px 20px; 
+    padding: 10px 18px; 
     border-radius: 20px; 
     font-weight: 600; 
-    font-size: 0.85rem; 
+    font-size: 0.8rem; 
     white-space: nowrap; 
     flex-shrink: 0; 
     border: none;
-    min-width: 130px;
+    min-width: 120px;
     text-align: center;
     justify-self: end;
 }
@@ -447,11 +445,10 @@ footer { background: var(--text-dark); color: white; text-align: center; padding
 /* ========== АДАПТИВНОСТЬ ========== */
 @media (max-width: 1024px) {
     .logo-img { height: 80px; }
-    .logo-link { min-width: 130px; }
-    .nav-wrapper { min-height: 100px; gap: 10px; }
+    .nav-wrapper { min-height: 100px; gap: 8px; }
     .nav-links { gap: 3px; padding: 3px; }
-    .nav-links a { font-size: 0.7rem; padding: 5px 8px; }
-    .nav-links a i { font-size: 0.7rem; }
+    .nav-links a { font-size: 0.65rem; padding: 4px 6px; }
+    .nav-links a i { font-size: 0.65rem; }
     .btn-header { padding: 6px 12px; font-size: 0.75rem; min-width: 110px; }
     .hero { margin-top: 100px; }
     .mobile-floating-nav { top: 100px; }
@@ -477,7 +474,6 @@ footer { background: var(--text-dark); color: white; text-align: center; padding
     .contacts-wrapper { grid-template-columns: 1fr; }
     .map-container { height: 300px; }
     .logo-img { height: 65px; }
-    .logo-link { min-width: 110px; }
     .nav-wrapper { min-height: 85px; gap: 8px; }
     .hero { margin-top: 85px; min-height: 80vh; }
     .mobile-floating-nav { top: 85px; max-height: calc(100vh - 100px); }
