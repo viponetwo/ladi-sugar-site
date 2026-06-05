@@ -5,16 +5,16 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Ladi Sugar - Шугаринг в Полоцке</title>
     <meta name="description" content="Профессиональный шугаринг в Полоцке.">
+    <meta name="keywords" content="шугаринг, полоцк, эпиляция">
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="">
+    <meta property="og:description" content="">
+    <meta property="og:image" content="">
+    <meta property="og:url" content="">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/style.css?v=3">
 </head>
 <body>
-    <!-- ✅ ОТЛАДОЧНЫЙ БЛОК -->
-    <div id="debug-info" style="display:none; position:fixed; top:10px; left:10px; background:#fff3cd; padding:10px; border-radius:8px; z-index:99999; font-size:12px; max-width:300px; border:1px solid #ffc107;">
-        <strong>🔧 Статус загрузки:</strong>
-        <div id="debug-content">Загрузка...</div>
-    </div>
-
     <header>
         <div class="container nav-wrapper">
             <a href="#" class="logo-link"><img src="images/logo.png" alt="Logo" class="logo-img"></a>
@@ -33,11 +33,7 @@
     </header>
 
     <section class="hero" id="hero-section">
-        <div class="container hero-content" id="hero-content-container">
-            <!-- ✅ ДЕФОЛТНЫЙ ТЕКСТ (покажется если JS не загрузится) -->
-            <div class="hero-text-block" style="font-size:77px; color:#fff;">Ladi Sugar</div>
-            <div class="hero-text-block" style="font-size:21px; color:#fff;">Идеальная гладкость надолго</div>
-        </div>
+        <div class="container hero-content" id="hero-content-container"></div>
     </section>
 
     <section id="about" class="bg-light">
@@ -129,7 +125,6 @@
                         <a href="#" id="btn-viber" target="_blank" class="btn-social btn-viber"><i class="fab fa-viber"></i></a>
                         <a href="#" id="btn-insta" target="_blank" class="btn-social btn-insta"><i class="fab fa-instagram"></i></a>
                     </div>
-                    
                     <div class="route-buttons">
                         <a href="#" id="btn-yandex-route" target="_blank" class="btn-route btn-yandex">
                             <i class="fas fa-route"></i> Построить маршрут (Яндекс)
@@ -167,20 +162,16 @@
     <div class="floating-messenger" id="floating-messenger">
         <div class="messenger-menu" id="messenger-menu">
             <a href="#" id="float-wa" target="_blank" class="messenger-btn messenger-wa">
-                <i class="fab fa-whatsapp"></i>
-                <span>WhatsApp</span>
+                <i class="fab fa-whatsapp"></i><span>WhatsApp</span>
             </a>
             <a href="#" id="float-viber" target="_blank" class="messenger-btn messenger-viber">
-                <i class="fab fa-viber"></i>
-                <span>Viber</span>
+                <i class="fab fa-viber"></i><span>Viber</span>
             </a>
             <a href="#" id="float-tg" target="_blank" class="messenger-btn messenger-tg">
-                <i class="fab fa-telegram-plane"></i>
-                <span>Telegram</span>
+                <i class="fab fa-telegram-plane"></i><span>Telegram</span>
             </a>
             <a href="#" id="float-insta" target="_blank" class="messenger-btn messenger-insta">
-                <i class="fab fa-instagram"></i>
-                <span>Instagram</span>
+                <i class="fab fa-instagram"></i><span>Instagram</span>
             </a>
         </div>
         <button class="messenger-main-btn" id="messenger-main-btn" aria-label="Написать нам">
@@ -207,73 +198,123 @@
     </div>
 
     <script>
-        // ✅ ФУНКЦИЯ ЛОГИРОВАНИЯ
-        function logDebug(msg, type = 'info') {
-            const debugEl = document.getElementById('debug-content');
-            if (debugEl) {
-                const color = type === 'error' ? '#dc3545' : type === 'success' ? '#28a745' : '#007bff';
-                debugEl.innerHTML += `<div style="color:${color}; margin:2px 0;">${msg}</div>`;
+        // ✅ ДИАГНОСТИКА SEO
+        function debugSEO(msg, type = 'info') {
+            const colors = { info: '#007bff', success: '#28a745', error: '#dc3545', warn: '#ffc107' };
+            console.log(`%c[SEO] ${msg}`, `color:${colors[type]}; font-weight:bold;`);
+            
+            let debugBox = document.getElementById('seo-debug-box');
+            if (!debugBox) {
+                debugBox = document.createElement('div');
+                debugBox.id = 'seo-debug-box';
+                debugBox.style.cssText = 'position:fixed; top:10px; right:10px; background:#fff3cd; padding:15px; border-radius:8px; z-index:99999; font-size:12px; max-width:400px; border:2px solid #ffc107; font-family:monospace; max-height:80vh; overflow-y:auto;';
+                document.body.appendChild(debugBox);
             }
-            console.log(`[DEBUG] ${msg}`);
+            const color = colors[type];
+            debugBox.innerHTML += `<div style="color:${color}; margin:3px 0; border-bottom:1px solid #eee; padding:2px 0;">${msg}</div>`;
         }
 
-        // ✅ ПОКАЗАТЬ ОТЛАДОЧНЫЙ БЛОК
-        document.getElementById('debug-info').style.display = 'block';
-        logDebug('🚀 Загрузка страницы начата...');
+        function checkMetaTags() {
+            debugSEO('🔍 Проверка мета-тегов...');
+            debugSEO(`📌 Title: "${document.title}"`);
+            
+            const metaDesc = document.querySelector('meta[name="description"]');
+            const metaKeywords = document.querySelector('meta[name="keywords"]');
+            const ogTitle = document.querySelector('meta[property="og:title"]');
+            const ogDesc = document.querySelector('meta[property="og:description"]');
+            
+            debugSEO(` Description: ${metaDesc ? metaDesc.content : '❌ НЕ НАЙДЕН'}`);
+            debugSEO(`🔑 Keywords: ${metaKeywords ? metaKeywords.content : '❌ НЕ НАЙДЕН'}`);
+            debugSEO(`📢 OG Title: ${ogTitle ? ogTitle.content : '❌ НЕ НАЙДЕН'}`);
+            debugSEO(`📢 OG Description: ${ogDesc ? ogDesc.content : '❌ НЕ НАЙДЕН'}`);
+        }
 
-        // ✅ ПРОВЕРКА ПУТИ К DATA.JSON
+        function setMetaTag(nameOrProperty, content, isProperty = false) {
+            const attr = isProperty ? 'property' : 'name';
+            let meta = document.querySelector(`meta[${attr}="${nameOrProperty}"]`);
+            
+            if (!meta) {
+                meta = document.createElement('meta');
+                meta.setAttribute(attr, nameOrProperty);
+                document.head.appendChild(meta);
+                debugSEO(`➕ Создан мета-тег: ${attr}="${nameOrProperty}"`, 'success');
+            }
+            
+            meta.content = content;
+            debugSEO(`✅ Установлен ${attr}="${nameOrProperty}" = "${content.substring(0, 60)}..."`, 'success');
+        }
+
         async function loadData() {
-            const possiblePaths = ['/data.json', 'data.json', './data.json'];
-            let data = null;
-            let successfulPath = '';
-
-            for (const path of possiblePaths) {
-                try {
-                    logDebug(`🔍 Пробуем путь: ${path}`);
-                    const response = await fetch(path);
-                    
-                    if (response.ok) {
-                        data = await response.json();
-                        successfulPath = path;
-                        logDebug(`✅ Файл загружен: ${path}`, 'success');
-                        break;
-                    } else {
-                        logDebug(`❌ Путь ${path} не сработал (статус ${response.status})`, 'error');
-                    }
-                } catch (e) {
-                    logDebug(` Ошибка при запросе ${path}: ${e.message}`, 'error');
-                }
-            }
-
-            if (!data) {
-                logDebug('❌ Не удалось загрузить data.json ни по одному пути!', 'error');
-                return;
-            }
-
-            logDebug('📦 Данные получены, начинаем рендеринг...', 'success');
-
-            // ✅ РЕНДЕРИНГ ВСЕХ СЕКЦИЙ
+            debugSEO(' Начало загрузки data.json...');
+            
             try {
-                renderAll(data);
-                logDebug('✅ Все секции успешно отрендерены!', 'success');
-            } catch (e) {
-                logDebug(`❌ Ошибка рендеринга: ${e.message}`, 'error');
+                const response = await fetch('/data.json');
+                
+                if (!response.ok) {
+                    debugSEO(`❌ Ошибка HTTP: ${response.status} ${response.statusText}`, 'error');
+                    return;
+                }
+                
+                const data = await response.json();
+                debugSEO('✅ data.json успешно загружен', 'success');
+                
+                // ✅ ПРОВЕРКА СТРУКТУРЫ SEO
+                debugSEO(` Проверка data.seo: ${typeof data.seo}`, data.seo ? 'success' : 'error');
+                
+                if (data.seo) {
+                    debugSEO('📋 Содержимое data.seo:', 'info');
+                    debugSEO(`  - title: "${data.seo.title}"`);
+                    debugSEO(`  - description: "${data.seo.description}"`);
+                    debugSEO(`  - keywords: "${data.seo.keywords}"`);
+                    debugSEO(`  - ogImage: "${data.seo.ogImage}"`);
+                    
+                    // ✅ УСТАНОВКА TITLE
+                    if (data.seo.title) {
+                        document.title = data.seo.title;
+                        debugSEO(`🎯 Title установлен: "${data.seo.title}"`, 'success');
+                    } else {
+                        debugSEO('⚠️ data.seo.title пустой!', 'warn');
+                    }
+                    
+                    // ✅ УСТАНОВКА DESCRIPTION
+                    if (data.seo.description) {
+                        setMetaTag('description', data.seo.description);
+                    }
+                    
+                    // ✅ УСТАНОВКА KEYWORDS
+                    if (data.seo.keywords) {
+                        setMetaTag('keywords', data.seo.keywords);
+                    }
+                    
+                    // ✅ УСТАНОВКА OG ТЕГОВ
+                    const ogTitle = data.seo.title || document.title;
+                    const ogDesc = data.seo.description || '';
+                    const ogImage = data.seo.ogImage || '';
+                    const ogUrl = window.location.href;
+                    
+                    setMetaTag('og:title', ogTitle, true);
+                    setMetaTag('og:description', ogDesc, true);
+                    setMetaTag('og:image', ogImage, true);
+                    setMetaTag('og:url', ogUrl, true);
+                    setMetaTag('og:type', 'website', true);
+                    
+                    debugSEO('✅ Все SEO теги установлены!', 'success');
+                } else {
+                    debugSEO('❌ data.seo не найден в data.json!', 'error');
+                    debugSEO(' Доступные ключи: ' + Object.keys(data).join(', '), 'warn');
+                }
+                
+                renderContent(data);
+                
+            } catch (error) {
+                debugSEO(`❌ Критическая ошибка: ${error.message}`, 'error');
+                debugSEO(`Stack: ${error.stack}`, 'error');
             }
+            
+            setTimeout(checkMetaTags, 2000);
         }
 
-        function renderAll(data) {
-            // Скрываем отладочный блок через 3 секунды
-            setTimeout(() => {
-                document.getElementById('debug-info').style.display = 'none';
-            }, 3000);
-
-            // SEO
-            if (data.seo && data.seo.title) {
-                document.title = data.seo.title;
-                logDebug(` Title: ${data.seo.title}`);
-            }
-
-            // Тема
+        function renderContent(data) {
             if (data.theme) {
                 if (data.theme.color_bg_light) document.documentElement.style.setProperty('--bg-light', data.theme.color_bg_light);
                 if (data.theme.color_bg_white) document.documentElement.style.setProperty('--bg-white', data.theme.color_bg_white);
@@ -284,7 +325,6 @@
                 }
             }
 
-            // Баннер
             const heroContainer = document.getElementById('hero-content-container');
             if (heroContainer) {
                 heroContainer.innerHTML = '';
@@ -307,7 +347,6 @@
                 }
             }
 
-            // Позиционирование баннера
             const heroSection = document.getElementById('hero-section');
             const alignment = (data.hero && data.hero.alignment) ? data.hero.alignment : 'center';
             if (heroSection) {
@@ -315,7 +354,6 @@
                 heroSection.classList.add(`hero-align-${alignment}`);
             }
 
-            // Кнопка записи
             const bookingText = (data.hero && data.hero.btnText) || 'Записаться онлайн';
             const bookingUrl = (data.hero && data.hero.dikidiUrl) || (data.contacts && data.contacts.dikidi) || '#';
             const headerBtn = document.getElementById('header-dikidi-btn');
@@ -324,7 +362,6 @@
                 headerBtn.href = bookingUrl;
             }
 
-            // Контакты
             if (data.contacts) {
                 const contactPhone = document.getElementById('contact-phone');
                 const contactAddress = document.getElementById('contact-address');
@@ -337,7 +374,6 @@
                     contactAddress.textContent = data.contacts.address || 'Не указан';
                 }
 
-                // Мессенджеры
                 const btnWa = document.getElementById('btn-wa');
                 const btnViber = document.getElementById('btn-viber');
                 const btnInsta = document.getElementById('btn-insta');
@@ -345,7 +381,6 @@
                 if (btnViber) btnViber.href = data.contacts.viber ? `viber://chat?number=%2B${data.contacts.viber}` : '#';
                 if (btnInsta) btnInsta.href = data.contacts.instagram || '#';
 
-                // Плавающие кнопки
                 const floatWa = document.getElementById('float-wa');
                 const floatViber = document.getElementById('float-viber');
                 const floatTg = document.getElementById('float-tg');
@@ -355,7 +390,6 @@
                 if (floatTg && data.contacts.telegram) floatTg.href = `https://t.me/${data.contacts.telegram}`;
                 if (floatInsta) floatInsta.href = data.contacts.instagram || '#';
 
-                // Маршруты
                 const address = data.contacts.address || '';
                 if (address) {
                     const encoded = encodeURIComponent(address);
@@ -364,7 +398,6 @@
                 }
             }
 
-            // Карта
             if (data.map) {
                 const mapFrame = document.getElementById('map-frame');
                 const mapContainer = document.getElementById('map-container');
@@ -375,7 +408,6 @@
                 }
             }
 
-            // Мастера
             const mastersContainer = document.getElementById('masters-container');
             if (mastersContainer && data.masters) {
                 mastersContainer.innerHTML = data.masters.map(m => `
@@ -390,26 +422,22 @@
                 `).join('');
             }
 
-            // Преимущества
             const featuresContainer = document.getElementById('features-container');
             if (featuresContainer && data.features) {
                 featuresContainer.innerHTML = data.features.map(f => `<div class="feature-card"><i class="fas ${f.icon} feature-icon"></i><h3>${f.title}</h3><p>${f.desc}</p></div>`).join('');
             }
 
-            // Прайс
             const priceContainer = document.getElementById('price-list-container');
             if (priceContainer && data.prices) {
                 priceContainer.innerHTML = data.prices.map(p => `<div class="price-item"><span class="zone-name">${p.name}</span><span class="zone-price">${p.value} BYN</span></div>`).join('');
             }
 
-            // Отзывы
             const reviewContainer = document.getElementById('reviews-container');
             if (reviewContainer && data.reviews) {
                 const visible = data.reviews.filter(r => r.status !== 'pending');
                 reviewContainer.innerHTML = visible.map(r => `<div class="review-card"><div class="review-stars">${'<i class="fas fa-star"></i>'.repeat(r.rating)}</div><p class="review-text">«${r.text}»</p><div class="review-author"><i class="fas fa-user-circle"></i> ${r.name}</div></div>`).join('');
             }
 
-            // FAQ
             const faqContainer = document.getElementById('faq-container');
             if (faqContainer && data.faq) {
                 faqContainer.innerHTML = data.faq.map((item, i) => `
@@ -420,7 +448,6 @@
                 `).join('');
             }
 
-            // Памятка
             const careContainer = document.getElementById('care-container');
             if (careContainer && data.careInstructions) {
                 careContainer.innerHTML = data.careInstructions.map(item => {
@@ -429,13 +456,11 @@
                 }).join('');
             }
 
-            // Блог
             const blogContainer = document.getElementById('blog-container');
             if (blogContainer && data.blog) {
                 blogContainer.innerHTML = data.blog.map(post => `<div class="blog-card"><img src="${post.image || ''}" alt="${post.title}" class="blog-img"><div class="blog-content"><span class="blog-date">${post.date}</span><h3>${post.title}</h3><p>${post.excerpt}</p></div></div>`).join('');
             }
 
-            // До/После
             const baContainer = document.getElementById('ba-container');
             if (baContainer && data.beforeAfter) {
                 baContainer.innerHTML = data.beforeAfter.map((item, i) => `
@@ -448,11 +473,8 @@
                 `).join('');
                 initBASliders();
             }
-
-            logDebug('✅ Рендеринг завершён!', 'success');
         }
 
-        // Остальные функции без изменений...
         function initBASliders() {
             document.querySelectorAll('.ba-slider').forEach(slider => {
                 const afterImg = slider.querySelector('.ba-img-after');
