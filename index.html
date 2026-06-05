@@ -198,95 +198,34 @@
     </div>
 
     <script>
-        // ✅ ДИАГНОСТИКА SEO
-        function debugSEO(msg, type = 'info') {
-            const colors = { info: '#007bff', success: '#28a745', error: '#dc3545', warn: '#ffc107' };
-            console.log(`%c[SEO] ${msg}`, `color:${colors[type]}; font-weight:bold;`);
-            
-            let debugBox = document.getElementById('seo-debug-box');
-            if (!debugBox) {
-                debugBox = document.createElement('div');
-                debugBox.id = 'seo-debug-box';
-                debugBox.style.cssText = 'position:fixed; top:10px; right:10px; background:#fff3cd; padding:15px; border-radius:8px; z-index:99999; font-size:12px; max-width:400px; border:2px solid #ffc107; font-family:monospace; max-height:80vh; overflow-y:auto;';
-                document.body.appendChild(debugBox);
-            }
-            const color = colors[type];
-            debugBox.innerHTML += `<div style="color:${color}; margin:3px 0; border-bottom:1px solid #eee; padding:2px 0;">${msg}</div>`;
-        }
-
-        function checkMetaTags() {
-            debugSEO('🔍 Проверка мета-тегов...');
-            debugSEO(`📌 Title: "${document.title}"`);
-            
-            const metaDesc = document.querySelector('meta[name="description"]');
-            const metaKeywords = document.querySelector('meta[name="keywords"]');
-            const ogTitle = document.querySelector('meta[property="og:title"]');
-            const ogDesc = document.querySelector('meta[property="og:description"]');
-            
-            debugSEO(` Description: ${metaDesc ? metaDesc.content : '❌ НЕ НАЙДЕН'}`);
-            debugSEO(`🔑 Keywords: ${metaKeywords ? metaKeywords.content : '❌ НЕ НАЙДЕН'}`);
-            debugSEO(`📢 OG Title: ${ogTitle ? ogTitle.content : '❌ НЕ НАЙДЕН'}`);
-            debugSEO(`📢 OG Description: ${ogDesc ? ogDesc.content : '❌ НЕ НАЙДЕН'}`);
-        }
-
+        // ✅ УСТАНОВКА МЕТА-ТЕГА (создаёт или обновляет)
         function setMetaTag(nameOrProperty, content, isProperty = false) {
             const attr = isProperty ? 'property' : 'name';
             let meta = document.querySelector(`meta[${attr}="${nameOrProperty}"]`);
-            
             if (!meta) {
                 meta = document.createElement('meta');
                 meta.setAttribute(attr, nameOrProperty);
                 document.head.appendChild(meta);
-                debugSEO(`➕ Создан мета-тег: ${attr}="${nameOrProperty}"`, 'success');
             }
-            
             meta.content = content;
-            debugSEO(`✅ Установлен ${attr}="${nameOrProperty}" = "${content.substring(0, 60)}..."`, 'success');
         }
 
         async function loadData() {
-            debugSEO(' Начало загрузки data.json...');
-            
             try {
                 const response = await fetch('/data.json');
-                
                 if (!response.ok) {
-                    debugSEO(`❌ Ошибка HTTP: ${response.status} ${response.statusText}`, 'error');
+                    console.error('Ошибка загрузки data.json:', response.status);
                     return;
                 }
                 
                 const data = await response.json();
-                debugSEO('✅ data.json успешно загружен', 'success');
                 
-                // ✅ ПРОВЕРКА СТРУКТУРЫ SEO
-                debugSEO(` Проверка data.seo: ${typeof data.seo}`, data.seo ? 'success' : 'error');
-                
+                // ✅ SEO: Title, Description, Keywords, OG-теги
                 if (data.seo) {
-                    debugSEO('📋 Содержимое data.seo:', 'info');
-                    debugSEO(`  - title: "${data.seo.title}"`);
-                    debugSEO(`  - description: "${data.seo.description}"`);
-                    debugSEO(`  - keywords: "${data.seo.keywords}"`);
-                    debugSEO(`  - ogImage: "${data.seo.ogImage}"`);
+                    if (data.seo.title) document.title = data.seo.title;
+                    if (data.seo.description) setMetaTag('description', data.seo.description);
+                    if (data.seo.keywords) setMetaTag('keywords', data.seo.keywords);
                     
-                    // ✅ УСТАНОВКА TITLE
-                    if (data.seo.title) {
-                        document.title = data.seo.title;
-                        debugSEO(`🎯 Title установлен: "${data.seo.title}"`, 'success');
-                    } else {
-                        debugSEO('⚠️ data.seo.title пустой!', 'warn');
-                    }
-                    
-                    // ✅ УСТАНОВКА DESCRIPTION
-                    if (data.seo.description) {
-                        setMetaTag('description', data.seo.description);
-                    }
-                    
-                    // ✅ УСТАНОВКА KEYWORDS
-                    if (data.seo.keywords) {
-                        setMetaTag('keywords', data.seo.keywords);
-                    }
-                    
-                    // ✅ УСТАНОВКА OG ТЕГОВ
                     const ogTitle = data.seo.title || document.title;
                     const ogDesc = data.seo.description || '';
                     const ogImage = data.seo.ogImage || '';
@@ -297,24 +236,17 @@
                     setMetaTag('og:image', ogImage, true);
                     setMetaTag('og:url', ogUrl, true);
                     setMetaTag('og:type', 'website', true);
-                    
-                    debugSEO('✅ Все SEO теги установлены!', 'success');
-                } else {
-                    debugSEO('❌ data.seo не найден в data.json!', 'error');
-                    debugSEO(' Доступные ключи: ' + Object.keys(data).join(', '), 'warn');
                 }
                 
                 renderContent(data);
                 
             } catch (error) {
-                debugSEO(`❌ Критическая ошибка: ${error.message}`, 'error');
-                debugSEO(`Stack: ${error.stack}`, 'error');
+                console.error('Ошибка загрузки данных:', error);
             }
-            
-            setTimeout(checkMetaTags, 2000);
         }
 
         function renderContent(data) {
+            // Тема и цвета
             if (data.theme) {
                 if (data.theme.color_bg_light) document.documentElement.style.setProperty('--bg-light', data.theme.color_bg_light);
                 if (data.theme.color_bg_white) document.documentElement.style.setProperty('--bg-white', data.theme.color_bg_white);
@@ -325,6 +257,7 @@
                 }
             }
 
+            // Баннер
             const heroContainer = document.getElementById('hero-content-container');
             if (heroContainer) {
                 heroContainer.innerHTML = '';
@@ -347,6 +280,7 @@
                 }
             }
 
+            // Позиционирование баннера
             const heroSection = document.getElementById('hero-section');
             const alignment = (data.hero && data.hero.alignment) ? data.hero.alignment : 'center';
             if (heroSection) {
@@ -354,6 +288,7 @@
                 heroSection.classList.add(`hero-align-${alignment}`);
             }
 
+            // Кнопка записи в шапке
             const bookingText = (data.hero && data.hero.btnText) || 'Записаться онлайн';
             const bookingUrl = (data.hero && data.hero.dikidiUrl) || (data.contacts && data.contacts.dikidi) || '#';
             const headerBtn = document.getElementById('header-dikidi-btn');
@@ -362,6 +297,7 @@
                 headerBtn.href = bookingUrl;
             }
 
+            // Контакты
             if (data.contacts) {
                 const contactPhone = document.getElementById('contact-phone');
                 const contactAddress = document.getElementById('contact-address');
@@ -398,6 +334,7 @@
                 }
             }
 
+            // Карта
             if (data.map) {
                 const mapFrame = document.getElementById('map-frame');
                 const mapContainer = document.getElementById('map-container');
@@ -408,6 +345,7 @@
                 }
             }
 
+            // Мастера
             const mastersContainer = document.getElementById('masters-container');
             if (mastersContainer && data.masters) {
                 mastersContainer.innerHTML = data.masters.map(m => `
@@ -422,22 +360,26 @@
                 `).join('');
             }
 
+            // Преимущества
             const featuresContainer = document.getElementById('features-container');
             if (featuresContainer && data.features) {
                 featuresContainer.innerHTML = data.features.map(f => `<div class="feature-card"><i class="fas ${f.icon} feature-icon"></i><h3>${f.title}</h3><p>${f.desc}</p></div>`).join('');
             }
 
+            // Прайс
             const priceContainer = document.getElementById('price-list-container');
             if (priceContainer && data.prices) {
                 priceContainer.innerHTML = data.prices.map(p => `<div class="price-item"><span class="zone-name">${p.name}</span><span class="zone-price">${p.value} BYN</span></div>`).join('');
             }
 
+            // Отзывы
             const reviewContainer = document.getElementById('reviews-container');
             if (reviewContainer && data.reviews) {
                 const visible = data.reviews.filter(r => r.status !== 'pending');
                 reviewContainer.innerHTML = visible.map(r => `<div class="review-card"><div class="review-stars">${'<i class="fas fa-star"></i>'.repeat(r.rating)}</div><p class="review-text">«${r.text}»</p><div class="review-author"><i class="fas fa-user-circle"></i> ${r.name}</div></div>`).join('');
             }
 
+            // FAQ
             const faqContainer = document.getElementById('faq-container');
             if (faqContainer && data.faq) {
                 faqContainer.innerHTML = data.faq.map((item, i) => `
@@ -448,6 +390,7 @@
                 `).join('');
             }
 
+            // Памятка
             const careContainer = document.getElementById('care-container');
             if (careContainer && data.careInstructions) {
                 careContainer.innerHTML = data.careInstructions.map(item => {
@@ -456,11 +399,13 @@
                 }).join('');
             }
 
+            // Блог
             const blogContainer = document.getElementById('blog-container');
             if (blogContainer && data.blog) {
                 blogContainer.innerHTML = data.blog.map(post => `<div class="blog-card"><img src="${post.image || ''}" alt="${post.title}" class="blog-img"><div class="blog-content"><span class="blog-date">${post.date}</span><h3>${post.title}</h3><p>${post.excerpt}</p></div></div>`).join('');
             }
 
+            // До/После
             const baContainer = document.getElementById('ba-container');
             if (baContainer && data.beforeAfter) {
                 baContainer.innerHTML = data.beforeAfter.map((item, i) => `
