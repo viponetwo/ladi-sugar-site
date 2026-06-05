@@ -5,11 +5,16 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Ladi Sugar - Шугаринг в Полоцке</title>
     <meta name="description" content="Профессиональный шугаринг в Полоцке.">
-    <meta name="keywords" content="шугаринг, полоцк, эпиляция">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
+    <!-- ✅ ОТЛАДОЧНЫЙ БЛОК -->
+    <div id="debug-info" style="display:none; position:fixed; top:10px; left:10px; background:#fff3cd; padding:10px; border-radius:8px; z-index:99999; font-size:12px; max-width:300px; border:1px solid #ffc107;">
+        <strong>🔧 Статус загрузки:</strong>
+        <div id="debug-content">Загрузка...</div>
+    </div>
+
     <header>
         <div class="container nav-wrapper">
             <a href="#" class="logo-link"><img src="images/logo.png" alt="Logo" class="logo-img"></a>
@@ -28,7 +33,11 @@
     </header>
 
     <section class="hero" id="hero-section">
-        <div class="container hero-content" id="hero-content-container"></div>
+        <div class="container hero-content" id="hero-content-container">
+            <!-- ✅ ДЕФОЛТНЫЙ ТЕКСТ (покажется если JS не загрузится) -->
+            <div class="hero-text-block" style="font-size:77px; color:#fff;">Ladi Sugar</div>
+            <div class="hero-text-block" style="font-size:21px; color:#fff;">Идеальная гладкость надолго</div>
+        </div>
     </section>
 
     <section id="about" class="bg-light">
@@ -112,8 +121,8 @@
             <div class="contacts-wrapper">
                 <div class="contact-info">
                     <h3>Жду вас в студии!</h3>
-                    <div class="contact-item"><i class="fas fa-map-marker-alt"></i><span id="contact-address">...</span></div>
-                    <div class="contact-item"><i class="fas fa-phone-alt"></i><a id="contact-phone" href="#">...</a></div>
+                    <div class="contact-item"><i class="fas fa-map-marker-alt"></i><span id="contact-address">Загрузка...</span></div>
+                    <div class="contact-item"><i class="fas fa-phone-alt"></i><a id="contact-phone" href="#">Загрузка...</a></div>
                     <div class="social-buttons" id="social-buttons">
                         <a href="#" id="btn-dikidi-footer" target="_blank" class="btn-social btn-dikidi btn-hero-pulse"><i class="far fa-calendar-check"></i> Записаться</a>
                         <a href="#" id="btn-wa" target="_blank" class="btn-social btn-wa"><i class="fab fa-whatsapp"></i></a>
@@ -154,6 +163,7 @@
         </div>
     </footer>
 
+    <!-- ПЛАВАЮЩАЯ КНОПКА МЕССЕНДЖЕРОВ -->
     <div class="floating-messenger" id="floating-messenger">
         <div class="messenger-menu" id="messenger-menu">
             <a href="#" id="float-wa" target="_blank" class="messenger-btn messenger-wa">
@@ -178,70 +188,106 @@
         </button>
     </div>
 
+    <!-- ПЛАВАЮЩЕЕ ВЕРТИКАЛЬНОЕ МЕНЮ ДЛЯ МОБИЛЬНЫХ -->
     <nav class="mobile-floating-nav" id="mobile-floating-nav">
-        <a href="#about" class="mobile-nav-item">
-            <i class="fas fa-star"></i>
-            <span>Преимущества</span>
-        </a>
-        <a href="#masters" class="mobile-nav-item">
-            <i class="fas fa-user-friends"></i>
-            <span>Мастера</span>
-        </a>
-        <a href="#before-after" class="mobile-nav-item">
-            <i class="fas fa-exchange-alt"></i>
-            <span>До/После</span>
-        </a>
-        <a href="#blog" class="mobile-nav-item">
-            <i class="fas fa-book-open"></i>
-            <span>Блог</span>
-        </a>
-        <a href="#faq" class="mobile-nav-item">
-            <i class="fas fa-question-circle"></i>
-            <span>Вопросы</span>
-        </a>
-        <a href="#prices" class="mobile-nav-item">
-            <i class="fas fa-tag"></i>
-            <span>Цены</span>
-        </a>
-        <a href="#care" class="mobile-nav-item">
-            <i class="fas fa-clipboard-list"></i>
-            <span>Памятка</span>
-        </a>
-        <a href="#contacts" class="mobile-nav-item">
-            <i class="fas fa-phone-alt"></i>
-            <span>Контакты</span>
-        </a>
+        <a href="#about" class="mobile-nav-item"><i class="fas fa-star"></i><span>Преимущества</span></a>
+        <a href="#masters" class="mobile-nav-item"><i class="fas fa-user-friends"></i><span>Мастера</span></a>
+        <a href="#before-after" class="mobile-nav-item"><i class="fas fa-exchange-alt"></i><span>До/После</span></a>
+        <a href="#blog" class="mobile-nav-item"><i class="fas fa-book-open"></i><span>Блог</span></a>
+        <a href="#faq" class="mobile-nav-item"><i class="fas fa-question-circle"></i><span>Вопросы</span></a>
+        <a href="#prices" class="mobile-nav-item"><i class="fas fa-tag"></i><span>Цены</span></a>
+        <a href="#care" class="mobile-nav-item"><i class="fas fa-clipboard-list"></i><span>Памятка</span></a>
+        <a href="#contacts" class="mobile-nav-item"><i class="fas fa-phone-alt"></i><span>Контакты</span></a>
     </nav>
 
     <div id="lightbox" class="lightbox" onclick="closeLightbox(event)">
-        <a href="#" class="lightbox-pin" onclick="pinLightboxImage(); return false;" title="Сохранить в Pinterest"><i class="fab fa-pinterest-p"></i></a>
+        <a href="#" class="lightbox-pin" onclick="pinLightboxImage(); return false;"><i class="fab fa-pinterest-p"></i></a>
         <span class="lightbox-close">&times;</span>
         <img id="lightbox-img" src="" alt="Увеличенное фото">
     </div>
 
     <script>
+        // ✅ ФУНКЦИЯ ЛОГИРОВАНИЯ
+        function logDebug(msg, type = 'info') {
+            const debugEl = document.getElementById('debug-content');
+            if (debugEl) {
+                const color = type === 'error' ? '#dc3545' : type === 'success' ? '#28a745' : '#007bff';
+                debugEl.innerHTML += `<div style="color:${color}; margin:2px 0;">${msg}</div>`;
+            }
+            console.log(`[DEBUG] ${msg}`);
+        }
+
+        // ✅ ПОКАЗАТЬ ОТЛАДОЧНЫЙ БЛОК
+        document.getElementById('debug-info').style.display = 'block';
+        logDebug('🚀 Загрузка страницы начата...');
+
+        // ✅ ПРОВЕРКА ПУТИ К DATA.JSON
         async function loadData() {
-            try {
-                const response = await fetch('/data.json');
-                if (!response.ok) throw new Error('Не удалось загрузить data.json');
-                const data = await response.json();
-                window.siteData = data;
+            const possiblePaths = ['/data.json', 'data.json', './data.json'];
+            let data = null;
+            let successfulPath = '';
 
-                if (data.seo && data.seo.title) document.title = data.seo.title;
-
-                if (data.theme) {
-                    if (data.theme.color_bg_light) document.documentElement.style.setProperty('--bg-light', data.theme.color_bg_light);
-                    if (data.theme.color_bg_white) document.documentElement.style.setProperty('--bg-white', data.theme.color_bg_white);
-                    if (data.theme.color_primary) document.documentElement.style.setProperty('--primary', data.theme.color_primary);
-                    if (data.theme.color_text) document.documentElement.style.setProperty('--text-dark', data.theme.color_text);
-                    if (data.theme.heroImage) {
-                        document.querySelector('.hero').style.backgroundImage = `url('${data.theme.heroImage}')`;
+            for (const path of possiblePaths) {
+                try {
+                    logDebug(`🔍 Пробуем путь: ${path}`);
+                    const response = await fetch(path);
+                    
+                    if (response.ok) {
+                        data = await response.json();
+                        successfulPath = path;
+                        logDebug(`✅ Файл загружен: ${path}`, 'success');
+                        break;
+                    } else {
+                        logDebug(`❌ Путь ${path} не сработал (статус ${response.status})`, 'error');
                     }
+                } catch (e) {
+                    logDebug(` Ошибка при запросе ${path}: ${e.message}`, 'error');
                 }
+            }
 
-                const heroContainer = document.getElementById('hero-content-container');
-                if (heroContainer) heroContainer.querySelectorAll('.hero-text-block').forEach(el => el.remove());
-                
+            if (!data) {
+                logDebug('❌ Не удалось загрузить data.json ни по одному пути!', 'error');
+                return;
+            }
+
+            logDebug('📦 Данные получены, начинаем рендеринг...', 'success');
+
+            // ✅ РЕНДЕРИНГ ВСЕХ СЕКЦИЙ
+            try {
+                renderAll(data);
+                logDebug('✅ Все секции успешно отрендерены!', 'success');
+            } catch (e) {
+                logDebug(`❌ Ошибка рендеринга: ${e.message}`, 'error');
+            }
+        }
+
+        function renderAll(data) {
+            // Скрываем отладочный блок через 3 секунды
+            setTimeout(() => {
+                document.getElementById('debug-info').style.display = 'none';
+            }, 3000);
+
+            // SEO
+            if (data.seo && data.seo.title) {
+                document.title = data.seo.title;
+                logDebug(` Title: ${data.seo.title}`);
+            }
+
+            // Тема
+            if (data.theme) {
+                if (data.theme.color_bg_light) document.documentElement.style.setProperty('--bg-light', data.theme.color_bg_light);
+                if (data.theme.color_bg_white) document.documentElement.style.setProperty('--bg-white', data.theme.color_bg_white);
+                if (data.theme.color_primary) document.documentElement.style.setProperty('--primary', data.theme.color_primary);
+                if (data.theme.color_text) document.documentElement.style.setProperty('--text-dark', data.theme.color_text);
+                if (data.theme.heroImage) {
+                    document.querySelector('.hero').style.backgroundImage = `url('${data.theme.heroImage}')`;
+                }
+            }
+
+            // Баннер
+            const heroContainer = document.getElementById('hero-content-container');
+            if (heroContainer) {
+                heroContainer.innerHTML = '';
                 if (data.heroTexts && Array.isArray(data.heroTexts)) {
                     data.heroTexts.forEach((block, index) => {
                         if (block.content && block.content.trim() !== '') {
@@ -259,148 +305,154 @@
                         }
                     });
                 }
-
-                const heroSection = document.getElementById('hero-section');
-                const alignment = (data.hero && data.hero.alignment) ? data.hero.alignment : 'center';
-                if (heroSection) {
-                    heroSection.className = 'hero';
-                    heroSection.classList.add(`hero-align-${alignment}`);
-                }
-
-                const bookingText = (data.hero && data.hero.btnText) || 'Записаться онлайн';
-                const bookingUrl = (data.hero && data.hero.dikidiUrl) || (data.contacts && data.contacts.dikidi) || '#';
-                
-                const headerBtn = document.getElementById('header-dikidi-btn');
-                if (headerBtn) {
-                    headerBtn.textContent = bookingText;
-                    headerBtn.href = bookingUrl;
-                }
-
-                const dikidiFooter = document.getElementById('btn-dikidi-footer');
-                if (dikidiFooter) {
-                    dikidiFooter.innerHTML = `<i class="far fa-calendar-check"></i> ${bookingText}`;
-                    dikidiFooter.href = bookingUrl;
-                }
-                
-                if (data.contacts) {
-                    const btnWa = document.getElementById('btn-wa');
-                    const btnViber = document.getElementById('btn-viber');
-                    const btnInsta = document.getElementById('btn-insta');
-                    const contactPhone = document.getElementById('contact-phone');
-                    const contactAddress = document.getElementById('contact-address');
-                    
-                    if (btnWa) btnWa.href = data.contacts.whatsapp ? `https://wa.me/${data.contacts.whatsapp}` : '#';
-                    if (btnViber) btnViber.href = data.contacts.viber ? `viber://chat?number=%2B${data.contacts.viber}` : '#';
-                    if (btnInsta) btnInsta.href = data.contacts.instagram || '#';
-                    if (contactPhone) {
-                        contactPhone.textContent = data.contacts.phone || '';
-                        contactPhone.href = data.contacts.phone ? `tel:${data.contacts.phone}` : '#';
-                    }
-                    if (contactAddress) contactAddress.textContent = data.contacts.address || '';
-
-                    const floatWa = document.getElementById('float-wa');
-                    const floatViber = document.getElementById('float-viber');
-                    const floatTg = document.getElementById('float-tg');
-                    const floatInsta = document.getElementById('float-insta');
-                    
-                    if (floatWa) floatWa.href = data.contacts.whatsapp ? `https://wa.me/${data.contacts.whatsapp}` : '#';
-                    if (floatViber) floatViber.href = data.contacts.viber ? `viber://chat?number=%2B${data.contacts.viber}` : '#';
-                    if (floatTg && data.contacts.telegram) floatTg.href = `https://t.me/${data.contacts.telegram}`;
-                    if (floatInsta) floatInsta.href = data.contacts.instagram || '#';
-
-                    const address = data.contacts.address || 'Полоцк, улица Успенская';
-                    const encodedAddress = encodeURIComponent(address);
-                    
-                    const btnYandex = document.getElementById('btn-yandex-route');
-                    const btn2gis = document.getElementById('btn-2gis-route');
-                    
-                    if (btnYandex) btnYandex.href = `https://yandex.ru/maps/?rtext=~${encodedAddress}&rtt=auto`;
-                    if (btn2gis) btn2gis.href = `https://2gis.ru/search/${encodedAddress}`;
-                }
-
-                if (data.map) {
-                    const mapFrame = document.getElementById('map-frame');
-                    const mapContainer = document.getElementById('map-container');
-                    if (mapFrame && data.map.url) mapFrame.src = data.map.url;
-                    if (mapContainer && data.map.height) {
-                        mapContainer.style.height = data.map.height + 'px';
-                        if (mapFrame) mapFrame.style.height = data.map.height + 'px';
-                    }
-                }
-
-                const mastersContainer = document.getElementById('masters-container');
-                if (mastersContainer && Array.isArray(data.masters) && data.masters.length > 0) {
-                    mastersContainer.innerHTML = data.masters.map(m => `
-                        <div class="master-card">
-                            <img src="${m.photo || ''}" alt="${m.name || ''}" class="master-photo" style="display:${m.photo ? 'block' : 'none'}">
-                            <div class="master-text">
-                                <span class="master-role">${m.role || ''}</span>
-                                <h3>${m.name || 'Мастер'}</h3>
-                                <div class="master-desc">${(m.desc || '').replace(/\n/g, '<br>')}</div>
-                            </div>
-                        </div>
-                    `).join('');
-                }
-
-                const featuresContainer = document.getElementById('features-container');
-                if (featuresContainer && Array.isArray(data.features) && data.features.length) {
-                    featuresContainer.innerHTML = data.features.map(f => `<div class="feature-card"><i class="fas ${f.icon || 'fa-star'} feature-icon"></i><h3>${f.title || ''}</h3><p>${f.desc || ''}</p></div>`).join('');
-                }
-
-                const priceContainer = document.getElementById('price-list-container');
-                if (priceContainer && Array.isArray(data.prices) && data.prices.length) {
-                    priceContainer.innerHTML = data.prices.map(p => `<div class="price-item"><span class="zone-name">${p.name || ''}</span><span class="zone-price">${p.value || ''} BYN</span></div>`).join('');
-                }
-
-                const reviewContainer = document.getElementById('reviews-container');
-                if (reviewContainer && Array.isArray(data.reviews)) {
-                    const visible = data.reviews.filter(r => r.status !== 'pending');
-                    reviewContainer.innerHTML = visible.map(r => `<div class="review-card"><div class="review-stars">${'<i class="fas fa-star"></i>'.repeat(r.rating || 5)}</div><p class="review-text">«${r.text || ''}»</p><div class="review-author"><i class="fas fa-user-circle"></i> ${r.name || ''} <span style="color:#888; font-weight:400; font-size:0.8rem;">${r.date || ''}</span></div></div>`).join('');
-                }
-
-                const blogContainer = document.getElementById('blog-container');
-                if (blogContainer) {
-                    if (Array.isArray(data.blog) && data.blog.length > 0) {
-                        blogContainer.innerHTML = data.blog.map(post => `<div class="blog-card"><img src="${post.image || ''}" alt="${post.title || ''}" class="blog-img"><div class="blog-content"><span class="blog-date">${post.date || ''}</span><h3>${post.title || ''}</h3><p>${post.excerpt || ''}</p></div></div>`).join('');
-                    } else {
-                        blogContainer.innerHTML = '<p style="text-align:center;color:#666; grid-column: 1/-1;">Статей пока нет.</p>';
-                    }
-                }
-
-                const baContainer = document.getElementById('ba-container');
-                if (baContainer && Array.isArray(data.beforeAfter) && data.beforeAfter.length) {
-                    baContainer.innerHTML = data.beforeAfter.map((item, i) => `
-                        <div class="ba-slider" id="ba-${i}">
-                            <div class="ba-img-before" style="background-image:url('${item.before || ''}')"></div>
-                            <div class="ba-img-after" style="background-image:url('${item.after || ''}'); width:50%;"></div>
-                            <div class="ba-divider" style="left:50%;"><div class="ba-handle"></div></div>
-                            <div class="ba-label">${item.label || ''}</div>
-                            <button class="ba-pin-btn" onclick="window.pinBASlide('${(item.after || '').replace(/'/g, "\\'")}', '${(item.label || '').replace(/'/g, "\\'")}')" title="Сохранить в Pinterest"><i class="fab fa-pinterest-p"></i></button>
-                        </div>
-                    `).join('');
-                    initBASliders();
-                }
-
-                const faqContainer = document.getElementById('faq-container');
-                if (faqContainer && Array.isArray(data.faq) && data.faq.length) {
-                    faqContainer.innerHTML = data.faq.map((item, i) => `
-                        <div class="faq-item"><div class="faq-question" onclick="window.toggleFaq(${i})">${item.question || ''}<i class="fas fa-chevron-down"></i></div><div class="faq-answer" id="faq-ans-${i}">${item.answer || ''}</div></div>
-                    `).join('');
-                }
-
-                const careContainer = document.getElementById('care-container');
-                if (careContainer && Array.isArray(data.careInstructions) && data.careInstructions.length > 0) {
-                    careContainer.innerHTML = data.careInstructions.map(item => {
-                        const listItems = (item.content || '').split('\n').filter(l => l.trim()).map(l => `<li>${l.trim()}</li>`).join('');
-                        return `<div class="care-col"><h3><i class="fas fa-info-circle"></i> ${item.title || ''}</h3><ul>${listItems}</ul></div>`;
-                    }).join('');
-                }
-
-            } catch (error) {
-                console.error('Ошибка загрузки данных:', error);
             }
+
+            // Позиционирование баннера
+            const heroSection = document.getElementById('hero-section');
+            const alignment = (data.hero && data.hero.alignment) ? data.hero.alignment : 'center';
+            if (heroSection) {
+                heroSection.className = 'hero';
+                heroSection.classList.add(`hero-align-${alignment}`);
+            }
+
+            // Кнопка записи
+            const bookingText = (data.hero && data.hero.btnText) || 'Записаться онлайн';
+            const bookingUrl = (data.hero && data.hero.dikidiUrl) || (data.contacts && data.contacts.dikidi) || '#';
+            const headerBtn = document.getElementById('header-dikidi-btn');
+            if (headerBtn) {
+                headerBtn.textContent = bookingText;
+                headerBtn.href = bookingUrl;
+            }
+
+            // Контакты
+            if (data.contacts) {
+                const contactPhone = document.getElementById('contact-phone');
+                const contactAddress = document.getElementById('contact-address');
+                
+                if (contactPhone) {
+                    contactPhone.textContent = data.contacts.phone || 'Не указан';
+                    contactPhone.href = data.contacts.phone ? `tel:${data.contacts.phone}` : '#';
+                }
+                if (contactAddress) {
+                    contactAddress.textContent = data.contacts.address || 'Не указан';
+                }
+
+                // Мессенджеры
+                const btnWa = document.getElementById('btn-wa');
+                const btnViber = document.getElementById('btn-viber');
+                const btnInsta = document.getElementById('btn-insta');
+                if (btnWa) btnWa.href = data.contacts.whatsapp ? `https://wa.me/${data.contacts.whatsapp}` : '#';
+                if (btnViber) btnViber.href = data.contacts.viber ? `viber://chat?number=%2B${data.contacts.viber}` : '#';
+                if (btnInsta) btnInsta.href = data.contacts.instagram || '#';
+
+                // Плавающие кнопки
+                const floatWa = document.getElementById('float-wa');
+                const floatViber = document.getElementById('float-viber');
+                const floatTg = document.getElementById('float-tg');
+                const floatInsta = document.getElementById('float-insta');
+                if (floatWa) floatWa.href = data.contacts.whatsapp ? `https://wa.me/${data.contacts.whatsapp}` : '#';
+                if (floatViber) floatViber.href = data.contacts.viber ? `viber://chat?number=%2B${data.contacts.viber}` : '#';
+                if (floatTg && data.contacts.telegram) floatTg.href = `https://t.me/${data.contacts.telegram}`;
+                if (floatInsta) floatInsta.href = data.contacts.instagram || '#';
+
+                // Маршруты
+                const address = data.contacts.address || '';
+                if (address) {
+                    const encoded = encodeURIComponent(address);
+                    document.getElementById('btn-yandex-route').href = `https://yandex.ru/maps/?rtext=~${encoded}&rtt=auto`;
+                    document.getElementById('btn-2gis-route').href = `https://2gis.ru/search/${encoded}`;
+                }
+            }
+
+            // Карта
+            if (data.map) {
+                const mapFrame = document.getElementById('map-frame');
+                const mapContainer = document.getElementById('map-container');
+                if (mapFrame && data.map.url) mapFrame.src = data.map.url;
+                if (mapContainer && data.map.height) {
+                    mapContainer.style.height = data.map.height + 'px';
+                    if (mapFrame) mapFrame.style.height = data.map.height + 'px';
+                }
+            }
+
+            // Мастера
+            const mastersContainer = document.getElementById('masters-container');
+            if (mastersContainer && data.masters) {
+                mastersContainer.innerHTML = data.masters.map(m => `
+                    <div class="master-card">
+                        <img src="${m.photo || ''}" alt="${m.name}" class="master-photo" style="display:${m.photo ? 'block' : 'none'}">
+                        <div class="master-text">
+                            <span class="master-role">${m.role || ''}</span>
+                            <h3>${m.name || 'Мастер'}</h3>
+                            <div class="master-desc">${(m.desc || '').replace(/\n/g, '<br>')}</div>
+                        </div>
+                    </div>
+                `).join('');
+            }
+
+            // Преимущества
+            const featuresContainer = document.getElementById('features-container');
+            if (featuresContainer && data.features) {
+                featuresContainer.innerHTML = data.features.map(f => `<div class="feature-card"><i class="fas ${f.icon} feature-icon"></i><h3>${f.title}</h3><p>${f.desc}</p></div>`).join('');
+            }
+
+            // Прайс
+            const priceContainer = document.getElementById('price-list-container');
+            if (priceContainer && data.prices) {
+                priceContainer.innerHTML = data.prices.map(p => `<div class="price-item"><span class="zone-name">${p.name}</span><span class="zone-price">${p.value} BYN</span></div>`).join('');
+            }
+
+            // Отзывы
+            const reviewContainer = document.getElementById('reviews-container');
+            if (reviewContainer && data.reviews) {
+                const visible = data.reviews.filter(r => r.status !== 'pending');
+                reviewContainer.innerHTML = visible.map(r => `<div class="review-card"><div class="review-stars">${'<i class="fas fa-star"></i>'.repeat(r.rating)}</div><p class="review-text">«${r.text}»</p><div class="review-author"><i class="fas fa-user-circle"></i> ${r.name}</div></div>`).join('');
+            }
+
+            // FAQ
+            const faqContainer = document.getElementById('faq-container');
+            if (faqContainer && data.faq) {
+                faqContainer.innerHTML = data.faq.map((item, i) => `
+                    <div class="faq-item">
+                        <div class="faq-question" onclick="window.toggleFaq(${i})">${item.question}<i class="fas fa-chevron-down"></i></div>
+                        <div class="faq-answer" id="faq-ans-${i}">${item.answer}</div>
+                    </div>
+                `).join('');
+            }
+
+            // Памятка
+            const careContainer = document.getElementById('care-container');
+            if (careContainer && data.careInstructions) {
+                careContainer.innerHTML = data.careInstructions.map(item => {
+                    const listItems = (item.content || '').split('\n').filter(l => l.trim()).map(l => `<li>${l.trim()}</li>`).join('');
+                    return `<div class="care-col"><h3><i class="fas fa-info-circle"></i> ${item.title}</h3><ul>${listItems}</ul></div>`;
+                }).join('');
+            }
+
+            // Блог
+            const blogContainer = document.getElementById('blog-container');
+            if (blogContainer && data.blog) {
+                blogContainer.innerHTML = data.blog.map(post => `<div class="blog-card"><img src="${post.image || ''}" alt="${post.title}" class="blog-img"><div class="blog-content"><span class="blog-date">${post.date}</span><h3>${post.title}</h3><p>${post.excerpt}</p></div></div>`).join('');
+            }
+
+            // До/После
+            const baContainer = document.getElementById('ba-container');
+            if (baContainer && data.beforeAfter) {
+                baContainer.innerHTML = data.beforeAfter.map((item, i) => `
+                    <div class="ba-slider">
+                        <div class="ba-img-before" style="background-image:url('${item.before}')"></div>
+                        <div class="ba-img-after" style="background-image:url('${item.after}'); width:50%;"></div>
+                        <div class="ba-divider" style="left:50%;"><div class="ba-handle"></div></div>
+                        <div class="ba-label">${item.label}</div>
+                    </div>
+                `).join('');
+                initBASliders();
+            }
+
+            logDebug('✅ Рендеринг завершён!', 'success');
         }
 
+        // Остальные функции без изменений...
         function initBASliders() {
             document.querySelectorAll('.ba-slider').forEach(slider => {
                 const afterImg = slider.querySelector('.ba-img-after');
@@ -454,10 +506,7 @@
             const lb = document.getElementById('lightbox');
             if (lb) lb.classList.remove('active');
             document.body.style.overflow = '';
-            setTimeout(() => {
-                const lbImg = document.getElementById('lightbox-img');
-                if (lbImg) lbImg.src = '';
-            }, 250);
+            setTimeout(() => { const lbImg = document.getElementById('lightbox-img'); if (lbImg) lbImg.src = ''; }, 250);
         }
 
         function pinToPinterest(imageUrl, description) {
@@ -472,10 +521,6 @@
             const lb = document.getElementById('lightbox');
             if (lbImg && lb) pinToPinterest(lbImg.src, lb.dataset.label);
         }
-
-        window.pinBASlide = function(imageUrl, label) {
-            pinToPinterest(imageUrl, `Ladi Sugar - ${label || 'Результат'}`);
-        };
 
         function copyShareLink() {
             navigator.clipboard.writeText(window.location.href).then(() => {
@@ -493,11 +538,7 @@
 
         function showShareToast(msg) {
             let t = document.querySelector('.share-toast');
-            if (!t) {
-                t = document.createElement('div');
-                t.className = 'share-toast';
-                document.body.appendChild(t);
-            }
+            if (!t) { t = document.createElement('div'); t.className = 'share-toast'; document.body.appendChild(t); }
             t.textContent = msg;
             setTimeout(() => t.classList.add('show'), 10);
             setTimeout(() => t.classList.remove('show'), 2500);
@@ -507,15 +548,11 @@
             const mainBtn = document.getElementById('messenger-main-btn');
             const menu = document.getElementById('messenger-menu');
             const icon = document.getElementById('messenger-icon');
-            
             if (!mainBtn || !menu) return;
-
             let isOpen = false;
-
             mainBtn.addEventListener('click', (e) => {
                 e.stopPropagation();
                 isOpen = !isOpen;
-                
                 if (isOpen) {
                     menu.classList.add('active');
                     mainBtn.classList.add('active');
@@ -526,7 +563,6 @@
                     if (icon) icon.className = 'fas fa-comment-dots';
                 }
             });
-
             document.addEventListener('click', (e) => {
                 if (!menu.contains(e.target) && e.target !== mainBtn && isOpen) {
                     isOpen = false;
@@ -544,7 +580,6 @@
             btn.disabled = true;
             btn.textContent = '⏳ Отправка...';
             status.textContent = '';
-            
             try {
                 const res = await fetch('/api/review/submit', {
                     method: 'POST',
