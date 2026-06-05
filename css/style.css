@@ -30,7 +30,7 @@ header {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    min-height: 100px;
+    min-height: 120px; /* Увеличено с 100px */
     gap: 10px;
     padding: 0 15px;
     overflow: hidden;
@@ -38,11 +38,12 @@ header {
 
 .logo-link {
     flex-shrink: 0;
-    min-width: 120px;
+    min-width: 150px; /* Увеличено с 120px */
 }
 
+/* ✅ УВЕЛИЧЕННЫЙ ЛОГОТИП */
 .logo-img { 
-    height: 70px; 
+    height: 95px; /* Было 70px, стало 95px */
     width: auto; 
     transition: transform 0.3s ease;
 }
@@ -97,14 +98,14 @@ header {
 .btn-header { 
     background: var(--primary); 
     color: white; 
-    padding: 8px 18px; 
+    padding: 10px 20px; 
     border-radius: 20px; 
     font-weight: 600; 
-    font-size: 0.8rem; 
+    font-size: 0.85rem; 
     white-space: nowrap; 
     flex-shrink: 0; 
     border: none;
-    min-width: 120px;
+    min-width: 130px;
     text-align: center;
 }
 
@@ -143,7 +144,8 @@ header {
     background: linear-gradient(rgba(45, 52, 54, 0.6), rgba(45, 52, 54, 0.6)), url('https://images.unsplash.com/photo-1560750588-73207b1ef5b8?w=1920');
     background-size: cover; background-position: center; background-repeat: no-repeat;
     min-height: 90vh; display: flex; align-items: center; justify-content: center; text-align: center;
-    margin-top: 100px; padding: 40px 0;
+    margin-top: 120px; /* Увеличено с 100px под новый размер шапки */
+    padding: 40px 0;
 }
 .hero::before, .hero::after { content: none !important; }
 .hero-align-top-left { align-items: flex-start; justify-content: flex-start; text-align: left; }
@@ -392,7 +394,7 @@ footer { background: var(--text-dark); color: white; text-align: center; padding
 .mobile-floating-nav {
     display: none;
     position: fixed;
-    top: 100px;
+    top: 120px; /* Увеличено с 100px под новый размер шапки */
     right: 10px;
     z-index: 998;
     flex-direction: column;
@@ -402,7 +404,7 @@ footer { background: var(--text-dark); color: white; text-align: center; padding
     padding: 8px;
     border-radius: 16px;
     box-shadow: 0 4px 20px rgba(0,0,0,0.15);
-    max-height: calc(100vh - 120px);
+    max-height: calc(100vh - 140px);
     overflow-y: auto;
     scrollbar-width: none;
 }
@@ -443,13 +445,15 @@ footer { background: var(--text-dark); color: white; text-align: center; padding
 
 /* ========== АДАПТИВНОСТЬ ========== */
 @media (max-width: 1024px) {
-    .logo-img { height: 60px; }
-    .logo-link { min-width: 100px; }
-    .nav-wrapper { min-height: 80px; gap: 8px; }
+    .logo-img { height: 80px; } /* Было 60px */
+    .logo-link { min-width: 130px; }
+    .nav-wrapper { min-height: 100px; gap: 8px; }
     .nav-links { gap: 3px; padding: 3px; }
     .nav-links a { font-size: 0.7rem; padding: 5px 8px; }
     .nav-links a i { font-size: 0.7rem; }
-    .btn-header { padding: 6px 12px; font-size: 0.75rem; min-width: 100px; }
+    .btn-header { padding: 6px 12px; font-size: 0.75rem; min-width: 110px; }
+    .hero { margin-top: 100px; }
+    .mobile-floating-nav { top: 100px; }
 }
 
 @media (max-width: 768px) {
@@ -471,10 +475,11 @@ footer { background: var(--text-dark); color: white; text-align: center; padding
     
     .contacts-wrapper { grid-template-columns: 1fr; }
     .map-container { height: 300px; }
-    .logo-img { height: 50px; }
-    .logo-link { min-width: 80px; }
-    .nav-wrapper { min-height: 70px; gap: 8px; }
-    .hero { margin-top: 70px; min-height: 80vh; }
+    .logo-img { height: 65px; } /* Было 50px */
+    .logo-link { min-width: 110px; }
+    .nav-wrapper { min-height: 85px; gap: 8px; }
+    .hero { margin-top: 85px; min-height: 80vh; }
+    .mobile-floating-nav { top: 85px; max-height: calc(100vh - 100px); }
     
     .social-buttons { flex-direction: column; }
     .btn-social { width: 100%; font-size: 1rem; white-space: nowrap; }
@@ -502,7 +507,11 @@ footer { background: var(--text-dark); color: white; text-align: center; padding
         font-size: 1.5em !important;
     }
     
+    .logo-img { height: 55px; } /* Было 50px */
+    .nav-wrapper { min-height: 75px; }
+    .mobile-floating-nav { top: 75px; }
+    
     .mobile-nav-item { font-size: 0.7rem; padding: 6px 10px; }
     .mobile-nav-item i { font-size: 0.8rem; }
-    .mobile-floating-nav { right: 5px; top: 80px; padding: 6px; gap: 4px; }
+    .mobile-floating-nav { right: 5px; padding: 6px; gap: 4px; }
 }
