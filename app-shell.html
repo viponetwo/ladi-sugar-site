@@ -582,8 +582,11 @@ function renderAdmin() {
     return;
   }
   const sections = [
-    ['contacts','Контакты'], ['prices','Цены'], ['faq','Вопросы'],
-    ['masters','Мастера'], ['beforeafter','До / После'], ['blog','Статьи']
+    ['design','🎨 Дизайн'], ['hero','🏠 Баннер'], ['features','✨ Преимущества'],
+    ['prices','💰 Цены'], ['masters','👤 Мастера'], ['beforeafter','🔄 До/После'],
+    ['faq','❓ Вопросы'], ['care','📋 Памятка'], ['blog','📝 Статьи'],
+    ['moderation','🕒 Модерация'], ['contacts','📞 Контакты'], ['map','📍 Карта'],
+    ['seo','🔍 SEO']
   ];
   el.innerHTML = `
     <div class="admin-wrap">
@@ -605,12 +608,19 @@ function renderAdmin() {
 function renderAdminSection() {
   const el = document.getElementById('admin-section');
   if (!el) return;
-  if (adminSection === 'contacts') el.innerHTML = renderContactsEditor();
+  if (adminSection === 'design') el.innerHTML = renderDesignEditor();
+  else if (adminSection === 'hero') el.innerHTML = renderHeroEditor();
+  else if (adminSection === 'features') el.innerHTML = renderFeaturesEditor();
+  else if (adminSection === 'contacts') el.innerHTML = renderContactsEditor();
   else if (adminSection === 'prices') el.innerHTML = renderPricesEditor();
   else if (adminSection === 'faq') el.innerHTML = renderFaqEditor();
   else if (adminSection === 'masters') el.innerHTML = renderMastersEditor();
   else if (adminSection === 'beforeafter') el.innerHTML = renderBAEditor();
+  else if (adminSection === 'care') el.innerHTML = renderCareEditor();
   else if (adminSection === 'blog') el.innerHTML = renderBlogEditor();
+  else if (adminSection === 'moderation') el.innerHTML = renderModerationEditor();
+  else if (adminSection === 'map') el.innerHTML = renderMapEditor();
+  else if (adminSection === 'seo') el.innerHTML = renderSEOEditor();
 }
 
 function field(label, value, onInput, placeholder) {
@@ -618,6 +628,127 @@ function field(label, value, onInput, placeholder) {
 }
 function textarea(label, value, onInput) {
   return `<div class="admin-field"><label>${label}</label><textarea oninput="${onInput}">${value||''}</textarea></div>`;
+}
+
+function renderDesignEditor() {
+  const t = adminDraft.theme || {};
+  return `
+    <div class="admin-card">
+      <div class="admin-field"><label>Цвет фона (светлый)</label>
+        <div style="display:flex;gap:8px;align-items:center">
+          <input type="color" value="${t.color_bg_light||'#FDEEF4'}" oninput="adminDraft.theme.color_bg_light=this.value" style="width:50px;height:40px;border:none;border-radius:8px">
+          <input value="${t.color_bg_light||'#FDEEF4'}" oninput="adminDraft.theme.color_bg_light=this.value">
+        </div>
+      </div>
+      <div class="admin-field"><label>Цвет фона (белый)</label>
+        <div style="display:flex;gap:8px;align-items:center">
+          <input type="color" value="${t.color_bg_white||'#EAE1E9'}" oninput="adminDraft.theme.color_bg_white=this.value" style="width:50px;height:40px;border:none;border-radius:8px">
+          <input value="${t.color_bg_white||'#EAE1E9'}" oninput="adminDraft.theme.color_bg_white=this.value">
+        </div>
+      </div>
+      <div class="admin-field"><label>Основной цвет (карамель)</label>
+        <div style="display:flex;gap:8px;align-items:center">
+          <input type="color" value="${t.color_primary||'#B08D74'}" oninput="adminDraft.theme.color_primary=this.value" style="width:50px;height:40px;border:none;border-radius:8px">
+          <input value="${t.color_primary||'#B08D74'}" oninput="adminDraft.theme.color_primary=this.value">
+        </div>
+      </div>
+      <div class="admin-field"><label>Цвет текста</label>
+        <div style="display:flex;gap:8px;align-items:center">
+          <input type="color" value="${t.color_text||'#333333'}" oninput="adminDraft.theme.color_text=this.value" style="width:50px;height:40px;border:none;border-radius:8px">
+          <input value="${t.color_text||'#333333'}" oninput="adminDraft.theme.color_text=this.value">
+        </div>
+      </div>
+      ${photoUpload('Фоновое фото баннера', t.heroImage, 'adminDraft.theme.heroImage')}
+    </div>`;
+}
+
+function renderHeroEditor() {
+  const h = adminDraft.hero || {};
+  const ht = adminDraft.heroTexts || [];
+  return `
+    <div class="admin-card">
+      ${field('Текст кнопки', h.btnText, "adminDraft.hero.btnText=this.value", 'Записаться онлайн')}
+      ${field('Ссылка Dikidi', h.dikidiUrl, "adminDraft.hero.dikidiUrl=this.value", 'https://dikidi.net/...')}
+      ${field('Выравнивание', h.alignment, "adminDraft.hero.alignment=this.value", 'center')}
+    </div>
+    ${ht.map((t,i) => `
+      <div class="admin-card">
+        <div style="font-size:13px;font-weight:700;color:var(--primary);margin-bottom:8px">Текст ${i+1}</div>
+        ${field('Содержание', t.content, `adminDraft.heroTexts[${i}].content=this.value`, 'Lady Sugar')}
+        ${field('Шрифт', t.font, `adminDraft.heroTexts[${i}].font=this.value`, "'Lobster', cursive")}
+        ${field('Размер', t.size, `adminDraft.heroTexts[${i}].size=this.value`, '77')}
+        <div class="admin-field"><label>Цвет</label>
+          <div style="display:flex;gap:8px;align-items:center">
+            <input type="color" value="${t.color||'#fcfcfc'}" oninput="adminDraft.heroTexts[${i}].color=this.value" style="width:50px;height:40px;border:none;border-radius:8px">
+            <input value="${t.color||'#fcfcfc'}" oninput="adminDraft.heroTexts[${i}].color=this.value">
+          </div>
+        </div>
+        <button class="btn-del" onclick="adminDraft.heroTexts.splice(${i},1);renderAdminSection()">Удалить</button>
+      </div>`).join('')}
+    <button class="btn-add" onclick="adminDraft.heroTexts.push({content:'',font:'',size:'',color:''});renderAdminSection()">+ Добавить текст</button>`;
+}
+
+function renderFeaturesEditor() {
+  const f = adminDraft.features || [];
+  return f.map((feat,i) => `
+    <div class="admin-card">
+      ${field('Иконка (FontAwesome)', feat.icon, `adminDraft.features[${i}].icon=this.value`, 'fa-star')}
+      ${field('Заголовок', feat.title, `adminDraft.features[${i}].title=this.value`, 'Стерильно')}
+      ${textarea('Описание', feat.desc, `adminDraft.features[${i}].desc=this.value`)}
+      <button class="btn-del" onclick="adminDraft.features.splice(${i},1);renderAdminSection()">Удалить</button>
+    </div>`).join('') + `<button class="btn-add" onclick="adminDraft.features.push({icon:'',title:'',desc:''});renderAdminSection()">+ Добавить преимущество</button>`;
+}
+
+function renderCareEditor() {
+  const c = adminDraft.careInstructions || [];
+  return c.map((item,i) => `
+    <div class="admin-card">
+      ${field('Заголовок', item.title, `adminDraft.careInstructions[${i}].title=this.value`, '🟢 До процедуры')}
+      ${textarea('Содержание', item.content, `adminDraft.careInstructions[${i}].content=this.value`)}
+      <button class="btn-del" onclick="adminDraft.careInstructions.splice(${i},1);renderAdminSection()">Удалить</button>
+    </div>`).join('') + `<button class="btn-add" onclick="adminDraft.careInstructions.push({title:'',content:''});renderAdminSection()">+ Добавить инструкцию</button>`;
+}
+
+function renderModerationEditor() {
+  const reviews = adminDraft.reviews || [];
+  const pending = reviews.filter(r => r.status === 'pending' || !r.status);
+  if (!pending.length) return '<div class="admin-card" style="text-align:center;padding:32px;color:var(--text-muted)">✅ Нет отзывов на модерации</div>';
+  return pending.map((r) => {
+    const i = reviews.indexOf(r);
+    return `
+    <div class="admin-card">
+      <div style="display:flex;justify-content:space-between;margin-bottom:6px">
+        <strong>${r.name||'Аноним'}</strong>
+        <span style="color:var(--primary)">${'★'.repeat(r.rating||5)}</span>
+      </div>
+      <div style="font-size:13px;color:var(--text-muted);margin-bottom:8px">${r.text||''}</div>
+      ${r.date ? `<div style="font-size:11px;color:var(--text-light)">${r.date}</div>` : ''}
+      <div style="display:flex;gap:8px;margin-top:8px">
+        <button class="btn-add" style="margin:0;flex:1;border-color:#2E7D32;color:#2E7D32" onclick="adminDraft.reviews[${i}].status='approved';saveData()">✓ Одобрить</button>
+        <button class="btn-add" style="margin:0;flex:1;border-color:#D32F2F;color:#D32F2F" onclick="adminDraft.reviews.splice(${i},1);renderAdminSection();saveData()">✗ Удалить</button>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function renderMapEditor() {
+  const m = adminDraft.map || {};
+  return `
+    <div class="admin-card">
+      ${field('URL карты (Яндекс виджет)', m.url, "adminDraft.map.url=this.value", 'https://yandex.ru/map-widget/v1/...')}
+      ${field('Высота (px)', m.height, "adminDraft.map.height=this.value", '400')}
+    </div>`;
+}
+
+function renderSEOEditor() {
+  const s = adminDraft.seo || {};
+  return `
+    <div class="admin-card">
+      ${field('Title (заголовок страницы)', s.title, "adminDraft.seo.title=this.value", 'Шугаринг Полоцк | Lady Sugar')}
+      ${textarea('Description (описание)', s.description, "adminDraft.seo.description=this.value")}
+      ${textarea('Keywords (ключевые слова)', s.keywords, "adminDraft.seo.keywords=this.value")}
+      ${photoUpload('OG Image (превью для соцсетей)', s.ogImage, 'adminDraft.seo.ogImage')}
+    </div>`;
 }
 
 function renderContactsEditor() {
