@@ -11,13 +11,20 @@
     showAfterSeconds: 3,       // показать через N секунд
     dismissDays: 7,            // после закрытия не показывать N дней
     storageKey: "ladysugar_pwa_banner_dismissed",
+    installedKey: "ladysugar_pwa_installed",  // флаг: PWA уже установлено
   };
 
-  // Уже установлен как PWA? — не показываем баннер
+  // Уже установлен как PWA? — не показываем баннер никогда
   if (window.matchMedia("(display-mode: standalone)").matches ||
       window.navigator.standalone === true) {
+    try { localStorage.setItem(CONFIG.installedKey, "1"); } catch (e) {}
     return;
   }
+
+  // Ранее уже устанавливали PWA? — не показываем баннер
+  try {
+    if (localStorage.getItem(CONFIG.installedKey) === "1") return;
+  } catch (e) {}
 
   // Не показываем, если недавно закрыли
   try {
@@ -38,6 +45,16 @@
   window.addEventListener("beforeinstallprompt", (e) => {
     e.preventDefault();
     deferredPrompt = e;
+  });
+
+  // При установке PWA — скрываем баннер мгновенно и ставим флаг
+  window.addEventListener("appinstalled", () => {
+    try { localStorage.setItem(CONFIG.installedKey, "1"); } catch (e) {}
+    const banner = document.getElementById("pwa-install-banner");
+    if (banner) {
+      banner.classList.remove("show");
+      setTimeout(() => banner.remove(), 400);
+    }
   });
 
   // Регистрируем service worker
@@ -81,7 +98,10 @@
         deferredPrompt.prompt();
         const choice = await deferredPrompt.userChoice;
         if (choice.outcome === "accepted") {
-          banner.remove();
+          // Событие appinstalled сработает само, но подстрахуемся
+          try { localStorage.setItem(CONFIG.installedKey, "1"); } catch (e) {}
+          banner.classList.remove("show");
+          setTimeout(() => banner.remove(), 400);
         }
         deferredPrompt = null;
       } else {
