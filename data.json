@@ -94,7 +94,7 @@
     "viber": "...",
     "instagram": "...",
     "dikidi": "...",
-    "bookingText": "Записат",
+    "bookingText": "Привет",
     "extraButtons": []
   },
   "heroTexts": [
@@ -121,7 +121,15 @@
     "height": "400"
   },
   "gallery": [],
-  "blog": [],
+  "blog": [
+    {
+      "image": "",
+      "date": "",
+      "title": "",
+      "excerpt": "",
+      "url": ""
+    }
+  ],
   "customFields": [],
   "beforeAfter": [],
   "faq": [
