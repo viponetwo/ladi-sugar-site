@@ -155,8 +155,8 @@ textarea.field { resize:none; min-height:60px; }
 .admin-header { display:flex; justify-content:space-between; align-items:center; margin-bottom:16px; }
 .admin-header .label { font-size:13px; color:var(--text-muted); }
 .btn-logout { background:#fff; border:1px solid var(--primary); color:var(--primary); border-radius:16px; padding:6px 12px; font-size:12px; cursor:pointer; }
-.admin-tabs { display:flex; gap:6px; overflow-x:auto; padding-bottom:8px; margin-bottom:16px; }
-.admin-tab { background:#fff; border:1px solid var(--border); color:var(--text); border-radius:8px; padding:8px 12px; font-size:12px; font-weight:600; cursor:pointer; white-space:nowrap; }
+.admin-tabs { display:grid; grid-template-columns:1fr 1fr; gap:6px; margin-bottom:16px; }
+.admin-tab { background:#fff; border:1px solid var(--border); color:var(--text); border-radius:8px; padding:10px 8px; font-size:12px; font-weight:600; cursor:pointer; text-align:center; }
 .admin-tab.active { background:var(--primary); color:#fff; border-color:var(--primary); }
 .admin-card { background:#fff; border-radius:12px; padding:12px; margin-bottom:10px; box-shadow:0 1px 3px rgba(0,0,0,0.06); }
 .admin-field { display:block; margin-bottom:8px; }
