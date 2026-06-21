@@ -14,6 +14,12 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="css/style.css?v=3">
     <script defer src="https://cdn.vercel-insights.com/v1/script.js"></script>
+    <!-- PWA: манифест + иконки -->
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#B08D74">
+    <link rel="apple-touch-icon" href="icons/icon-192.png">
+    <!-- Баннер установки приложения -->
+    <link rel="stylesheet" href="pwa-banner.css?v=1">
 </head>
 <body>
     <header>
@@ -576,5 +582,7 @@
             initFloatingMessenger();
         });
     </script>
+    <!-- PWA: баннер установки приложения -->
+    <script src="pwa-banner.js?v=1"></script>
 </body>
 </html>

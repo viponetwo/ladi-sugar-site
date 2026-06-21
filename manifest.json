@@ -1,0 +1,54 @@
+{
+  "name": "Lady Sugar — Шугаринг Полоцк",
+  "short_name": "Lady Sugar",
+  "description": "Студия шугаринга и эпиляции в Полоцке. Запись онлайн, цены, памятка клиенту, контакты.",
+  "start_url": "/?source=pwa",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#FDEEF4",
+  "theme_color": "#B08D74",
+  "lang": "ru",
+  "dir": "ltr",
+  "categories": ["beauty", "lifestyle", "health"],
+  "icons": [
+    {
+      "src": "/icons/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/icons/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/icons/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Записаться онлайн",
+      "short_name": "Запись",
+      "url": "/?source=pwa&open=booking",
+      "icons": [{ "src": "/icons/icon-192.png", "sizes": "192x192" }]
+    },
+    {
+      "name": "Цены",
+      "short_name": "Цены",
+      "url": "/?source=pwa&open=prices",
+      "icons": [{ "src": "/icons/icon-192.png", "sizes": "192x192" }]
+    },
+    {
+      "name": "Контакты",
+      "short_name": "Контакты",
+      "url": "/?source=pwa&open=contacts",
+      "icons": [{ "src": "/icons/icon-192.png", "sizes": "192x192" }]
+    }
+  ]
+}
