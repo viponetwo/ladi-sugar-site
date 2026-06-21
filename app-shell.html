@@ -150,6 +150,49 @@ textarea.field { resize:none; min-height:60px; }
 .loading { display:flex; flex-direction:column; align-items:center; justify-content:center; height:60vh; gap:12px; }
 .spinner { width:40px; height:40px; border:3px solid var(--border); border-top-color:var(--primary); border-radius:50%; animation:spin 0.8s linear infinite; }
 @keyframes spin { to { transform:rotate(360deg); } }
+/* Admin */
+.admin-wrap { padding:16px 12px 80px; }
+.admin-header { display:flex; justify-content:space-between; align-items:center; margin-bottom:16px; }
+.admin-header .label { font-size:13px; color:var(--text-muted); }
+.btn-logout { background:#fff; border:1px solid var(--primary); color:var(--primary); border-radius:16px; padding:6px 12px; font-size:12px; cursor:pointer; }
+.admin-tabs { display:flex; gap:6px; overflow-x:auto; padding-bottom:8px; margin-bottom:16px; }
+.admin-tab { background:#fff; border:1px solid var(--border); color:var(--text); border-radius:8px; padding:8px 12px; font-size:12px; font-weight:600; cursor:pointer; white-space:nowrap; }
+.admin-tab.active { background:var(--primary); color:#fff; border-color:var(--primary); }
+.admin-card { background:#fff; border-radius:12px; padding:12px; margin-bottom:10px; box-shadow:0 1px 3px rgba(0,0,0,0.06); }
+.admin-field { display:block; margin-bottom:8px; }
+.admin-field label { font-size:11px; font-weight:600; color:var(--text-muted); display:block; margin-bottom:3px; }
+.admin-field input, .admin-field textarea, .admin-field select {
+  width:100%; border:1.5px solid var(--border); border-radius:8px; padding:8px 10px;
+  font-size:13px; color:var(--text); background:#fff; font-family:inherit;
+}
+.admin-field input:focus, .admin-field textarea:focus { outline:none; border-color:var(--primary); }
+.admin-field textarea { resize:none; min-height:50px; }
+.admin-row { display:flex; gap:8px; align-items:flex-end; }
+.admin-row .admin-field { flex:1; }
+.admin-price-val { width:90px !important; }
+.btn-del { background:transparent; border:none; color:#D32F2F; cursor:pointer; padding:8px; font-size:18px; }
+.btn-add { width:100%; border:2px dashed var(--primary); background:transparent; color:var(--primary); padding:10px; border-radius:8px; font-size:13px; font-weight:600; cursor:pointer; margin-top:4px; }
+.btn-save { width:100%; background:var(--primary); color:#fff; border:none; padding:14px; border-radius:10px; font-size:15px; font-weight:700; cursor:pointer; margin-top:16px; }
+.btn-save:active { background:var(--primary-dark); }
+.admin-status { font-size:12px; text-align:center; margin-top:10px; color:var(--text-muted); }
+.admin-hint { font-size:11px; color:var(--text-light); text-align:center; margin-top:12px; line-height:1.5; }
+/* Photo upload */
+.photo-upload { margin-bottom:10px; }
+.photo-upload .pu-label { font-size:11px; font-weight:600; color:var(--text-muted); display:block; margin-bottom:4px; }
+.photo-preview { position:relative; margin-bottom:6px; }
+.photo-preview img { width:100%; height:100px; object-fit:cover; border-radius:8px; border:1px solid var(--border); }
+.photo-preview .pu-del { position:absolute; top:4px; right:4px; background:#D32F2F; color:#fff; border:none; width:24px; height:24px; border-radius:50%; cursor:pointer; font-size:14px; }
+.pu-btn { display:flex; align-items:center; justify-content:center; gap:6px; border:2px dashed var(--primary); color:var(--primary); padding:8px; border-radius:8px; font-size:12px; font-weight:600; cursor:pointer; }
+.pu-btn.uploading { opacity:0.6; }
+.pu-url { width:100%; border:1px solid var(--border); border-radius:6px; padding:4px 8px; font-size:11px; margin-top:4px; }
+.login-wrap { padding:32px 24px; text-align:center; }
+.login-icon { width:56px; height:56px; border-radius:16px; background:rgba(176,141,116,0.15); display:flex; align-items:center; justify-content:center; margin:0 auto 16px; font-size:28px; }
+.login-title { font-size:20px; font-weight:700; color:var(--text); margin-bottom:6px; }
+.login-desc { font-size:13px; color:var(--text-muted); margin-bottom:24px; line-height:1.5; }
+.login-input { width:100%; border:1.5px solid var(--border); border-radius:10px; padding:12px 14px; font-size:14px; margin-bottom:10px; font-family:inherit; }
+.login-input:focus { outline:none; border-color:var(--primary); }
+.btn-login { width:100%; background:var(--primary); color:#fff; border:none; padding:12px; border-radius:10px; font-size:15px; font-weight:700; cursor:pointer; }
+.login-error { font-size:12px; color:#D32F2F; margin-top:10px; }
 </style>
 </head>
 <body>
@@ -227,12 +270,17 @@ textarea.field { resize:none; min-height:60px; }
   <section id="tab-contacts">
     <div class="contact-intro">Жду вас в студии!</div>
     <div id="contacts-list"></div>
-    <div class="about-app">
+    <div class="about-app" onclick="showTab('admin')" style="cursor:pointer">
       <div class="name">Lady Sugar</div>
-      <div class="ver">Версия 1.4.1 (PWA)</div>
+      <div class="ver">Версия 1.4.1 (PWA) → Админка</div>
       <div class="pkg">com.ladysugar.app · Android 7.0+</div>
       <div style="font-size:10px;color:var(--text-light);margin-top:8px">© 2026 Lady Sugar Polotsk</div>
     </div>
+  </section>
+
+  <!-- ADMIN -->
+  <section id="tab-admin">
+    <div id="admin-content"></div>
   </section>
 </main>
 
@@ -490,6 +538,262 @@ window.addEventListener('offline', () => document.getElementById('offline-banner
 // Старт
 showTab('home', document.querySelector('.nav-item'));
 loadData();
+
+// ====== АДМИН-ПАНЕЛЬ ======
+const TOKEN_KEY = 'ls_admin_token';
+let adminToken = null;
+let adminSection = 'contacts';
+let adminDraft = null;
+
+function initAdmin() {
+  try { adminToken = localStorage.getItem(TOKEN_KEY); } catch(e) { adminToken = null; }
+  adminDraft = JSON.parse(JSON.stringify(data)); // копия для редактирования
+  renderAdmin();
+  // Если есть токен — проверяем
+  if (adminToken) {
+    verifyToken(adminToken).then(ok => {
+      if (!ok) { try { localStorage.removeItem(TOKEN_KEY); } catch(e) {} adminToken = null; renderAdmin(); }
+    });
+  }
+}
+
+async function verifyToken(tok) {
+  try {
+    const res = await fetch(SITE + '/api/auth/login', {
+      method:'POST', headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({ password: atob(tok) })
+    });
+    return res.ok;
+  } catch(e) { return false; }
+}
+
+function renderAdmin() {
+  const el = document.getElementById('admin-content');
+  if (!adminToken) {
+    el.innerHTML = `
+      <div class="login-wrap">
+        <div class="login-icon">⚙️</div>
+        <div class="login-title">Админ-панель</div>
+        <div class="login-desc">Войдите, чтобы редактировать цены, контакты, мастеров, статьи и фото. Пароль совпадает с паролем админки сайта.</div>
+        <input type="password" class="login-input" id="admin-pass" placeholder="Пароль администратора" onkeydown="if(event.key==='Enter')doLogin()">
+        <button class="btn-login" onclick="doLogin()">Войти</button>
+        <div class="login-error" id="login-error"></div>
+      </div>`;
+    return;
+  }
+  const sections = [
+    ['contacts','Контакты'], ['prices','Цены'], ['faq','Вопросы'],
+    ['masters','Мастера'], ['beforeafter','До / После'], ['blog','Статьи']
+  ];
+  el.innerHTML = `
+    <div class="admin-wrap">
+      <div class="admin-header">
+        <span class="label">Вход выполнен</span>
+        <button class="btn-logout" onclick="doLogout()">Выйти</button>
+      </div>
+      <div class="admin-tabs">
+        ${sections.map(s => `<button class="admin-tab ${adminSection===s[0]?'active':''}" onclick="adminSection='${s[0]}';renderAdmin()">${s[1]}</button>`).join('')}
+      </div>
+      <div id="admin-section"></div>
+      <button class="btn-save" onclick="saveData()">💾 Сохранить и опубликовать</button>
+      <div class="admin-status" id="admin-status"></div>
+      <div class="admin-hint">Изменения публикуются на сайте и в приложении.</div>
+    </div>`;
+  renderAdminSection();
+}
+
+function renderAdminSection() {
+  const el = document.getElementById('admin-section');
+  if (!el) return;
+  if (adminSection === 'contacts') el.innerHTML = renderContactsEditor();
+  else if (adminSection === 'prices') el.innerHTML = renderPricesEditor();
+  else if (adminSection === 'faq') el.innerHTML = renderFaqEditor();
+  else if (adminSection === 'masters') el.innerHTML = renderMastersEditor();
+  else if (adminSection === 'beforeafter') el.innerHTML = renderBAEditor();
+  else if (adminSection === 'blog') el.innerHTML = renderBlogEditor();
+}
+
+function field(label, value, onInput, placeholder) {
+  return `<div class="admin-field"><label>${label}</label><input value="${value||''}" placeholder="${placeholder||''}" oninput="${onInput}"></div>`;
+}
+function textarea(label, value, onInput) {
+  return `<div class="admin-field"><label>${label}</label><textarea oninput="${onInput}">${value||''}</textarea></div>`;
+}
+
+function renderContactsEditor() {
+  const c = adminDraft.contacts || {};
+  const set = (k,v) => { adminDraft.contacts = {...c, [k]:v}; };
+  return `
+    <div class="admin-card">
+      ${field('Адрес', c.address, "adminDraft.contacts.address=this.value", 'г. Полоцк, ул. Успенская 3')}
+      ${field('Телефон', c.phone, "adminDraft.contacts.phone=this.value", '+375 29 ...')}
+      ${field('WhatsApp', c.whatsapp, "adminDraft.contacts.whatsapp=this.value", 'https://wa.me/...')}
+      ${field('Viber', c.viber, "adminDraft.contacts.viber=this.value", 'viber://...')}
+      ${field('Instagram', c.instagram, "adminDraft.contacts.instagram=this.value", 'https://instagram.com/...')}
+      ${field('Telegram', c.telegram, "adminDraft.contacts.telegram=this.value", 'https://t.me/...')}
+      ${field('Dikidi (запись)', c.dikidi, "adminDraft.contacts.dikidi=this.value", 'https://dikidi.net/...')}
+      ${field('Текст кнопки записи', c.bookingText, "adminDraft.contacts.bookingText=this.value", 'Записаться')}
+    </div>`;
+}
+
+function renderPricesEditor() {
+  const prices = adminDraft.prices || [];
+  return prices.map((p,i) => `
+    <div class="admin-card">
+      <div class="admin-row">
+        ${field('Услуга', p.name, `adminDraft.prices[${i}].name=this.value`, 'Глубокое бикини')}
+        <div class="admin-field admin-price-val">${field('BYN', p.value, `adminDraft.prices[${i}].value=this.value`, '45')}</div>
+        <button class="btn-del" onclick="adminDraft.prices.splice(${i},1);renderAdminSection()">×</button>
+      </div>
+    </div>`).join('') + `<button class="btn-add" onclick="adminDraft.prices.push({name:'',value:''});renderAdminSection()">+ Добавить услугу</button>`;
+}
+
+function renderFaqEditor() {
+  const faq = adminDraft.faq || [];
+  return faq.map((q,i) => `
+    <div class="admin-card">
+      ${field('Вопрос', q.question, `adminDraft.faq[${i}].question=this.value`)}
+      ${textarea('Ответ', q.answer, `adminDraft.faq[${i}].answer=this.value`)}
+      <button class="btn-del" onclick="adminDraft.faq.splice(${i},1);renderAdminSection()">Удалить</button>
+    </div>`).join('') + `<button class="btn-add" onclick="adminDraft.faq.push({question:'',answer:''});renderAdminSection()">+ Добавить вопрос</button>`;
+}
+
+function renderMastersEditor() {
+  const m = adminDraft.masters || [];
+  return m.map((master,i) => `
+    <div class="admin-card">
+      ${field('Роль', master.role, `adminDraft.masters[${i}].role=this.value`, 'МАСТЕР')}
+      ${field('Имя', master.name, `adminDraft.masters[${i}].name=this.value`, 'Анна')}
+      ${textarea('Описание', master.desc, `adminDraft.masters[${i}].desc=this.value`)}
+      ${photoUpload('Фото мастера', master.photo, `adminDraft.masters[${i}].photo`)}
+      <button class="btn-del" onclick="adminDraft.masters.splice(${i},1);renderAdminSection()">Удалить мастера</button>
+    </div>`).join('') + `<button class="btn-add" onclick="adminDraft.masters.push({role:'',name:'',desc:'',photo:''});renderAdminSection()">+ Добавить мастера</button>`;
+}
+
+function renderBAEditor() {
+  const ba = adminDraft.beforeAfter || [];
+  return ba.map((b,i) => `
+    <div class="admin-card">
+      ${field('Подпись', b.label, `adminDraft.beforeAfter[${i}].label=this.value`, 'Зона: бикини')}
+      <div class="admin-row">
+        <div style="flex:1">${photoUpload('Фото ДО', b.before, `adminDraft.beforeAfter[${i}].before`)}</div>
+        <div style="flex:1">${photoUpload('Фото ПОСЛЕ', b.after, `adminDraft.beforeAfter[${i}].after`)}</div>
+      </div>
+      <button class="btn-del" onclick="adminDraft.beforeAfter.splice(${i},1);renderAdminSection()">Удалить</button>
+    </div>`).join('') + `<button class="btn-add" onclick="adminDraft.beforeAfter.push({before:'',after:'',label:''});renderAdminSection()">+ Добавить «До / После»</button>`;
+}
+
+function renderBlogEditor() {
+  const blog = adminDraft.blog || [];
+  return blog.map((b,i) => `
+    <div class="admin-card">
+      ${field('Заголовок', b.title, `adminDraft.blog[${i}].title=this.value`)}
+      ${field('Дата', b.date, `adminDraft.blog[${i}].date=this.value`, '15 мая 2026')}
+      ${textarea('Отрывок', b.excerpt, `adminDraft.blog[${i}].excerpt=this.value`)}
+      ${photoUpload('Изображение', b.image, `adminDraft.blog[${i}].image`)}
+      ${field('Ссылка', b.url, `adminDraft.blog[${i}].url=this.value`, 'https://...')}
+      <button class="btn-del" onclick="adminDraft.blog.splice(${i},1);renderAdminSection()">Удалить статью</button>
+    </div>`).join('') + `<button class="btn-add" onclick="adminDraft.blog.push({image:'',date:'',title:'',excerpt:'',url:''});renderAdminSection()">+ Добавить статью</button>`;
+}
+
+function photoUpload(label, url, target) {
+  return `
+    <div class="photo-upload">
+      <span class="pu-label">${label}</span>
+      ${url ? `<div class="photo-preview"><img src="${abs(url)}"><button class="pu-del" onclick="${target}='';renderAdminSection()">×</button></div>` : ''}
+      <label class="pu-btn" id="pu-${target.replace(/[^a-z0-9]/gi,'')}">
+        📷 ${url ? 'Заменить фото' : 'Загрузить с телефона'}
+        <input type="file" accept="image/*" capture="environment" style="display:none" onchange="uploadPhoto(this, '${target}')">
+      </label>
+      <input class="pu-url" value="${url||''}" placeholder="или URL вручную" oninput="${target}=this.value">
+    </div>`;
+}
+
+async function uploadPhoto(input, target) {
+  const file = input.files[0];
+  if (!file) return;
+  if (file.size > 5000000) { alert('Файл больше 5 МБ'); return; }
+  const label = input.parentElement;
+  label.classList.add('uploading');
+  label.innerHTML = '⏳ Загрузка...';
+  try {
+    const reader = new FileReader();
+    const base64 = await new Promise((res, rej) => {
+      reader.onload = () => res(reader.result.split(',')[1]);
+      reader.onerror = rej;
+      reader.readAsDataURL(file);
+    });
+    const fileName = 'pwa-' + Date.now() + '-' + file.name.replace(/[^a-zA-Z0-9.\-_]/g, '_');
+    const r = await fetch(SITE + '/api/upload', {
+      method:'POST', headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({ fileName, contentBase64: base64 })
+    });
+    const d = await r.json();
+    if (r.ok && d.url) {
+      // eval чтобы присвоить в adminDraft.xxx[i].field
+      eval(target + ' = "' + d.url + '"');
+      renderAdminSection();
+    } else { alert(d.message || 'Ошибка загрузки'); renderAdminSection(); }
+  } catch(e) { alert('Нет соединения: ' + e.message); renderAdminSection(); }
+}
+
+async function doLogin() {
+  const pass = document.getElementById('admin-pass').value;
+  const err = document.getElementById('login-error');
+  err.textContent = 'Вход...';
+  try {
+    const res = await fetch(SITE + '/api/auth/login', {
+      method:'POST', headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({ password: pass })
+    });
+    const d = await res.json();
+    if (res.ok && d.token) {
+      try { localStorage.setItem(TOKEN_KEY, d.token); } catch(e) {}
+      adminToken = d.token;
+      renderAdmin();
+    } else { err.textContent = d.message || 'Неверный пароль'; }
+  } catch(e) { err.textContent = 'Нет соединения с сервером'; }
+}
+
+function doLogout() {
+  try { localStorage.removeItem(TOKEN_KEY); } catch(e) {}
+  adminToken = null;
+  renderAdmin();
+}
+
+async function saveData() {
+  const status = document.getElementById('admin-status');
+  if (!adminToken) return;
+  status.textContent = 'Сохранение...'; status.style.color = 'var(--text-muted)';
+  try {
+    const res = await fetch(SITE + '/api/save', {
+      method:'POST',
+      headers:{'Content-Type':'application/json','Authorization':'Bearer ' + adminToken},
+      body: JSON.stringify({ content: adminDraft, token: adminToken })
+    });
+    if (res.ok) {
+      status.textContent = '✅ Сохранено! Изменения опубликованы.'; status.style.color = '#2E7D32';
+      data = JSON.parse(JSON.stringify(adminDraft));
+      render();
+      loadData();
+    } else {
+      const d = await res.json().catch(()=>({}));
+      status.textContent = '❌ ' + (d.message || 'Ошибка'); status.style.color = '#D32F2F';
+    }
+  } catch(e) { status.textContent = '❌ Нет соединения'; status.style.color = '#D32F2F'; }
+}
+
+// Показ админки: перерисовываем при активации вкладки
+const origShowTab = showTab;
+showTab = function(tab, btn) {
+  origShowTab(tab, btn);
+  if (tab === 'admin') initAdmin();
+  document.getElementById('app-title').textContent =
+    tab === 'home' ? 'Lady Sugar' : tab === 'prices' ? 'Цены' :
+    tab === 'gallery' ? 'Галерея' : tab === 'reviews' ? 'Отзывы' :
+    tab === 'contacts' ? 'Контакты' : tab === 'admin' ? 'Админка' : 'Lady Sugar';
+  document.getElementById('fab').style.display = (tab === 'reviews' || tab === 'contacts' || tab === 'admin') ? 'none' : 'flex';
+};
 </script>
 </body>
 </html>
