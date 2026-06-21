@@ -2,7 +2,7 @@
   "name": "Lady Sugar — Шугаринг Полоцк",
   "short_name": "Lady Sugar",
   "description": "Студия шугаринга и эпиляции в Полоцке. Запись онлайн, цены, памятка клиенту, контакты.",
-  "start_url": "/?source=pwa",
+  "start_url": "/app-shell.html?source=pwa",
   "scope": "/",
   "display": "standalone",
   "orientation": "portrait",

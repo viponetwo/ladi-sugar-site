@@ -1,0 +1,495 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="theme-color" content="#B08D74">
+<title>Lady Sugar</title>
+<link rel="manifest" href="manifest.json">
+<link rel="apple-touch-icon" href="icons/icon-192.png">
+<style>
+* { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
+:root {
+  --bg-light:#FDEEF4; --bg-white:#EAE1E9; --primary:#B08D74; --primary-dark:#8E6F59;
+  --text:#333333; --text-muted:#6B5B4D; --text-light:#A89B8E; --border:#E5DBE0;
+}
+html,body { height:100%; overflow:hidden; }
+body {
+  font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;
+  background:var(--bg-light); color:var(--text); max-width:480px; margin:0 auto;
+  display:flex; flex-direction:column; position:relative;
+}
+/* App Bar */
+header {
+  background:var(--primary); color:#fff; height:56px;
+  display:flex; align-items:center; justify-content:space-between;
+  padding:0 8px; box-shadow:0 2px 8px rgba(58,45,34,0.15); flex-shrink:0; z-index:30;
+}
+header .btn-back { background:transparent; border:none; color:#fff; padding:8px; cursor:pointer; border-radius:50%; display:flex; }
+header h1 { font-size:18px; font-weight:600; }
+header .btn-contact { background:transparent; border:none; color:#fff; padding:8px; cursor:pointer; border-radius:50%; display:flex; }
+/* Offline banner */
+.offline-banner { background:#FEF3C7; color:#92400E; font-size:12px; padding:6px; text-align:center; display:none; }
+.offline-banner.show { display:block; }
+/* Main */
+main { flex:1; overflow-y:auto; -webkit-overflow-scrolling:touch; padding-bottom:80px; }
+/* FAB */
+.fab {
+  position:fixed; bottom:76px; right:16px; width:56px; height:56px;
+  background:var(--primary); color:#fff; border:none; border-radius:50%;
+  box-shadow:0 6px 16px rgba(176,141,116,0.5); cursor:pointer; z-index:20;
+  display:flex; align-items:center; justify-content:center; font-size:24px;
+}
+.fab:active { transform:scale(0.92); }
+/* Bottom Nav */
+nav.bottom-nav {
+  position:fixed; bottom:0; left:0; right:0; max-width:480px; margin:0 auto;
+  background:var(--bg-white); border-top:1px solid rgba(176,141,116,0.15);
+  display:flex; height:64px; z-index:30;
+}
+.nav-item {
+  flex:1; display:flex; flex-direction:column; align-items:center; justify-content:center;
+  gap:2px; background:none; border:none; cursor:pointer;
+  color:#8A7A6B; font-size:10px; font-weight:500; padding:4px;
+}
+.nav-item.active { color:var(--primary); }
+.nav-item .icon { font-size:20px; line-height:1; }
+/* Sections */
+section { display:none; }
+section.active { display:block; }
+.sec-title { padding:16px 16px 8px; font-size:18px; font-weight:700; color:var(--text); }
+/* Hero */
+.hero {
+  height:220px; display:flex; flex-direction:column; align-items:center; justify-content:center;
+  color:#fff; position:relative; background-size:cover; background-position:center;
+}
+.hero::before { content:''; position:absolute; inset:0; background:linear-gradient(135deg,rgba(176,141,116,0.7),rgba(142,111,89,0.7)); }
+.hero > * { position:relative; z-index:1; }
+.hero h2 { font-size:36px; font-weight:700; text-shadow:0 2px 12px rgba(0,0,0,0.5); }
+.hero p { font-size:14px; margin-top:4px; opacity:0.95; }
+.hero button {
+  margin-top:16px; background:var(--primary); color:#fff; border:none;
+  padding:10px 28px; border-radius:24px; font-size:14px; font-weight:600;
+  box-shadow:0 4px 12px rgba(0,0,0,0.25); cursor:pointer;
+}
+/* Features grid */
+.features-grid { display:grid; grid-template-columns:1fr 1fr; gap:8px; padding:0 12px; }
+.feature-card { background:#fff; border-radius:12px; padding:12px; box-shadow:0 1px 3px rgba(0,0,0,0.06); }
+.feature-card .icon { font-size:24px; color:var(--primary); }
+.feature-card .title { font-size:13px; font-weight:700; color:var(--text); margin-top:6px; }
+.feature-card .desc { font-size:11px; color:var(--text-muted); margin-top:2px; line-height:1.3; }
+/* FAQ */
+.faq-item { background:#fff; margin:0 12px 8px; border-radius:12px; padding:14px; box-shadow:0 1px 3px rgba(0,0,0,0.06); cursor:pointer; }
+.faq-q { font-size:14px; font-weight:700; color:var(--text); display:flex; justify-content:space-between; align-items:center; }
+.faq-q .arrow { transition:transform 0.2s; color:var(--primary-dark); font-size:14px; }
+.faq-item.open .arrow { transform:rotate(180deg); }
+.faq-a { font-size:13px; color:var(--text-muted); margin-top:8px; line-height:1.5; display:none; }
+.faq-item.open .faq-a { display:block; }
+/* Prices */
+.price-row { background:#fff; border-radius:10px; padding:12px 14px; margin:0 12px 6px; display:flex; justify-content:space-between; align-items:center; box-shadow:0 1px 2px rgba(0,0,0,0.05); }
+.price-row .name { font-size:14px; color:var(--text); }
+.price-row .val { font-size:15px; font-weight:700; color:var(--primary); }
+/* Care */
+.care-card { background:#fff; border-radius:12px; padding:16px; margin:12px; box-shadow:0 1px 3px rgba(0,0,0,0.06); }
+.care-title { font-size:15px; font-weight:700; color:var(--text); }
+.care-content { font-size:13px; color:var(--text-muted); margin-top:8px; line-height:1.6; white-space:pre-line; }
+/* Masters */
+.master-card { background:#fff; border-radius:12px; padding:12px; margin:12px; display:flex; gap:12px; box-shadow:0 1px 3px rgba(0,0,0,0.06); }
+.master-photo { width:72px; height:72px; border-radius:10px; background:linear-gradient(135deg,var(--primary),#C9A890); flex-shrink:0; display:flex; align-items:center; justify-content:center; color:#fff; font-size:28px; overflow:hidden; }
+.master-photo img { width:100%; height:100%; object-fit:cover; }
+.master-role { font-size:11px; color:var(--primary); font-weight:600; }
+.master-name { font-size:17px; font-weight:700; color:var(--text); margin-top:2px; }
+.master-desc { font-size:12px; color:var(--text-muted); margin-top:4px; line-height:1.4; }
+/* Tabs (gallery) */
+.gallery-tabs { display:flex; background:var(--bg-white); border-bottom:2px solid var(--primary); position:sticky; top:0; z-index:10; }
+.gallery-tab { flex:1; padding:12px 0; text-align:center; font-size:13px; font-weight:600; color:#8A7A6B; background:none; border:none; cursor:pointer; }
+.gallery-tab.active { color:var(--primary); border-bottom:2px solid var(--primary); margin-bottom:-2px; }
+/* Reviews */
+.review-card { background:#fff; border-radius:12px; padding:14px; margin:0 12px 8px; box-shadow:0 1px 2px rgba(0,0,0,0.05); }
+.review-top { display:flex; justify-content:space-between; align-items:center; }
+.review-name { font-size:14px; font-weight:700; color:var(--text); }
+.review-stars { color:var(--primary); font-size:14px; }
+.review-text { font-size:13px; color:var(--text); margin-top:6px; line-height:1.4; }
+.review-date { font-size:11px; color:var(--text-light); margin-top:6px; }
+/* Form */
+.form-card { background:#fff; border-radius:12px; padding:16px; margin:16px 12px; box-shadow:0 1px 3px rgba(0,0,0,0.06); }
+.form-title { font-size:16px; font-weight:700; color:var(--text); text-align:center; margin-bottom:12px; }
+.field { width:100%; border:1.5px solid var(--border); border-radius:8px; padding:10px 12px; font-size:14px; color:var(--text); margin-bottom:8px; background:#FDFCFC; font-family:inherit; }
+.field:focus { outline:none; border-color:var(--primary); }
+textarea.field { resize:none; min-height:60px; }
+.rating-row { display:flex; align-items:center; gap:8px; margin-bottom:10px; font-size:14px; color:var(--text); }
+.rating-stars { display:flex; gap:2px; }
+.rating-star { font-size:22px; color:#D5C8BC; cursor:pointer; background:none; border:none; padding:0; }
+.rating-star.active { color:var(--primary); }
+.btn-submit { width:100%; background:var(--primary); color:#fff; border:none; padding:12px; border-radius:8px; font-size:15px; font-weight:600; cursor:pointer; }
+.btn-submit:active { background:var(--primary-dark); }
+.form-status { font-size:12px; text-align:center; margin-top:8px; color:var(--text-muted); }
+/* Contacts */
+.contact-intro { padding:16px 16px 8px; font-size:18px; font-weight:700; color:var(--text); }
+.contact-row { background:#fff; margin:8px 12px 0; border-radius:10px; padding:14px 16px; display:flex; align-items:center; gap:12px; box-shadow:0 1px 2px rgba(0,0,0,0.05); }
+.contact-row .ci { font-size:20px; }
+.contact-row .cv { flex:1; font-size:14px; color:var(--text); }
+.contact-row .cb { background:var(--primary); color:#fff; border:none; border-radius:6px; padding:6px 12px; font-size:12px; cursor:pointer; }
+.btn-booking { margin:16px 12px 0; width:calc(100% - 24px); background:var(--primary); color:#fff; border:none; border-radius:10px; padding:14px; font-size:15px; font-weight:700; cursor:pointer; }
+.messengers { display:flex; gap:6px; margin:12px 12px 0; }
+.messengers button { flex:1; border:none; border-radius:8px; padding:10px 0; font-size:11px; color:#fff; font-weight:600; cursor:pointer; }
+.wa { background:#25D366; } .vb { background:#7360F2; } .tg { background:#229ED9; }
+.insta { margin:6px 12px 0; width:calc(100% - 24px); background:#E1306C; color:#fff; border:none; border-radius:8px; padding:10px; font-size:12px; font-weight:600; cursor:pointer; }
+.map-frame { margin:16px 12px 0; height:200px; border-radius:10px; overflow:hidden; background:#EFE6EA; }
+.map-frame iframe { width:100%; height:100%; border:0; }
+.routes { display:flex; gap:6px; margin:12px 12px 0; }
+.routes button { flex:1; background:var(--primary-dark); color:#fff; border:none; border-radius:8px; padding:10px; font-size:11px; font-weight:600; cursor:pointer; }
+.about-app { background:#fff; margin:28px 12px 16px; padding:16px; border-radius:12px; text-align:center; box-shadow:0 1px 3px rgba(0,0,0,0.06); }
+.about-app .name { font-size:16px; font-weight:700; color:var(--primary); }
+.about-app .ver { font-size:12px; color:var(--text-muted); margin-top:4px; }
+.about-app .pkg { font-size:10px; color:var(--text-light); margin-top:2px; }
+/* Empty */
+.empty { text-align:center; padding:48px 16px; color:var(--text-muted); }
+.empty .emoji { font-size:48px; margin-bottom:8px; }
+/* Loading */
+.loading { display:flex; flex-direction:column; align-items:center; justify-content:center; height:60vh; gap:12px; }
+.spinner { width:40px; height:40px; border:3px solid var(--border); border-top-color:var(--primary); border-radius:50%; animation:spin 0.8s linear infinite; }
+@keyframes spin { to { transform:rotate(360deg); } }
+</style>
+</head>
+<body>
+
+<header>
+  <button class="btn-back" onclick="window.location.href='/?landing=1'">←</button>
+  <h1 id="app-title">Lady Sugar</h1>
+  <button class="btn-contact" onclick="showTab('contacts')">📞</button>
+</header>
+
+<div class="offline-banner" id="offline-banner">⚠ Нет соединения — показаны кэшированные данные</div>
+
+<main id="main">
+  <div class="loading" id="loading">
+    <div class="spinner"></div>
+    <div style="font-size:13px;color:var(--primary-dark)">Загрузка…</div>
+  </div>
+
+  <!-- HOME -->
+  <section id="tab-home">
+    <div class="hero" id="hero">
+      <h2 id="hero-title">Lady Sugar</h2>
+      <p id="hero-subtitle">Идеальная гладкость надолго</p>
+      <button onclick="openBooking()">Записаться онлайн</button>
+    </div>
+    <div class="sec-title" id="features-title" style="display:none">Почему выбирают меня</div>
+    <div class="features-grid" id="features"></div>
+    <div class="sec-title" id="faq-title" style="display:none">Частые вопросы</div>
+    <div id="faq" style="padding-bottom:8px"></div>
+  </section>
+
+  <!-- PRICES -->
+  <section id="tab-prices">
+    <div class="sec-title">Прайс-лист</div>
+    <div id="prices"></div>
+    <div class="sec-title" id="care-title" style="display:none">Памятка клиенту</div>
+    <div id="care"></div>
+  </section>
+
+  <!-- GALLERY -->
+  <section id="tab-gallery">
+    <div class="gallery-tabs">
+      <button class="gallery-tab active" onclick="switchGallery('masters', this)">Мастера</button>
+      <button class="gallery-tab" onclick="switchGallery('ba', this)">До / После</button>
+      <button class="gallery-tab" onclick="switchGallery('blog', this)">Блог</button>
+    </div>
+    <div id="gallery-masters" style="padding-top:12px"></div>
+    <div id="gallery-ba" style="display:none;padding:12px"></div>
+    <div id="gallery-blog" style="display:none;padding:12px"></div>
+  </section>
+
+  <!-- REVIEWS -->
+  <section id="tab-reviews">
+    <div class="sec-title">Отзывы клиентов</div>
+    <div id="reviews"></div>
+    <div class="form-card">
+      <div class="form-title">Оставить отзыв</div>
+      <input type="text" class="field" id="rev-name" placeholder="Ваше имя">
+      <div class="rating-row">Оценка:
+        <div class="rating-stars" id="rating-stars">
+          <button class="rating-star active" data-r="1">★</button>
+          <button class="rating-star active" data-r="2">★</button>
+          <button class="rating-star active" data-r="3">★</button>
+          <button class="rating-star active" data-r="4">★</button>
+          <button class="rating-star active" data-r="5">★</button>
+        </div>
+      </div>
+      <textarea class="field" id="rev-text" placeholder="Расскажите о вашем опыте..."></textarea>
+      <button class="btn-submit" onclick="submitReview()">Отправить отзыв</button>
+      <div class="form-status" id="rev-status"></div>
+    </div>
+  </section>
+
+  <!-- CONTACTS -->
+  <section id="tab-contacts">
+    <div class="contact-intro">Жду вас в студии!</div>
+    <div id="contacts-list"></div>
+    <div class="about-app">
+      <div class="name">Lady Sugar</div>
+      <div class="ver">Версия 1.4.1 (PWA)</div>
+      <div class="pkg">com.ladysugar.app · Android 7.0+</div>
+      <div style="font-size:10px;color:var(--text-light);margin-top:8px">© 2026 Lady Sugar Polotsk</div>
+    </div>
+  </section>
+</main>
+
+<button class="fab" id="fab" onclick="openBooking()">📅</button>
+
+<nav class="bottom-nav">
+  <button class="nav-item active" onclick="showTab('home', this)"><span class="icon">🏠</span>Главная</button>
+  <button class="nav-item" onclick="showTab('prices', this)"><span class="icon">💰</span>Цены</button>
+  <button class="nav-item" onclick="showTab('gallery', this)"><span class="icon">🖼</span>Галерея</button>
+  <button class="nav-item" onclick="showTab('reviews', this)"><span class="icon">⭐</span>Отзывы</button>
+  <button class="nav-item" onclick="showTab('contacts', this)"><span class="icon">📍</span>Контакты</button>
+</nav>
+
+<script>
+const SITE = window.location.origin;
+let data = {};
+let rating = 5;
+
+// Навигация
+function showTab(tab, btn) {
+  document.querySelectorAll('section').forEach(s => s.classList.remove('active'));
+  document.getElementById('tab-' + tab).classList.add('active');
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  if (btn) btn.classList.add('active');
+  else document.querySelector('.nav-item')?.classList.add('active');
+  document.getElementById('app-title').textContent =
+    tab === 'home' ? 'Lady Sugar' : tab === 'prices' ? 'Цены' :
+    tab === 'gallery' ? 'Галерея' : tab === 'reviews' ? 'Отзывы' : 'Контакты';
+  // FAB скрываем на отзывах/контактах
+  document.getElementById('fab').style.display = (tab === 'reviews' || tab === 'contacts') ? 'none' : 'flex';
+  window.scrollTo(0, 0);
+}
+
+// Загрузка данных
+async function loadData() {
+  const offline = !navigator.onLine;
+  document.getElementById('offline-banner').classList.toggle('show', offline);
+  try {
+    const res = await fetch(SITE + '/data.json', { cache: 'no-store' });
+    if (res.ok) data = await res.json();
+    // кэшируем
+    try { localStorage.setItem('ls_data_cache', JSON.stringify(data)); } catch(e) {}
+  } catch(e) {
+    // оффлайн — берём кэш
+    try { data = JSON.parse(localStorage.getItem('ls_data_cache') || '{}'); } catch(e) {}
+    document.getElementById('offline-banner').classList.add('show');
+  }
+  render();
+  document.getElementById('loading').style.display = 'none';
+}
+
+function abs(url) {
+  if (!url) return '';
+  if (url.startsWith('http')) return url;
+  if (url.startsWith('/')) return SITE + url;
+  return url;
+}
+
+function iconFor(fa) {
+  const map = { 'fa-star':'★','fa-check':'✓','fa-leaf':'❀','fa-heart':'♥','fa-shield-alt':'🛡','fa-certificate':'✓','fa-smile':'☺','fa-spray-can':'✨','fa-hand-sparkles':'✦' };
+  return map[fa] || '✦';
+}
+
+function render() {
+  // Hero
+  const heroTexts = data.heroTexts || [{content:'Lady Sugar'},{content:'Идеальная гладкость надолго'}];
+  document.getElementById('hero-title').textContent = heroTexts[0]?.content || 'Lady Sugar';
+  document.getElementById('hero-subtitle').textContent = heroTexts[1]?.content || 'Идеальная гладкость надолго';
+  if (data.theme && data.theme.heroImage) {
+    document.getElementById('hero').style.backgroundImage = "url('" + abs(data.theme.heroImage) + "')";
+  }
+
+  // Features
+  const feats = data.features || [];
+  if (feats.length) {
+    document.getElementById('features-title').style.display = 'block';
+    document.getElementById('features').innerHTML = feats.map(f => `
+      <div class="feature-card">
+        <div class="icon">${iconFor(f.icon)}</div>
+        <div class="title">${f.title||''}</div>
+        <div class="desc">${f.desc||''}</div>
+      </div>`).join('');
+  }
+
+  // FAQ
+  const faq = data.faq || [];
+  if (faq.length) {
+    document.getElementById('faq-title').style.display = 'block';
+    document.getElementById('faq').innerHTML = faq.map((q,i) => `
+      <div class="faq-item" onclick="this.classList.toggle('open')">
+        <div class="faq-q"><span>${q.question||''}</span><span class="arrow">▾</span></div>
+        <div class="faq-a">${q.answer||''}</div>
+      </div>`).join('');
+  }
+
+  // Prices
+  const prices = data.prices || [];
+  document.getElementById('prices').innerHTML = prices.length
+    ? prices.map(p => `<div class="price-row"><span class="name">${p.name||''}</span><span class="val">${p.value||'—'} BYN</span></div>`).join('')
+    : '<div class="empty"><div class="emoji">🪒</div>Цены скоро появятся</div>';
+
+  // Care
+  const care = data.careInstructions || [];
+  if (care.length) {
+    document.getElementById('care-title').style.display = 'block';
+    document.getElementById('care').innerHTML = care.map(c => `
+      <div class="care-card">
+        <div class="care-title">${c.title||''}</div>
+        <div class="care-content">${c.content||''}</div>
+      </div>`).join('');
+  }
+
+  // Masters
+  const masters = data.masters || [];
+  document.getElementById('gallery-masters').innerHTML = masters.length
+    ? masters.map(m => `
+      <div class="master-card">
+        <div class="master-photo">${m.photo ? `<img src="${abs(m.photo)}" alt="${m.name||''}">` : '👩'}</div>
+        <div>
+          <div class="master-role">${m.role||''}</div>
+          <div class="master-name">${m.name||'Мастер'}</div>
+          <div class="master-desc">${m.desc||''}</div>
+        </div>
+      </div>`).join('')
+    : '<div class="empty"><div class="emoji">👩</div>Мастера скоро появятся</div>';
+
+  // Before/After
+  const ba = data.beforeAfter || [];
+  document.getElementById('gallery-ba').innerHTML = ba.length
+    ? ba.map(b => `
+      <div class="master-card" style="flex-direction:column">
+        <div class="care-title" style="margin-bottom:8px">${b.label||''}</div>
+        <div style="display:flex;gap:6px">
+          <div style="flex:1;height:140px;background:#EFE6EA;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:28px;overflow:hidden">${b.before ? `<img src="${abs(b.before)}" style="width:100%;height:100%;object-fit:cover">` : '📷'}</div>
+          <div style="flex:1;height:140px;background:#EFE6EA;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:28px;overflow:hidden">${b.after ? `<img src="${abs(b.after)}" style="width:100%;height:100%;object-fit:cover">` : '📷'}</div>
+        </div>
+      </div>`).join('')
+    : '<div class="empty"><div class="emoji">📷</div>Результаты работ скоро появятся</div>';
+
+  // Blog
+  const blog = data.blog || [];
+  document.getElementById('gallery-blog').innerHTML = blog.length
+    ? blog.map(b => `
+      <div class="master-card" onclick="${b.url ? `window.open('${abs(b.url)}','_blank')` : ''}">
+        <div style="width:90px;height:90px;border-radius:8px;background:#EFE6EA;display:flex;align-items:center;justify-content:center;font-size:28px;flex-shrink:0;overflow:hidden">${b.image ? `<img src="${abs(b.image)}" style="width:100%;height:100%;object-fit:cover">` : '📝'}</div>
+        <div>
+          <div class="master-role">${b.date||''}</div>
+          <div class="master-name">${b.title||''}</div>
+          <div class="master-desc">${b.excerpt||''}</div>
+        </div>
+      </div>`).join('')
+    : '<div class="empty"><div class="emoji">📝</div>Статьи скоро появятся</div>';
+
+  // Reviews
+  const reviews = data.reviews || [];
+  document.getElementById('reviews').innerHTML = reviews.length
+    ? reviews.map(r => `
+      <div class="review-card">
+        <div class="review-top">
+          <span class="review-name">${r.name||'Аноним'}</span>
+          <span class="review-stars">${'★'.repeat(Math.max(1,Math.min(5,r.rating||5)))}${'☆'.repeat(5-Math.max(1,Math.min(5,r.rating||5)))}</span>
+        </div>
+        <div class="review-text">${r.text||''}</div>
+        ${r.date ? `<div class="review-date">${r.date}</div>` : ''}
+      </div>`).join('')
+    : '<div class="empty"><div class="emoji">⭐</div>Пока нет отзывов. Будьте первым!</div>';
+
+  // Contacts
+  renderContacts();
+}
+
+function renderContacts() {
+  const c = data.contacts || {};
+  const addr = c.address && c.address !== '...' ? c.address : 'г. Полоцк, ул. Успенская 3';
+  const phone = c.phone && c.phone !== '...' ? c.phone : 'Номер скоро появится';
+  const hasPhone = c.phone && c.phone !== '...';
+  const bookingText = c.bookingText || 'Записаться';
+
+  document.getElementById('contacts-list').innerHTML = `
+    <div class="contact-row"><span class="ci">📍</span><span class="cv">${addr}</span></div>
+    <div class="contact-row"><span class="ci">📞</span><span class="cv">${phone}</span>${hasPhone ? `<button class="cb" onclick="window.location.href='tel:${c.phone}'">Позвонить</button>` : ''}</div>
+    <button class="btn-booking" onclick="openBooking()">${bookingText} онлайн (Dikidi)</button>
+    <div class="messengers">
+      <button class="wa" onclick="openUrl('${c.whatsapp}')">WhatsApp</button>
+      <button class="vb" onclick="openUrl('${c.viber}')">Viber</button>
+      <button class="tg" onclick="openUrl('${c.telegram}')">Telegram</button>
+    </div>
+    <button class="insta" onclick="openUrl('${c.instagram}')">Instagram</button>
+    <div class="map-frame"><iframe src="https://yandex.ru/map-widget/v1/?um=constructor%3A485440b76e7ad9dd1103b8d78d9ff99cdf91b9854cb8c21e28aac992b7eb1534&source=constructor" loading="lazy"></iframe></div>
+    <div class="routes">
+      <button onclick="window.open('https://yandex.ru/maps/?text=${encodeURIComponent('Полоцк, Успенская 3')}','_blank')">Яндекс.Карты</button>
+      <button onclick="window.open('https://2gis.ru/polotsk/search/${encodeURIComponent('Успенская 3')}','_blank')">2GIS</button>
+    </div>
+    <button class="btn-booking" style="background:var(--bg-white);color:var(--primary);margin-top:12px" onclick="shareApp()">Поделиться</button>
+  `;
+}
+
+function openUrl(url) {
+  if (url && url !== '...' && url) window.open(url, '_blank');
+}
+
+function openBooking() {
+  const d = data.contacts?.dikidi;
+  if (d && d !== '...') window.open(d, '_blank');
+  else window.open('https://dikidi.net', '_blank');
+}
+
+function shareApp() {
+  if (navigator.share) navigator.share({ title:'Lady Sugar', text:'Шугаринг в Полоцке', url:SITE });
+  else navigator.clipboard?.writeText(SITE);
+}
+
+function switchGallery(sub, btn) {
+  document.querySelectorAll('.gallery-tab').forEach(t => t.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById('gallery-masters').style.display = sub === 'masters' ? 'block' : 'none';
+  document.getElementById('gallery-ba').style.display = sub === 'ba' ? 'block' : 'none';
+  document.getElementById('gallery-blog').style.display = sub === 'blog' ? 'block' : 'none';
+}
+
+// Рейтинг
+document.getElementById('rating-stars').addEventListener('click', (e) => {
+  const r = parseInt(e.target.dataset.r);
+  if (!r) return;
+  rating = r;
+  document.querySelectorAll('.rating-star').forEach(s => {
+    s.classList.toggle('active', parseInt(s.dataset.r) <= r);
+  });
+});
+
+async function submitReview() {
+  const name = document.getElementById('rev-name').value.trim();
+  const text = document.getElementById('rev-text').value.trim();
+  const status = document.getElementById('rev-status');
+  if (!name || !text) { status.textContent = 'Заполните имя и отзыв'; status.style.color = '#D32F2F'; return; }
+  status.textContent = 'Отправка…'; status.style.color = 'var(--text-muted)';
+  try {
+    const res = await fetch(SITE + '/api/review/submit', {
+      method: 'POST', headers: {'Content-Type':'application/json'},
+      body: JSON.stringify({ name, rating, text })
+    });
+    if (res.ok) {
+      status.textContent = '✅ Спасибо! Отзыв отправлен на модерацию.';
+      status.style.color = '#2E7D32';
+      document.getElementById('rev-name').value = '';
+      document.getElementById('rev-text').value = '';
+    } else { status.textContent = 'Не удалось отправить'; status.style.color = '#D32F2F'; }
+  } catch(e) { status.textContent = 'Нет соединения'; status.style.color = '#D32F2F'; }
+}
+
+// Онлайн/оффлайн
+window.addEventListener('online', () => document.getElementById('offline-banner').classList.remove('show'));
+window.addEventListener('offline', () => document.getElementById('offline-banner').classList.add('show'));
+
+// Старт
+showTab('home', document.querySelector('.nav-item'));
+loadData();
+</script>
+</body>
+</html>
