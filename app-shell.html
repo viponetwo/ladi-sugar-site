@@ -319,7 +319,7 @@ async function loadData() {
   const offline = !navigator.onLine;
   document.getElementById('offline-banner').classList.toggle('show', offline);
   try {
-    const res = await fetch(SITE + '/data.json', { cache: 'no-store' });
+    const res = await fetch(SITE + '/data.json?_t=' + Date.now(), { cache: 'no-store' });
     if (res.ok) data = await res.json();
     // кэшируем
     try { localStorage.setItem('ls_data_cache', JSON.stringify(data)); } catch(e) {}
