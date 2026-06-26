@@ -29,7 +29,7 @@
                 <a href="#about"><i class="fas fa-star"></i> Преимущества</a>
                 <a href="#masters"><i class="fas fa-user-friends"></i> Мастера</a>
                 <a href="#before-after"><i class="fas fa-exchange-alt"></i> До/После</a>
-                <a href="#blog"><i class="fas fa-book-open"></i> Блог</a>
+                <a href="https://sugaringpolotsk.space-z.ai/" target="_blank" rel="noreferrer"><i class="fas fa-book-open"></i> Блог</a>
                 <a href="#faq"><i class="fas fa-question-circle"></i> Вопросы</a>
                 <a href="#prices"><i class="fas fa-tag"></i> Цены</a>
                 <a href="#care"><i class="fas fa-clipboard-list"></i> Памятка</a>
@@ -64,18 +64,8 @@
         </div>
     </section>
 
-    <section id="blog" class="bg-white">
-        <div class="container">
-            <h2 class="section-title">Полезные статьи</h2>
-            <a href="https://sugaringpolotsk.space-z.ai/" target="_blank" rel="noreferrer"
-               style="display:block;max-width:520px;margin:24px auto;padding:28px 24px;border-radius:20px;background:linear-gradient(135deg,#B08D74,#8E6F59);color:#fff;text-decoration:none;box-shadow:0 12px 32px rgba(176,141,116,0.3);transition:transform 0.3s;">
-                <div style="font-size:28px;margin-bottom:8px">📝</div>
-                <div style="font-size:20px;font-weight:700;margin-bottom:6px">Читать статьи на сайте</div>
-                <div style="font-size:14px;opacity:0.9">Советы по уходу, подготовка к процедуре, отзывы и многое другое →</div>
-                <div style="font-size:13px;margin-top:12px;opacity:0.85">sugaringpolotsk.space-z.ai ↗</div>
-            </a>
-        </div>
-    </section>
+    <!-- Раздел блога убран: статьи на https://sugaringpolotsk.space-z.ai/
+         Пункт меню 'Блог' ведёт прямо туда -->
 
     <section id="faq" class="bg-light">
         <div class="container">
@@ -197,7 +187,7 @@
         <a href="#about" class="mobile-nav-item"><i class="fas fa-star"></i><span>Преимущества</span></a>
         <a href="#masters" class="mobile-nav-item"><i class="fas fa-user-friends"></i><span>Мастера</span></a>
         <a href="#before-after" class="mobile-nav-item"><i class="fas fa-exchange-alt"></i><span>До/После</span></a>
-        <a href="#blog" class="mobile-nav-item"><i class="fas fa-book-open"></i><span>Блог</span></a>
+        <a href="https://sugaringpolotsk.space-z.ai/" target="_blank" rel="noreferrer" class="mobile-nav-item"><i class="fas fa-book-open"></i><span>Блог</span></a>
         <a href="#faq" class="mobile-nav-item"><i class="fas fa-question-circle"></i><span>Вопросы</span></a>
         <a href="#prices" class="mobile-nav-item"><i class="fas fa-tag"></i><span>Цены</span></a>
         <a href="#care" class="mobile-nav-item"><i class="fas fa-clipboard-list"></i><span>Памятка</span></a>
@@ -412,8 +402,7 @@
                 }).join('');
             }
 
-            // Блог — перенесён на внешний сайт https://sugaringpolotsk.space-z.ai/
-            // (секция #blog теперь содержит баннер-ссылку, рендер не нужен)
+            // Блог — перенесён на https://sugaringpolotsk.space-z.ai/ (пункт меню ведёт прямо туда)
 
             // До/После
             const baContainer = document.getElementById('ba-container');
