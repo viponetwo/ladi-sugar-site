@@ -67,7 +67,13 @@
     <section id="blog" class="bg-white">
         <div class="container">
             <h2 class="section-title">Полезные статьи</h2>
-            <div class="blog-grid" id="blog-container"></div>
+            <a href="https://sugaringpolotsk.space-z.ai/" target="_blank" rel="noreferrer"
+               style="display:block;max-width:520px;margin:24px auto;padding:28px 24px;border-radius:20px;background:linear-gradient(135deg,#B08D74,#8E6F59);color:#fff;text-decoration:none;box-shadow:0 12px 32px rgba(176,141,116,0.3);transition:transform 0.3s;">
+                <div style="font-size:28px;margin-bottom:8px">📝</div>
+                <div style="font-size:20px;font-weight:700;margin-bottom:6px">Читать статьи на сайте</div>
+                <div style="font-size:14px;opacity:0.9">Советы по уходу, подготовка к процедуре, отзывы и многое другое →</div>
+                <div style="font-size:13px;margin-top:12px;opacity:0.85">sugaringpolotsk.space-z.ai ↗</div>
+            </a>
         </div>
     </section>
 
@@ -406,11 +412,8 @@
                 }).join('');
             }
 
-            // Блог
-            const blogContainer = document.getElementById('blog-container');
-            if (blogContainer && data.blog) {
-                blogContainer.innerHTML = data.blog.map(post => `<div class="blog-card"><img src="${post.image || ''}" alt="${post.title}" class="blog-img"><div class="blog-content"><span class="blog-date">${post.date}</span><h3>${post.title}</h3><p>${post.excerpt}</p></div></div>`).join('');
-            }
+            // Блог — перенесён на внешний сайт https://sugaringpolotsk.space-z.ai/
+            // (секция #blog теперь содержит баннер-ссылку, рендер не нужен)
 
             // До/После
             const baContainer = document.getElementById('ba-container');
