@@ -24,8 +24,8 @@
 <body>
     <header>
         <div class="container nav-wrapper">
-            <a href="#" class="logo-link"><img src="images/logo.png" alt="Logo" class="logo-img"></a>
-            <nav class="nav-links">
+            <a href="#" class="logo-link" aria-label="Ladi Sugar, на главную"><img src="images/logo.png" alt="Ladi Sugar" class="logo-img"></a>
+            <nav class="nav-links" aria-label="Основная навигация">
                 <a href="#about"><i class="fas fa-star"></i> Преимущества</a>
                 <a href="#masters"><i class="fas fa-user-friends"></i> Мастера</a>
                 <a href="#before-after"><i class="fas fa-exchange-alt"></i> До/После</a>
@@ -95,10 +95,11 @@
             <div class="review-form-wrapper">
                 <h3 style="text-align:center; margin-bottom:20px;">Оставить отзыв</h3>
                 <form id="reviewForm" class="review-form">
-                    <input type="text" id="rev-name" placeholder="Ваше имя" required>
+                    <label for="rev-name">Ваше имя</label>
+                    <input type="text" id="rev-name" name="name" placeholder="Ваше имя" autocomplete="name" required>
                     <div class="rating-input">
-                        <span>Оценка:</span>
-                        <select id="rev-rating">
+                        <label for="rev-rating">Оценка:</label>
+                        <select id="rev-rating" name="rating">
                             <option value="5">⭐⭐⭐⭐⭐ (5)</option>
                             <option value="4">⭐⭐⭐⭐ (4)</option>
                             <option value="3">⭐⭐⭐ (3)</option>
@@ -106,9 +107,10 @@
                             <option value="1">⭐ (1)</option>
                         </select>
                     </div>
-                    <textarea id="rev-text" placeholder="Расскажите о вашем опыте..." rows="4" required></textarea>
+                    <label for="rev-text">Текст отзыва</label>
+                    <textarea id="rev-text" name="review" placeholder="Расскажите о вашем опыте..." rows="4" required></textarea>
                     <button type="submit" id="rev-submit-btn" class="btn-hero" style="padding:12px 30px; font-size:1rem; width:100%;">Отправить отзыв</button>
-                    <div id="rev-status" style="text-align:center; margin-top:10px; font-size:0.9rem;"></div>
+                    <div id="rev-status" role="status" aria-live="polite" style="text-align:center; margin-top:10px; font-size:0.9rem;"></div>
                 </form>
             </div>
         </div>
@@ -124,9 +126,9 @@
                     <div class="contact-item"><i class="fas fa-phone-alt"></i><a id="contact-phone" href="#">Загрузка...</a></div>
                     <div class="social-buttons" id="social-buttons">
                         <a href="#" id="btn-dikidi-footer" target="_blank" class="btn-social btn-dikidi btn-hero-pulse"><i class="far fa-calendar-check"></i> Записаться</a>
-                        <a href="#" id="btn-wa" target="_blank" class="btn-social btn-wa"><i class="fab fa-whatsapp"></i></a>
-                        <a href="#" id="btn-viber" target="_blank" class="btn-social btn-viber"><i class="fab fa-viber"></i></a>
-                        <a href="#" id="btn-insta" target="_blank" class="btn-social btn-insta"><i class="fab fa-instagram"></i></a>
+                        <a href="#" id="btn-wa" target="_blank" class="btn-social btn-wa" aria-label="Написать в WhatsApp"><i class="fab fa-whatsapp" aria-hidden="true"></i></a>
+                        <a href="#" id="btn-viber" target="_blank" class="btn-social btn-viber" aria-label="Написать в Viber"><i class="fab fa-viber" aria-hidden="true"></i></a>
+                        <a href="#" id="btn-insta" target="_blank" class="btn-social btn-insta" aria-label="Открыть Instagram"><i class="fab fa-instagram" aria-hidden="true"></i></a>
                     </div>
                     <div class="route-buttons">
                         <a href="#" id="btn-yandex-route" target="_blank" class="btn-route btn-yandex">
@@ -138,7 +140,7 @@
                     </div>
                 </div>
                 <div class="map-container" id="map-container">
-                    <iframe id="map-frame" src="" width="100%" height="400" frameborder="0"></iframe>
+                    <iframe id="map-frame" src="" width="100%" height="400" frameborder="0" title="Карта проезда к студии Ladi Sugar"></iframe>
                 </div>
             </div>
         </div>
@@ -147,11 +149,11 @@
     <section class="share-section">
         <h3>Поделиться с друзьями</h3>
         <div class="share-buttons">
-            <a href="#" class="share-btn share-wa" target="_blank" title="WhatsApp"><i class="fab fa-whatsapp"></i></a>
-            <a href="#" class="share-btn share-tg" target="_blank" title="Telegram"><i class="fab fa-telegram-plane"></i></a>
-            <a href="#" class="share-btn share-vk" target="_blank" title="ВКонтакте"><i class="fab fa-vk"></i></a>
-            <a href="#" class="share-btn share-pin" target="_blank" title="Pinterest"><i class="fab fa-pinterest-p"></i></a>
-            <button class="share-btn share-copy" onclick="copyShareLink()" title="Скопировать ссылку"><i class="fas fa-link"></i></button>
+            <a href="#" class="share-btn share-wa" target="_blank" title="WhatsApp" aria-label="Поделиться в WhatsApp"><i class="fab fa-whatsapp" aria-hidden="true"></i></a>
+            <a href="#" class="share-btn share-tg" target="_blank" title="Telegram" aria-label="Поделиться в Telegram"><i class="fab fa-telegram-plane" aria-hidden="true"></i></a>
+            <a href="#" class="share-btn share-vk" target="_blank" title="ВКонтакте" aria-label="Поделиться во ВКонтакте"><i class="fab fa-vk" aria-hidden="true"></i></a>
+            <a href="#" class="share-btn share-pin" target="_blank" title="Pinterest" aria-label="Поделиться в Pinterest"><i class="fab fa-pinterest-p" aria-hidden="true"></i></a>
+            <button type="button" class="share-btn share-copy" onclick="copyShareLink()" title="Скопировать ссылку" aria-label="Скопировать ссылку"><i class="fas fa-link" aria-hidden="true"></i></button>
         </div>
     </section>
 
@@ -163,7 +165,7 @@
 
     <!-- ПЛАВАЮЩАЯ КНОПКА МЕССЕНДЖЕРОВ -->
     <div class="floating-messenger" id="floating-messenger">
-        <div class="messenger-menu" id="messenger-menu">
+        <div class="messenger-menu" id="messenger-menu" aria-hidden="true">
             <a href="#" id="float-wa" target="_blank" class="messenger-btn messenger-wa">
                 <i class="fab fa-whatsapp"></i><span>WhatsApp</span>
             </a>
@@ -177,13 +179,13 @@
                 <i class="fab fa-instagram"></i><span>Instagram</span>
             </a>
         </div>
-        <button class="messenger-main-btn" id="messenger-main-btn" aria-label="Написать нам">
-            <i class="fas fa-comment-dots" id="messenger-icon"></i>
+        <button class="messenger-main-btn" id="messenger-main-btn" aria-label="Открыть способы связи" aria-controls="messenger-menu" aria-expanded="false">
+            <i class="fas fa-comment-dots" id="messenger-icon" aria-hidden="true"></i>
         </button>
     </div>
 
     <!-- ПЛАВАЮЩЕЕ ВЕРТИКАЛЬНОЕ МЕНЮ ДЛЯ МОБИЛЬНЫХ -->
-    <nav class="mobile-floating-nav" id="mobile-floating-nav">
+    <nav class="mobile-floating-nav" id="mobile-floating-nav" aria-label="Мобильная навигация">
         <a href="#about" class="mobile-nav-item"><i class="fas fa-star"></i><span>Преимущества</span></a>
         <a href="#masters" class="mobile-nav-item"><i class="fas fa-user-friends"></i><span>Мастера</span></a>
         <a href="#before-after" class="mobile-nav-item"><i class="fas fa-exchange-alt"></i><span>До/После</span></a>
@@ -194,9 +196,9 @@
         <a href="#contacts" class="mobile-nav-item"><i class="fas fa-phone-alt"></i><span>Контакты</span></a>
     </nav>
 
-    <div id="lightbox" class="lightbox" onclick="closeLightbox(event)">
-        <a href="#" class="lightbox-pin" onclick="pinLightboxImage(); return false;"><i class="fab fa-pinterest-p"></i></a>
-        <span class="lightbox-close">&times;</span>
+    <div id="lightbox" class="lightbox" role="dialog" aria-modal="true" aria-label="Просмотр фотографии" aria-hidden="true" onclick="closeLightbox(event)">
+        <a href="#" class="lightbox-pin" onclick="pinLightboxImage(); return false;" aria-label="Сохранить фото в Pinterest"><i class="fab fa-pinterest-p" aria-hidden="true"></i></a>
+        <button type="button" class="lightbox-close" onclick="closeLightbox(event)" aria-label="Закрыть просмотр">&times;</button>
         <img id="lightbox-img" src="" alt="Увеличенное фото">
     </div>
 
@@ -265,9 +267,11 @@
             if (heroContainer) {
                 heroContainer.innerHTML = '';
                 if (data.heroTexts && Array.isArray(data.heroTexts)) {
+                    let headingCreated = false;
                     data.heroTexts.forEach((block, index) => {
                         if (block.content && block.content.trim() !== '') {
-                            const el = document.createElement('div');
+                            const el = document.createElement(headingCreated ? 'div' : 'h1');
+                            headingCreated = true;
                             el.className = 'hero-text-block';
                             el.textContent = block.content;
                             if (index === 0 && parseInt(block.size || 56) > 40) el.classList.add('text-rainbow');
@@ -387,8 +391,8 @@
             if (faqContainer && data.faq) {
                 faqContainer.innerHTML = data.faq.map((item, i) => `
                     <div class="faq-item">
-                        <div class="faq-question" onclick="window.toggleFaq(${i})">${item.question}<i class="fas fa-chevron-down"></i></div>
-                        <div class="faq-answer" id="faq-ans-${i}">${item.answer}</div>
+                        <button type="button" class="faq-question" id="faq-btn-${i}" aria-expanded="false" aria-controls="faq-ans-${i}" onclick="window.toggleFaq(${i})">${item.question}<i class="fas fa-chevron-down" aria-hidden="true"></i></button>
+                        <div class="faq-answer" id="faq-ans-${i}" role="region" aria-labelledby="faq-btn-${i}" hidden>${item.answer}</div>
                     </div>
                 `).join('');
             }
@@ -408,7 +412,7 @@
             const baContainer = document.getElementById('ba-container');
             if (baContainer && data.beforeAfter) {
                 baContainer.innerHTML = data.beforeAfter.map((item, i) => `
-                    <div class="ba-slider">
+                    <div class="ba-slider" role="img" aria-label="Сравнение до и после: ${item.label || 'результат работы'}" tabindex="0">
                         <div class="ba-img-before" style="background-image:url('${item.before}')"></div>
                         <div class="ba-img-after" style="background-image:url('${item.after}'); width:50%;"></div>
                         <div class="ba-divider" style="left:50%;"><div class="ba-handle"></div></div>
@@ -443,14 +447,19 @@
         window.toggleFaq = function(idx) {
             const ans = document.getElementById(`faq-ans-${idx}`);
             if (!ans) return;
-            const icon = ans.previousElementSibling.querySelector('i');
+            const btn = document.getElementById(`faq-btn-${idx}`);
+            const icon = btn?.querySelector('i');
             if (ans.style.maxHeight) {
                 ans.style.maxHeight = null;
                 ans.style.padding = '0 20px';
+                ans.hidden = true;
+                if (btn) btn.setAttribute('aria-expanded', 'false');
                 if (icon) icon.style.transform = 'rotate(0deg)';
             } else {
+                ans.hidden = false;
                 ans.style.maxHeight = ans.scrollHeight + 'px';
                 ans.style.padding = '20px';
+                if (btn) btn.setAttribute('aria-expanded', 'true');
                 if (icon) icon.style.transform = 'rotate(180deg)';
             }
         };
@@ -463,14 +472,19 @@
                 lbImg.alt = label;
                 lb.dataset.label = label || 'Ladi Sugar';
                 lb.classList.add('active');
+                lb.setAttribute('aria-hidden', 'false');
                 document.body.style.overflow = 'hidden';
+                lb.querySelector('.lightbox-close')?.focus();
             }
         }
 
         function closeLightbox(e) {
             if (e && e.target.closest('.lightbox-pin')) return;
             const lb = document.getElementById('lightbox');
-            if (lb) lb.classList.remove('active');
+            if (lb) {
+                lb.classList.remove('active');
+                lb.setAttribute('aria-hidden', 'true');
+            }
             document.body.style.overflow = '';
             setTimeout(() => { const lbImg = document.getElementById('lightbox-img'); if (lbImg) lbImg.src = ''; }, 250);
         }
@@ -521,11 +535,17 @@
                 isOpen = !isOpen;
                 if (isOpen) {
                     menu.classList.add('active');
+                    menu.setAttribute('aria-hidden', 'false');
                     mainBtn.classList.add('active');
+                    mainBtn.setAttribute('aria-expanded', 'true');
+                    mainBtn.setAttribute('aria-label', 'Закрыть способы связи');
                     if (icon) icon.className = 'fas fa-times';
                 } else {
                     menu.classList.remove('active');
+                    menu.setAttribute('aria-hidden', 'true');
                     mainBtn.classList.remove('active');
+                    mainBtn.setAttribute('aria-expanded', 'false');
+                    mainBtn.setAttribute('aria-label', 'Открыть способы связи');
                     if (icon) icon.className = 'fas fa-comment-dots';
                 }
             });
@@ -533,11 +553,31 @@
                 if (!menu.contains(e.target) && e.target !== mainBtn && isOpen) {
                     isOpen = false;
                     menu.classList.remove('active');
+                    menu.setAttribute('aria-hidden', 'true');
                     mainBtn.classList.remove('active');
+                    mainBtn.setAttribute('aria-expanded', 'false');
+                    mainBtn.setAttribute('aria-label', 'Открыть способы связи');
                     if (icon) icon.className = 'fas fa-comment-dots';
                 }
             });
+            document.addEventListener('keydown', (e) => {
+                if (e.key !== 'Escape' || !isOpen) return;
+                isOpen = false;
+                menu.classList.remove('active');
+                menu.setAttribute('aria-hidden', 'true');
+                mainBtn.classList.remove('active');
+                mainBtn.setAttribute('aria-expanded', 'false');
+                mainBtn.setAttribute('aria-label', 'Открыть способы связи');
+                if (icon) icon.className = 'fas fa-comment-dots';
+                mainBtn.focus();
+            });
         }
+
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && document.getElementById('lightbox')?.classList.contains('active')) {
+                closeLightbox();
+            }
+        });
 
         document.getElementById('reviewForm')?.addEventListener('submit', async (e) => {
             e.preventDefault();

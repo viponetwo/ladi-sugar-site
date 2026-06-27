@@ -8,6 +8,8 @@
         :root { --bg: #f8fafc; --sidebar: #1e293b; --primary: #3b82f6; --card: #fff; --border: #e2e8f0; --text: #0f172a; --error: #ef4444; --success: #22c55e; --danger: #dc2626; }
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: system-ui, -apple-system, sans-serif; }
         body { background: var(--bg); color: var(--text); height: 100vh; display: flex; }
+        button, input, select, textarea, a { font: inherit; }
+        button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-visible, a:focus-visible { outline: 3px solid #f59e0b; outline-offset: 3px; }
         
         #login-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.6); display: flex; align-items: center; justify-content: center; z-index: 10000; backdrop-filter: blur(5px); }
         .login-box { background: white; padding: 30px; border-radius: 12px; width: 90%; max-width: 350px; box-shadow: 0 10px 25px rgba(0,0,0,0.2); text-align: center; }
@@ -18,7 +20,7 @@
 
         #admin-ui { display: none; width: 100%; flex-direction: row; }
         .sidebar { width: 240px; background: var(--sidebar); color: white; display: flex; flex-direction: column; padding: 20px 0; overflow-y: auto; }
-        .nav-item { padding: 12px 20px; cursor: pointer; transition: 0.2s; }
+        .nav-item { padding: 12px 20px; cursor: pointer; transition: 0.2s; width: 100%; border: 0; background: transparent; color: inherit; text-align: left; font-size: 1rem; }
         .nav-item:hover, .nav-item.active { background: #334155; border-right: 3px solid var(--primary); }
         .main { flex: 1; overflow-y: auto; padding: 30px; }
         .section { display: none; max-width: 800px; }
@@ -54,7 +56,7 @@
         .color-row { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
         .color-row input[type="color"] { width: 50px; height: 40px; padding: 0; border: none; background: none; cursor: pointer; }
 
-        .nav-logout { margin-top: auto; padding: 12px 20px; background: #334155; border-top: 1px solid #475569; cursor: pointer; transition: 0.2s; display: flex; align-items: center; gap: 10px; }
+        .nav-logout { margin-top: auto; padding: 12px 20px; background: #334155; color: white; border: 0; border-top: 1px solid #475569; cursor: pointer; transition: 0.2s; display: flex; align-items: center; gap: 10px; width: 100%; text-align: left; }
         .nav-logout:hover { background: #ef4444; color: white; }
 
         @media (max-width: 768px) { 
@@ -66,38 +68,39 @@
 </head>
 <body>
     <div id="login-overlay">
-        <div class="login-box">
-            <h2>🔒 Вход в админку</h2>
-            <input type="password" id="pass-input" placeholder="Введите пароль" onkeydown="if(event.key==='Enter') login()">
-            <button onclick="login()">Войти</button>
-            <div id="error-msg" class="error-msg">Неверный пароль</div>
+        <div class="login-box" role="dialog" aria-modal="true" aria-labelledby="login-title">
+            <h1 id="login-title">🔒 Вход в админку</h1>
+            <label for="pass-input">Пароль администратора</label>
+            <input type="password" id="pass-input" placeholder="Введите пароль" autocomplete="current-password" onkeydown="if(event.key==='Enter') login()">
+            <button type="button" onclick="login()">Войти</button>
+            <div id="error-msg" class="error-msg" role="alert">Неверный пароль</div>
         </div>
     </div>
 
     <div id="admin-ui">
-        <aside class="sidebar">
+        <aside class="sidebar" aria-label="Разделы админки">
             <div style="padding: 0 20px 20px; font-weight: bold; border-bottom: 1px solid #334155;">🔧 Ladi Sugar Admin</div>
-            <div class="nav-item active" onclick="show('hero')">🏠 Главный экран</div>
-            <div class="nav-item" onclick="show('seo')">🔍 SEO</div>
-            <div class="nav-item" onclick="show('map')">📍 Карта</div>
-            <div class="nav-item" onclick="show('masters')"> Мастера</div>
-            <div class="nav-item" onclick="show('features')">✨ Преимущества</div>
-            <div class="nav-item" onclick="show('beforeAfter')">🔄 До/После</div>
-            <div class="nav-item" onclick="show('prices')">💰 Прайс</div>
-            <div class="nav-item" onclick="show('reviews')">💬 Отзывы</div>
-            <div class="nav-item" onclick="show('faq')">❓ FAQ</div>
-            <div class="nav-item" onclick="show('care')">📋 Инструкции</div>
-            <div class="nav-item" onclick="show('moderation')">🕒 Модерация</div>
-            <div class="nav-item" onclick="show('blog')">📝 Блог</div>
-            <div class="nav-item" onclick="show('contacts')">📞 Контакты и кнопки</div>
-            <div class="nav-logout" onclick="logout()">🚪 Выход из админки</div>
+            <button type="button" class="nav-item active" onclick="show('hero')" aria-current="page">🏠 Главный экран</button>
+            <button type="button" class="nav-item" onclick="show('seo')">🔍 SEO</button>
+            <button type="button" class="nav-item" onclick="show('map')">📍 Карта</button>
+            <button type="button" class="nav-item" onclick="show('masters')"> Мастера</button>
+            <button type="button" class="nav-item" onclick="show('features')">✨ Преимущества</button>
+            <button type="button" class="nav-item" onclick="show('beforeAfter')">🔄 До/После</button>
+            <button type="button" class="nav-item" onclick="show('prices')">💰 Прайс</button>
+            <button type="button" class="nav-item" onclick="show('reviews')">💬 Отзывы</button>
+            <button type="button" class="nav-item" onclick="show('faq')">❓ FAQ</button>
+            <button type="button" class="nav-item" onclick="show('care')">📋 Инструкции</button>
+            <button type="button" class="nav-item" onclick="show('moderation')">🕒 Модерация</button>
+            <button type="button" class="nav-item" onclick="show('blog')">📝 Блог</button>
+            <button type="button" class="nav-item" onclick="show('contacts')">📞 Контакты и кнопки</button>
+            <button type="button" class="nav-logout" onclick="logout()">🚪 Выход из админки</button>
         </aside>
         <main class="main">
             <section id="hero" class="section active">
                 <div class="section-header"><h2>🏠 Главный экран и Дизайн</h2></div>
                 
                 <div class="form-group">
-                    <label>📍 Расположение текста на баннере</label>
+                    <label for="hero-alignment-select">📍 Расположение текста на баннере</label>
                     <select id="hero-alignment-select" onchange="currentData.hero.alignment = this.value">
                         <option value="center">По центру (стандарт)</option>
                         <option value="top-left">Слева вверху</option>
@@ -122,9 +125,9 @@
                 <h3 style="margin-bottom: 15px;">🎨 Фон и общие цвета</h3>
 
                 <div class="form-group">
-                    <label>Фоновое изображение (Баннер)</label>
+                    <label for="banner-input">Фоновое изображение (Баннер)</label>
                     <div class="upload-row"><input type="file" id="banner-input" accept="image/*"><span class="upload-status" id="banner-status"></span></div>
-                    <img id="banner-preview" style="margin-top:10px; width:100%; max-height:200px; object-fit:cover; display:none;">
+                    <img id="banner-preview" alt="Предпросмотр фонового изображения" style="margin-top:10px; width:100%; max-height:200px; object-fit:cover; display:none;">
                 </div>
 
                 <div class="form-group">
@@ -156,9 +159,9 @@
                 </div>
                 <hr style="margin: 20px 0; border: 0; border-top: 1px solid var(--border);">
                 <div class="form-group">
-                    <label>Картинка для соцсетей (OG Image)</label>
+                    <label for="og-image-input">Картинка для соцсетей (OG Image)</label>
                     <div class="upload-row"><input type="file" id="og-image-input" accept="image/*"><span class="upload-status" id="og-image-status"></span></div>
-                    <img id="og-image-preview" style="margin-top:10px; width:100%; max-height:200px; object-fit:cover; display:none;">
+                    <img id="og-image-preview" alt="Предпросмотр изображения для соцсетей" style="margin-top:10px; width:100%; max-height:200px; object-fit:cover; display:none;">
                     <small>Изображение, которое будет показываться при отправке ссылки в соцсети (VK, Telegram, WhatsApp). Рекомендуемый размер: 1200x630 px.</small>
                 </div>
             </section>
@@ -182,7 +185,7 @@
                 <div class="form-group">
                     <label>Предпросмотр</label>
                     <div style="border-radius:15px; overflow:hidden; border:5px solid var(--bg-light);">
-                        <iframe id="map-preview-frame" src="" width="100%" height="400" frameborder="0"></iframe>
+                        <iframe id="map-preview-frame" src="" width="100%" height="400" frameborder="0" title="Предпросмотр карты"></iframe>
                     </div>
                 </div>
             </section>
@@ -389,8 +392,11 @@
                 if (!currentData.map) currentData.map = { url: '', height: '400' };
 
                 // Привязка полей с data-bind
-                document.querySelectorAll('[data-bind]').forEach(el => { 
-                    const path = el.dataset.bind; 
+                document.querySelectorAll('[data-bind]').forEach((el, index) => {
+                    const path = el.dataset.bind;
+                    if (!el.id) el.id = `field-${path.replace(/[^a-z0-9_-]/gi, '-')}-${index}`;
+                    const label = el.closest('.form-group')?.querySelector('label');
+                    if (label && !label.htmlFor) label.htmlFor = el.id;
                     el.value = getNested(currentData, path) || ''; 
                     el.addEventListener('input', e => setNested(currentData, path, e.target.value)); 
                 });
@@ -455,6 +461,8 @@
                 
                 const delBtn = document.createElement('button'); 
                 delBtn.className = 'delete-btn'; 
+                delBtn.type = 'button';
+                delBtn.setAttribute('aria-label', `Удалить элемент ${index + 1}`);
                 delBtn.innerHTML = '🗑'; 
                 delBtn.onclick = () => { 
                     currentData[type].splice(index, 1); 
@@ -479,6 +487,8 @@
                     }
 
                     const currentValue = item[f.name];
+                    input.id = `${type}-${index}-${f.name}`;
+                    label.htmlFor = input.id;
                     input.value = (currentValue !== undefined && currentValue !== null) ? currentValue : '';
                     
                     input.oninput = e => {
@@ -502,13 +512,13 @@
             
             currentData.contacts.extraButtons.forEach((item, idx) => { 
                 const card = document.createElement('div'); card.className = 'list-card'; 
-                const del = document.createElement('button'); del.className = 'delete-btn'; del.innerHTML = '🗑'; 
+                const del = document.createElement('button'); del.className = 'delete-btn'; del.type = 'button'; del.setAttribute('aria-label', `Удалить дополнительную кнопку ${idx + 1}`); del.innerHTML = '🗑';
                 del.onclick = () => { currentData.contacts.extraButtons.splice(idx, 1); renderExtraButtons(); }; 
                 card.appendChild(del); 
                 EXTRA_BTN_FIELDS.forEach(f => { 
                     const w = document.createElement('div'); w.className = 'field-row'; 
                     const l = document.createElement('label'); l.textContent = f.label; 
-                    const i = document.createElement('input'); i.type = 'text'; 
+                    const i = document.createElement('input'); i.type = 'text'; i.id = `extra-button-${idx}-${f.name}`; l.htmlFor = i.id;
                     i.value = item[f.name] || ''; 
                     i.oninput = e => currentData.contacts.extraButtons[idx][f.name] = e.target.value; 
                     w.appendChild(l); w.appendChild(i); card.appendChild(w); 
@@ -533,7 +543,7 @@
             p.forEach((item) => { 
                 const rIdx = currentData.reviews.indexOf(item); 
                 const card = document.createElement('div'); card.className = 'list-card'; 
-                card.innerHTML = `<div class="field-row full"><label><b>${item.name}</b> (${item.rating}⭐)</label><p style="margin:8px 0; padding:10px; background:#f1f5f9; border-radius:6px;">${item.text}</p></div><div style="display:flex; gap:10px;"><button onclick="moderateReview(${rIdx}, 'approved')" style="background:#dcfce7; color:#166534; border:none; padding:6px; border-radius:6px; cursor:pointer;">✅ Принять</button><button onclick="moderateReview(${rIdx}, 'rejected')" style="background:#fee2e2; color:#991b1b; border:none; padding:6px; border-radius:6px; cursor:pointer;">❌ Удалить</button></div>`; 
+                card.innerHTML = `<div class="field-row full"><p><b>${item.name}</b> (${item.rating}⭐)</p><p style="margin:8px 0; padding:10px; background:#f1f5f9; border-radius:6px;">${item.text}</p></div><div style="display:flex; gap:10px;"><button type="button" onclick="moderateReview(${rIdx}, 'approved')" style="background:#dcfce7; color:#166534; border:none; padding:6px; border-radius:6px; cursor:pointer;">✅ Принять</button><button type="button" onclick="moderateReview(${rIdx}, 'rejected')" style="background:#fee2e2; color:#991b1b; border:none; padding:6px; border-radius:6px; cursor:pointer;">❌ Удалить</button></div>`;
                 c.appendChild(card); 
             }); 
         }
@@ -588,10 +598,14 @@
         function show(id) { 
             document.querySelectorAll('.section').forEach(s => s.classList.remove('active')); 
             document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active')); 
+            document.querySelectorAll('.nav-item').forEach(n => n.removeAttribute('aria-current'));
             document.getElementById(id).classList.add('active'); 
             const items = document.querySelectorAll('.nav-item');
             items.forEach(item => {
-                if(item.getAttribute('onclick')?.includes(`'${id}'`)) item.classList.add('active');
+                if(item.getAttribute('onclick')?.includes(`'${id}'`)) {
+                    item.classList.add('active');
+                    item.setAttribute('aria-current', 'page');
+                }
             });
         }
 
